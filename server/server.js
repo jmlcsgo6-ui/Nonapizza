@@ -14,16 +14,7 @@ const prisma = new PrismaClient({
     }
 });
 
-// Teste de conexão ao iniciar
-console.log("Variáveis de ambiente disponíveis:", {
-    POSTGRES_URL: !!process.env.POSTGRES_URL,
-    DATABASE_URL: !!process.env.DATABASE_URL,
-    NON_POOLING: !!process.env.POSTGRES_URL_NON_POOLING
-});
-
-prisma.$connect()
-    .then(() => console.log("Successfully connected to Neon Database"))
-    .catch((err) => console.error("DATABASE CONNECTION ERROR:", err));
+// Conexão será feita sob demanda nas rotas
 
 app.use(cors({
     origin: '*', // Permite que qualquer site acesse (ideal para teste e Vercel)
