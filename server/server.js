@@ -7,6 +7,11 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const prisma = new PrismaClient();
 
+// Teste de conexão ao iniciar
+prisma.$connect()
+    .then(() => console.log("Successfully connected to Neon Database"))
+    .catch((err) => console.error("DATABASE CONNECTION ERROR:", err));
+
 app.use(cors({
     origin: '*', // Permite que qualquer site acesse (ideal para teste e Vercel)
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -65,8 +70,13 @@ app.get('/api/crusts', async (req, res) => {
 });
 
 app.get('/api/sizes', async (req, res) => {
-    const sizes = await prisma.sizeOption.findMany();
-    res.json(sizes);
+    try {
+        const sizes = await prisma.sizeOption.findMany();
+        res.json(sizes);
+    } catch (error) {
+        console.error("Error fetching sizes:", error);
+        res.status(500).json({ error: "Failed to fetch sizes", details: error.message });
+    }
 });
 
 app.post('/api/orders', async (req, res) => {
