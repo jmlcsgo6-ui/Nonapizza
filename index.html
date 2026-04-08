@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nona - A Pizza Perfeita</title>
+    <meta name="description"
+        content="A pizza perfeita, montada diante dos seus olhos. Ingredientes frescos e delivery rápido.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="#">NONA<span>.</span></a>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="#home">Início</a></li>
+                    <li><a href="#explore">Fazer Pedido</a></li>
+                    <li><a href="#why-us">Sobre a Nona</a></li>
+                    <li><a href="#contact">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="hero-wrapper">
+            <section id="home" class="hero">
+                <canvas id="hero-canvas" class="hero-canvas"></canvas>
+                <div class="hero-overlay"></div>
+                <div class="container hero-container" style="position: relative; z-index: 2;">
+                    <div class="hero-left">
+                        <h1 class="hero-title">A pizza perfeita, montada diante dos seus olhos.</h1>
+                        <p class="hero-subtitle">Ingredientes frescos caindo em tempo real, sabor incomparável e entrega
+                            rápida direto na sua porta.</p>
+
+                        <ul class="highlights">
+                            <li>
+                                <i class="fa-solid fa-check"></i>
+                                <span>Ingredientes selecionados diariamente</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-fire"></i>
+                                <span>Entrega rápida e sempre quente</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-medal"></i>
+                                <span>Qualidade artesanal com sabor premium</span>
+                            </li>
+                        </ul>
+
+                        <div class="cta-group">
+                            <a href="#explore" class="btn btn-primary hover-scale" style="font-size: 1.1rem; padding: 1rem 2.5rem;">Fazer Pedido <i class="fa-solid fa-arrow-down" style="margin-left:8px"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="hero-right">
+                        <!-- Right side remains empty for future animation as requested -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- How it works -->
+        <section id="how-it-works" class="section reveal-on-scroll">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2 class="section-title">Como Funciona</h2>
+                    <p class="section-subtitle">O caminho da perfeição até você em 3 passos simples.</p>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-card hover-scale">
+                        <div class="step-icon"><i class="fa-solid fa-pizza-slice"></i></div>
+                        <h3>Escolha sua Pizza</h3>
+                        <p>Explore nosso cardápio artesanal ou monte a sua própria obra prima.</p>
+                    </div>
+                    <div class="step-card hover-scale">
+                        <div class="step-icon"><i class="fa-solid fa-fire-burner"></i></div>
+                        <h3>Forno a Lenha</h3>
+                        <p>Assada perfeitamente na temperatura ideal para aquela crosta impossível de resistir.</p>
+                    </div>
+                    <div class="step-card hover-scale">
+                        <div class="step-icon"><i class="fa-solid fa-motorcycle"></i></div>
+                        <h3>Entrega Premium</h3>
+                        <p>Direto do forno para sua porta, chegando sempre quente graças à nossa embalagem térmica.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Explore (Dual Actions) -->
+        <section id="explore" class="section bg-alt reveal-on-scroll">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2 class="section-title animated-title">Sua Fome, Suas Regras</h2>
+                    <p class="section-subtitle">Escolha como deseja se deliciar com as receitas da Nona.</p>
+                </div>
+                
+                <div class="dual-action-grid">
+                    <div class="action-card promo-builder hover-scale" id="card-monte-pizza">
+                        <div class="ac-overlay"></div>
+                        <div class="ac-content">
+                            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Montar Pizza</h3>
+                            <p>Você é o chef. Escolha o tamanho, a quantidade de fatias, e combine os seus sabores preferidos exatamente como desejar.</p>
+                            <button class="btn btn-primary mt-2">Começar a Construir <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card promo-menu hover-scale" id="card-ver-cardapio">
+                        <div class="ac-overlay"></div>
+                        <div class="ac-content">
+                            <h3><i class="fa-solid fa-book-open"></i> Ver Cardápio</h3>
+                            <p>Descubra nossas especialidades, desde os clássicos italianos até criações autorais apaixonantes e bebidas geladas.</p>
+                            <button class="btn btn-secondary mt-2">Explorar Receitas <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us -->
+        <section id="why-us" class="section reveal-on-scroll">
+            <div class="container">
+                <div class="why-grid">
+                    <div class="why-content">
+                        <h2 class="section-title">Por que a NONA?</h2>
+                        <p class="section-subtitle">Não é apenas pizza, é uma experiência gastronômica superior na sua casa.</p>
+
+                        <div class="benefit-block hover-scale">
+                            <div class="benefit-icon"><i class="fa-solid fa-star"></i></div>
+                            <div class="benefit-text">
+                                <h4>Qualidade Absoluta</h4>
+                                <p>Farinha 00 importada e fermentação natural de 48 horas para uma massa leve e de fácil digestão.</p>
+                            </div>
+                        </div>
+                        <div class="benefit-block hover-scale">
+                            <div class="benefit-icon"><i class="fa-solid fa-clock"></i></div>
+                            <div class="benefit-text">
+                                <h4>Preparo Cronometrado</h4>
+                                <p>Tudo calculado para que sua pizza saia do forno diretamente para as mãos do entregador.</p>
+                            </div>
+                        </div>
+                        <div class="benefit-block hover-scale">
+                            <div class="benefit-icon"><i class="fa-solid fa-box-open"></i></div>
+                            <div class="benefit-text">
+                                <h4>Embalagem Térmica Premium</h4>
+                                <p>Nossa caixa exclusiva mantém a temperatura e a crocância de pizzaria moderna.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="why-visual">
+                        <div class="smoke-container">
+                            <div class="smoke"></div>
+                            <div class="smoke"></div>
+                            <div class="smoke"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- Testimonials -->
+        <section id="testimonials" class="section bg-alt">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2 class="section-title">O que dizem nossos clientes</h2>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i></div>
+                        <p>"A melhor pizza que já pedi por delivery. A massa é incrivelmente leve e chegou super
+                            quente!"</p>
+                        <h4>— Rafael Costa</h4>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i></div>
+                        <p>"A qualidade dos ingredientes é nítida. O presunto de parma e a burrata são fantásticos.
+                            Virei cliente fiel na hora."</p>
+                        <h4>— Mariana Souza</h4>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i></div>
+                        <p>"Achei a embalagem fantástica, mantém a pizza quentinha de verdade. E sabor digno da Itália."
+                        </p>
+                        <h4>— Lucas M.</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA Section -->
+        <section class="section final-cta">
+            <div class="container text-center">
+                <h2 class="section-title">Peça agora e sinta o sabor de verdade.</h2>
+                <p class="section-subtitle">Massa de longa fermentação e ingredientes nobres.</p>
+                <div class="mt-4">
+                    <button id="btn-monte-sua-pizza-final" class="btn btn-primary btn-large" style="display: inline-block;">Pedir Agora</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <a href="#">NONA<span>.</span></a>
+                    </div>
+                    <p style="margin-top: 1rem;">A pizza perfeita, montada diante dos seus olhos.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Menu Rápido</h4>
+                    <ul>
+                        <li><a href="#home">Início</a></li>
+                        <li><a href="#how-it-works">Como Funciona</a></li>
+                        <li><a href="#explore">Pedir Agora</a></li>
+                        <li><a href="#why-us">Sobre</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contato</h4>
+                    <p><i class="fa-solid fa-phone" style="margin-right: 8px;"></i> (11) 99999-9999</p>
+                    <p><i class="fa-solid fa-envelope" style="margin-right: 8px;"></i> contato@nonapizza.etc</p>
+                    <p><i class="fa-solid fa-location-dot" style="margin-right: 8px;"></i> Rua das Pizzas Culturadas,
+                        123</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Redes Sociais</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Nona Pizza Premium. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals & Cart UI -->
+
+    <!-- Full Menu Modal -->
+    <div id="full-menu-modal" class="modal-overlay">
+        <div class="modal-content modal-fullscreen">
+            <button class="close-modal close-menu" id="close-menu-modal"><i class="fa-solid fa-xmark"></i></button>
+            <div class="section-header text-center" style="margin-bottom: 2rem;">
+                <h2 class="section-title">Nosso Cardápio</h2>
+                <p class="section-subtitle">Sabores inesquecíveis, qualidade premium.</p>
+            </div>
+            
+            <div class="menu-tabs">
+                <button class="tab-btn active" data-category="tradicionais">Tradicionais</button>
+                <button class="tab-btn" data-category="especiais">Especiais</button>
+                <button class="tab-btn" data-category="doces">Doces</button>
+                <button class="tab-btn" data-category="bebidas">Bebidas</button>
+            </div>
+
+            <div id="menu-container" class="menu-grid" style="margin-top: 2rem; overflow-y: auto; max-height: calc(100vh - 250px); padding-bottom: 2rem; padding-right: 0.5rem;">
+                <!-- Items injected by JS with skeleton -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal-content animate-pop">
+            <button class="close-modal"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="modal-product-name" class="modal-title">Name</h3>
+            <p id="modal-product-desc" class="modal-desc">Desc</p>
+
+            <div class="modal-section modal-sizes" id="modal-sizes">
+                <h4>Tamanho</h4>
+                <div class="size-options" id="size-options-container">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <h4>Observações</h4>
+                <textarea id="modal-obs" placeholder="Ex: Tirar cebola, borda extra..."></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <div class="quantity-control">
+                    <button class="qty-btn" id="qty-minus">-</button>
+                    <span id="qty-value">1</span>
+                    <button class="qty-btn" id="qty-plus">+</button>
+                </div>
+                <button id="add-to-cart-btn" class="btn btn-primary">Adicionar R$ <span
+                        id="modal-price">0,00</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal-overlay">
+        <div class="modal-content checkout-content animate-pop">
+            <button class="close-checkout"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="modal-title">Finalizar Pedido</h3>
+            <form id="checkout-form">
+                <div class="form-group">
+                    <input type="text" id="chk-name" class="form-input" placeholder="Seu Nome completo" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="chk-address" class="form-input"
+                        placeholder="Endereço de entrega (Rua, Nº, Bairro)" required>
+                </div>
+                <div class="form-group">
+                    <select id="chk-payment" class="form-input" required>
+                        <option value="" disabled selected>Forma de Pagamento</option>
+                        <option value="pix">PIX</option>
+                        <option value="credit">Cartão de Crédito</option>
+                        <option value="cash">Dinheiro</option>
+                    </select>
+                </div>
+                <div class="checkout-summary">
+                    <p>Tempo estimado: <strong>~50 min</strong></p>
+                    <h4 style="margin-top: 1rem;">Total: R$ <span id="checkout-total">0,00</span></h4>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 btn-checkout hover-scale" style="margin-top: 1.5rem;">Confirmar Pedido</button>
+            </form>
+            
+            <div id="order-success-fx" style="display: none; text-align: center; padding: 2rem 0;">
+                <div class="success-checkmark"><i class="fa-solid fa-check-circle" style="font-size: 4rem; color: #4cd964; margin-bottom: 1rem;"></i></div>
+                <h3 style="margin-bottom: 1rem;">Pedido Confirmado!</h3>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">Sua pizza está sendo preparada pelo nosso chef e logo sairá para entrega.</p>
+                
+                <div class="order-timeline">
+                    <div class="ot-step active"><i class="fa-solid fa-utensils"></i></div>
+                    <div class="ot-line"></div>
+                    <div class="ot-step pending"><i class="fa-solid fa-fire"></i></div>
+                    <div class="ot-line"></div>
+                    <div class="ot-step pending"><i class="fa-solid fa-motorcycle"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div id="cart-drawer" class="cart-drawer">
+        <div class="cart-header">
+            <h3>Seu Pedido</h3>
+            <button id="close-cart"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="progress-indicator">
+            <p id="frete-text" class="frete-text">Adicione mais R$ X para frete grátis</p>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="frete-progress"></div>
+            </div>
+        </div>
+
+        <div class="cart-items" id="cart-items-container">
+            <!-- Dynamic Cart Items -->
+            <div class="empty-cart-msg">Seu carrinho está vazio.</div>
+        </div>
+
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total</span>
+                <strong id="cart-total-price">R$ 0,00</strong>
+            </div>
+            <button id="checkout-btn" class="btn btn-primary w-100">Finalizar Compra</button>
+        </div>
+    </div>
+
+    <!-- Mobile Sticky Cart Button -->
+    <button id="mobile-cart-btn" class="mobile-cart-btn">
+        <div class="mcb-left">
+            <i class="fa-solid fa-cart-shopping"></i> <span id="mcb-qty" class="badge">0</span>
+        </div>
+        <div class="mcb-right">Ver Carrinho &rarr;</div>
+    </button>
+
+    <!-- Pizza Builder Overlay -->
+    <div id="pizza-builder-overlay" class="builder-overlay">
+        <div class="builder-header">
+            <h3>Montar Pizza</h3>
+            <button id="close-builder"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="builder-body">
+            <!-- Step 1: Size & Slices -->
+            <div id="builder-step-1" class="builder-step active">
+                <h2 class="step-title">Como começamos?</h2>
+                <p class="step-desc">Escolha o tamanho e quantos sabores deseja.</p>
+
+                <div class="builder-section">
+                    <h4>Tamanho</h4>
+                    <div class="cards-grid" id="builder-sizes">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="builder-section text-center">
+                    <h4>Quantidade de Sabores</h4>
+                    <div class="flavors-count-control mx-auto">
+                        <button class="qty-btn" id="fc-minus">-</button>
+                        <span id="fc-value">1</span>
+                        <button class="qty-btn" id="fc-plus">+</button>
+                    </div>
+                    <p class="fc-hint">Máximo de 3 sabores por pizza.</p>
+                </div>
+
+                <div class="step-footer mt-4">
+                    <button id="btn-next-step" class="btn btn-primary btn-large w-100" disabled>Avançar para Montagem <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></button>
+                </div>
+            </div>
+
+            <!-- Step 2: The Pizza Assembly -->
+            <div id="builder-step-2" class="builder-step">
+                <div class="builder-split">
+                    <!-- Esquerda: Visual da Pizza -->
+                    <div class="builder-visual">
+                        <div class="pizza-svg-wrapper">
+                            <div class="pizza-base"></div> <!-- Background pizza crust -->
+                            <div class="pizza-svg-container" id="pizza-svg-container">
+                                <!-- SVG injected here -->
+                            </div>
+                        </div>
+                        <p class="visual-hint"><i class="fa-solid fa-hand-pointer"></i> Clique em um pedaço para escolher o sabor</p>
+                    </div>
+
+                    <!-- Direita: Opções -->
+                    <div class="builder-options">
+                        <button class="btn-text" id="btn-prev-step"><i class="fa-solid fa-arrow-left"></i> Voltar tamanhos</button>
+                        
+                        <div class="builder-section" style="margin-top: 2rem;">
+                            <button class="crust-select-btn" id="btn-select-crust">
+                                <div class="crust-info">
+                                    <span class="crust-label">Borda</span>
+                                    <span class="crust-value" id="selected-crust-name">Tradicional</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+
+                        <div class="builder-summary">
+                            <h4>Sua Pizza</h4>
+                            <ul id="builder-summary-list">
+                                <!-- list items -->
+                            </ul>
+                            <div class="builder-total">
+                                <span>Total:</span>
+                                <strong id="builder-total-price">R$ 0,00</strong>
+                            </div>
+                        </div>
+
+                        <div class="builder-obs" style="margin-bottom: 2rem;">
+                            <h4>Observações</h4>
+                            <textarea id="builder-obs" placeholder="Ex: Sem cebola, bem assada..."></textarea>
+                        </div>
+
+                        <button id="btn-add-custom-pizza" class="btn btn-primary btn-large w-100" disabled>
+                            <i class="fa-solid fa-cart-plus" style="margin-right: 8px;"></i> Adicionar ao Pedido
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flavor / Crust Selector Drawer -->
+    <div id="options-drawer" class="cart-drawer" style="z-index: 3100;">
+        <div class="cart-header">
+            <h3 id="options-drawer-title">Escolha</h3>
+            <button id="close-options-drawer"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div class="options-search-wrapper" id="options-search-container">
+            <div class="options-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="options-search" placeholder="Buscar sabor...">
+            </div>
+        </div>
+        
+        <div class="options-list" id="options-list-container">
+            <!-- options here -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
