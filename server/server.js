@@ -15,7 +15,10 @@ const app = express();
 const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
 const pool = new Pool({ connectionString });
 const adapter = new PrismaNeon(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({ 
+    adapter,
+    datasourceUrl: connectionString 
+});
 
 app.use(cors());
 app.use(express.json());
