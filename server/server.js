@@ -86,8 +86,12 @@ app.get('/api/sizes', async (req, res) => {
         const sizes = await prisma.sizeOption.findMany();
         res.json(sizes);
     } catch (error) {
-        console.error("Error fetching sizes:", error);
-        res.status(500).json({ error: "Failed to fetch sizes", details: error.message });
+        console.error("ERRO DETALHADO BUSCA TAMANHOS:", error);
+        res.status(500).json({ 
+            error: "Erro ao buscar tamanhos", 
+            message: error.message,
+            code: error.code
+        });
     }
 });
 
