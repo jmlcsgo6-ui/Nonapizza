@@ -54,8 +54,11 @@ export default function Hero() {
 
         const handleScroll = () => {
             const scrollTop = window.scrollY;
-            const startScroll = wrapper.offsetTop; 
-            const maxScroll = wrapper.offsetHeight - window.innerHeight; 
+            const parentWrapper = wrapper.parentElement;
+            if (!parentWrapper) return;
+
+            const startScroll = parentWrapper.offsetTop; 
+            const maxScroll = parentWrapper.offsetHeight - window.innerHeight; 
             
             let scrollFraction = (scrollTop - startScroll) / maxScroll;
             if (scrollFraction < 0) scrollFraction = 0;
