@@ -10,7 +10,7 @@ export default defineConfig({
     seed: "node ./seed.js",
   },
   datasource: {
-    url: process.env["POSTGRES_PRISMA_URL"],
+    url: process.env["POSTGRES_URL"],
     directUrl: process.env["POSTGRES_URL_NON_POOLING"],
   },
 });
