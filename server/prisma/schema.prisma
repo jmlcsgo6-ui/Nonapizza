@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model AdminUser {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String
+  desc      String?
+  products  Product[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  desc        String
+  price       Float
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+}
+
+model Ingredient {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Float    @default(0)
+}
+
+model CrustOption {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Float    @default(0)
+}
+
+model SizeOption {
+  id        Int      @id @default(autoincrement())
+  name      String
+  minSlices Int      @default(1)
+  maxSlices Int      @default(3)
+  price     Float
+}
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  customerName String
+  address      String
+  payment      String
+  total        Float
+  status       String      @default("PENDING") // PENDING, COOKING, DELIVERING, DELIVERED
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  items        OrderItem[]
+}
+
+model OrderItem {
+  id          Int      @id @default(autoincrement())
+  orderId     Int    
+  productName String
+  desc        String?
+  price       Float
+  qty         Int
+  obs         String?
+  order       Order    @relation(fields: [orderId], references: [id])
+}
