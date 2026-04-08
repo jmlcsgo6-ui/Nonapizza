@@ -1,18 +1,21 @@
 const express = require('express');
 const cors = require('cors');
 const { PrismaClient } = require('@prisma/client');
+const { neonConfig, Pool } = require('@neondatabase/serverless');
+const { PrismaNeon } = require('@prisma/adapter-neon');
+const ws = require('ws');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+// Configuração para ambientes Serverless (Vercel)
+neonConfig.webSocketConstructor = ws;
+
 const app = express();
-// Usamos a URL direta (Non-Pooling) para evitar travamentos de conexão no Vercel
-const prisma = new PrismaClient({
-    datasources: {
-        db: {
-            url: process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || process.env.DATABASE_URL
-        }
-    }
-});
+
+const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+const pool = new Pool({ connectionString });
+const adapter = new PrismaNeon(pool);
+const prisma = new PrismaClient({ adapter });
 
 // Conexão será feita sob demanda nas rotas
 
