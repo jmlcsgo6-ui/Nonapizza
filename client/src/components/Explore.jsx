@@ -1,6 +1,13 @@
 import React from 'react';
+import { useBuilder } from '../context/BuilderContext';
 
 export default function Explore() {
+    const { setIsBuilderOpen } = useBuilder();
+
+    const openMenu = () => {
+        document.dispatchEvent(new CustomEvent('open-menu'));
+    };
+
     return (
         <section id="explore" className="section bg-alt reveal-on-scroll">
             <div className="container">
@@ -10,7 +17,7 @@ export default function Explore() {
                 </div>
                 
                 <div className="dual-action-grid">
-                    <div className="action-card promo-builder hover-scale" id="card-monte-pizza">
+                    <div className="action-card promo-builder hover-scale" id="card-monte-pizza" onClick={() => setIsBuilderOpen(true)}>
                         <div className="ac-overlay"></div>
                         <div className="ac-content">
                             <h3><i className="fa-solid fa-wand-magic-sparkles"></i> Montar Pizza</h3>
@@ -19,7 +26,7 @@ export default function Explore() {
                         </div>
                     </div>
                     
-                    <div className="action-card promo-menu hover-scale" id="card-ver-cardapio">
+                    <div className="action-card promo-menu hover-scale" id="card-ver-cardapio" onClick={openMenu}>
                         <div className="ac-overlay"></div>
                         <div className="ac-content">
                             <h3><i className="fa-solid fa-book-open"></i> Ver Cardápio</h3>
