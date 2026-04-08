@@ -1,18 +1,21 @@
 const express = require('express');
 const cors = require('cors');
 const { PrismaClient } = require('@prisma/client');
+const { neonConfig, Pool } = require('@neondatabase/serverless');
+const { PrismaNeon } = require('@prisma/adapter-neon');
+const ws = require('ws');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+// Configuração Serverless Neon
+neonConfig.webSocketConstructor = ws;
+
 const app = express();
 
-const prisma = new PrismaClient({
-    datasources: {
-        db: {
-            url: process.env.POSTGRES_URL || process.env.DATABASE_URL
-        }
-    }
-});
+const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+const pool = new Pool({ connectionString });
+const adapter = new PrismaNeon(pool);
+const prisma = new PrismaClient({ adapter });
 
 app.use(cors());
 app.use(express.json());
@@ -33,8 +36,16 @@ const authMiddleware = (req, res, next) => {
     }
 };
 
-// --- Rota Principal ---
-app.get('/', (req, res) => res.send('NONA PIZZA SERVER IS READY! 🍕'));
+// --- Rota de Diagnóstico ---
+app.get('/', async (req, res) => {
+    try {
+        const sCount = await prisma.sizeOption.count();
+        const cCount = await prisma.category.count();
+        res.send(`NONA SERVER ONLINE! Banco de dados conectado: ${sCount} tamanhos e ${cCount} categorias encontrados. 🍕🚀`);
+    } catch (e) {
+        res.send(`SERVER ONLINE mas ERRO DE BANCO: ${e.message}`);
+    }
+});
 
 // --- Auth Routes ---
 app.post('/api/auth/login', async (req, res) => {
@@ -90,37 +101,18 @@ app.post('/api/orders', async (req, res) => {
         const { customerName, address, payment, total, items } = req.body;
         const order = await prisma.order.create({
             data: {
-                customerName, address, payment, total,
+                customerName, address: address || 'Nao informado', payment: payment || 'Nao informado', total,
                 items: {
                     create: items.map(i => ({
                         productName: i.productName,
-                        desc: i.desc,
+                        desc: i.desc || '',
                         price: i.price,
                         qty: i.qty,
-                        obs: i.obs
+                        obs: i.obs || ''
                     }))
                 }
             },
             include: { items: true }
-        });
-        res.json(order);
-    } catch(e) { res.status(500).json({error: e.message}); }
-});
-
-// --- Admin ---
-app.get('/api/admin/orders', authMiddleware, async (req, res) => {
-    try {
-        const orders = await prisma.order.findMany({ include: { items: true }, orderBy: { createdAt: 'desc' } });
-        res.json(orders);
-    } catch(e) { res.status(500).json({error: e.message}); }
-});
-
-app.put('/api/admin/orders/:id/status', authMiddleware, async (req, res) => {
-    try {
-        const { status } = req.body;
-        const order = await prisma.order.update({
-            where: { id: parseInt(req.params.id) },
-            data: { status }
         });
         res.json(order);
     } catch(e) { res.status(500).json({error: e.message}); }
