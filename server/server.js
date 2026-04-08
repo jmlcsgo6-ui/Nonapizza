@@ -12,28 +12,11 @@ neonConfig.webSocketConstructor = ws;
 
 const app = express();
 
-const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
-const pool = new Pool({ connectionString });
-const adapter = new PrismaNeon(pool);
-const prisma = new PrismaClient({ adapter });
-
-// LIBERAÇÃO TOTAL DE CORS (Tiro de canhão)
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-    if ('OPTIONS' === req.method) {
-        res.sendStatus(200);
-    } else {
-        next();
-    }
-});
-
 app.use(express.json());
 
-// Rota de teste para ver se o servidor está VIVO
+// Rota de teste ultra simples
 app.get('/', (req, res) => {
-    res.send('NONA PIZZA SERVER IS LIVE AND RUNNING! 🍕');
+    res.send('SERVER IS AWAKE! 🚀');
 });
 
 const JWT_SECRET = process.env.JWT_SECRET || 'nona_super_secret';
