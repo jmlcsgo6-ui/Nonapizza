@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import OrdersPanel from './admin/OrdersPanel';
 import ProductsManager from './admin/ProductsManager';
 import FlavorsManager from './admin/FlavorsManager';
@@ -15,7 +15,7 @@ export default function Admin() {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:3001/api/auth/login', { email, password });
+            const res = await api.post('/api/auth/login', { email, password });
             localStorage.setItem('admin_token', res.data.token);
             setToken(res.data.token);
         } catch(err) {

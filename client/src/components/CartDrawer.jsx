@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import axios from 'axios';
+import api from '../api/api';
 
 export default function CartDrawer() {
     const { cart, removeFromCart, clearCart, cartTotal, isCartOpen, setIsCartOpen } = useCart();
@@ -13,7 +13,7 @@ export default function CartDrawer() {
         if(cart.length === 0) return;
         setSubmitting(true);
         try {
-            await axios.post('http://localhost:3001/api/orders', {
+            await api.post('/api/orders', {
                 customerName: 'Cliente via Web (SPA)',
                 customerPhone: '11999999999',
                 customerAddress: 'Rua das Pizzas, 1000',

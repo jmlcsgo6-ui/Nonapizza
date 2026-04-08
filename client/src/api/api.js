@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-// Se existir uma variável de ambiente VITE_API_URL, usa ela. 
-// Caso contrário, usa o localhost (para quando você estiver testando no seu PC).
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+// Usamos a URL do servidor que você acabou de criar no Vercel
+const API_URL = import.meta.env.VITE_API_URL || 'https://nonapizza-lk8e.vercel.app';
 
 const api = axios.create({
     baseURL: API_URL
