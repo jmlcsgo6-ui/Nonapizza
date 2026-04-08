@@ -7,7 +7,11 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const prisma = new PrismaClient();
 
-app.use(cors());
+app.use(cors({
+    origin: '*', // Permite que qualquer site acesse (ideal para teste e Vercel)
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 const JWT_SECRET = process.env.JWT_SECRET || 'nona_super_secret';
