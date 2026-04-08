@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { useCart } from '../context/CartContext';
 
 export default function MenuModal() {
@@ -19,7 +19,7 @@ export default function MenuModal() {
         const fetchCategories = async () => {
             try {
                 setLoading(true);
-                const res = await axios.get('http://localhost:3001/api/categories');
+                const res = await api.get('/api/categories');
                 setTimeout(() => {
                     setCategories(res.data);
                     setLoading(false);

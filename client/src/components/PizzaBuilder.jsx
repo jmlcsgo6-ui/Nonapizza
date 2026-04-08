@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { useBuilder } from '../context/BuilderContext';
 import { useCart } from '../context/CartContext';
 import PizzaSVG from './PizzaSVG';
@@ -21,9 +21,9 @@ export default function PizzaBuilder() {
         const fetchData = async () => {
             try {
                 const [szRes, cruRes, flavRes] = await Promise.all([
-                    axios.get('http://localhost:3001/api/sizes'),
-                    axios.get('http://localhost:3001/api/crusts'),
-                    axios.get('http://localhost:3001/api/ingredients')
+                    api.get('/api/sizes'),
+                    api.get('/api/crusts'),
+                    api.get('/api/ingredients')
                 ]);
                 setSizes(szRes.data);
                 setCrusts(cruRes.data);
