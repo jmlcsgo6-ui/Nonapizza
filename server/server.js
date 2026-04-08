@@ -5,9 +5,22 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const prisma = new PrismaClient();
+// Usamos a URL direta (Non-Pooling) para evitar travamentos de conexão no Vercel
+const prisma = new PrismaClient({
+    datasources: {
+        db: {
+            url: process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || process.env.DATABASE_URL
+        }
+    }
+});
 
 // Teste de conexão ao iniciar
+console.log("Variáveis de ambiente disponíveis:", {
+    POSTGRES_URL: !!process.env.POSTGRES_URL,
+    DATABASE_URL: !!process.env.DATABASE_URL,
+    NON_POOLING: !!process.env.POSTGRES_URL_NON_POOLING
+});
+
 prisma.$connect()
     .then(() => console.log("Successfully connected to Neon Database"))
     .catch((err) => console.error("DATABASE CONNECTION ERROR:", err));
@@ -50,8 +63,13 @@ const authMiddleware = (req, res, next) => {
 
 // --- Public Routes ---
 app.get('/api/categories', async (req, res) => {
-    const categories = await prisma.category.findMany({ include: { products: true } });
-    res.json(categories);
+    try {
+        const categories = await prisma.category.findMany({ include: { products: true } });
+        res.json(categories);
+    } catch (error) {
+        console.error("ERRO CATEGORIAS:", error);
+        res.status(500).json({ error: "Erro ao buscar categorias", details: error.message });
+    }
 });
 
 app.get('/api/products', async (req, res) => {
