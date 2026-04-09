@@ -36,25 +36,29 @@ export default function Header() {
                             {!customerToken ? (
                                 <li><a href="#login" className="nav-btn-primary" onClick={(e) => { e.preventDefault(); navigate('/login'); }}>ENTRAR</a></li>
                             ) : (
-                                <li><a href="#logout" className="nav-btn-primary" style={{ background: '#333' }} onClick={(e) => { e.preventDefault(); handleLogout(); }}>SAIR</a></li>
+                                <>
+                                    <li><a href="#logout" className="nav-btn-primary" style={{ background: '#333' }} onClick={(e) => { e.preventDefault(); handleLogout(); }}>SAIR</a></li>
+                                    <li>
+                                        <button className="nav-btn-primary" onClick={() => setIsCartOpen(true)} style={{ background: '#222', border: 'none', cursor: 'pointer', marginLeft: '10px' }}>
+                                            <i className="fa-solid fa-cart-shopping"></i> {cartCount > 0 ? `(${cartCount})` : ''}
+                                        </button>
+                                    </li>
+                                </>
                             )}
-                            <li>
-                                <button className="nav-btn-primary" onClick={() => setIsCartOpen(true)} style={{ background: '#222', border: 'none', cursor: 'pointer', marginLeft: '10px' }}>
-                                    <i className="fa-solid fa-cart-shopping"></i> {cartCount > 0 ? `(${cartCount})` : ''}
-                                </button>
-                            </li>
                         </ul>
                     </nav>
                 </div>
             </header>
 
             {/* Mobile Sticky Cart Button */}
-            <button id="mobile-cart-btn" className="mobile-cart-btn" onClick={() => setIsCartOpen(true)}>
-                <div className="mcb-left">
-                    <i className="fa-solid fa-cart-shopping"></i> <span id="mcb-qty" className="badge">{cartCount}</span>
-                </div>
-                <div className="mcb-right">Ver Carrinho &rarr;</div>
-            </button>
+            {customerToken && (
+                <button id="mobile-cart-btn" className="mobile-cart-btn" onClick={() => setIsCartOpen(true)}>
+                    <div className="mcb-left">
+                        <i className="fa-solid fa-cart-shopping"></i> <span id="mcb-qty" className="badge">{cartCount}</span>
+                    </div>
+                    <div className="mcb-right">Ver Carrinho &rarr;</div>
+                </button>
+            )}
         </>
     );
 }

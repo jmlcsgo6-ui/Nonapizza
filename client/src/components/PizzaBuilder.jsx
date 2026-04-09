@@ -86,56 +86,46 @@ export default function PizzaBuilder() {
                 </div>
 
                 <div className="builder-body">
-                    {step === 1 && (
-                        <div id="builder-step-1" className="builder-step active">
-                            <h2 className="step-title">Como começamos?</h2>
-                            <p className="step-desc">Escolha o tamanho e quantos sabores deseja.</p>
+                    <div id="builder-step-1" className={`builder-step ${step === 1 ? 'active' : 'slide-left'}`}>
+                        <h2 className="step-title">Como começamos?</h2>
+                        <p className="step-desc">Escolha o tamanho e quantos sabores deseja.</p>
 
-                            <div className="builder-section">
-                                <h4>Tamanho</h4>
-                                <div className="cards-grid" id="builder-sizes">
-                                    {sizes.map(s => (
-                                        <div 
-                                            key={s.id} 
-                                            className={`size-card ${selectedSize?.id === s.id ? 'active' : ''}`}
-                                            onClick={() => setSelectedSize(s)}
-                                        >
-                                            <div className="size-header">
-                                                <h5>{s.name}</h5>
-                                                <span>{s.maxSlices} fatias</span>
-                                            </div>
-                                            <div className="size-price">A partir de R$ {s.price.toFixed(2)}</div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="builder-section text-center">
-                                <h4>Quantidade de Sabores</h4>
-                                <div className="flavors-count-control mx-auto">
-                                    <button className="qty-btn" onClick={() => setFlavorsCount(Math.max(1, flavorsCount - 1))}>-</button>
-                                    <span style={{ margin: '0 15px' }} className="font-bold text-xl">{flavorsCount}</span>
-                                    <button className="qty-btn" onClick={() => setFlavorsCount(Math.min(selectedSize?.maxSlices || 3, flavorsCount + 1))}>+</button>
-                                </div>
-                                <p className="fc-hint">Máximo de {selectedSize?.maxSlices || 3} sabores por pizza.</p>
-                            </div>
-
-                            <div className="step-footer mt-4">
-                                <button className="btn btn-primary btn-large w-100" onClick={() => {
-                                    if (!selectedSize) {
-                                        alert('Por favor, informe primeiro um tamanho!');
-                                        return;
-                                    }
-                                    setStep(2);
-                                }}>
-                                    Avançar para Montagem <i className="fa-solid fa-arrow-right" style={{ marginLeft: '8px' }}></i>
-                                </button>
+                        <div className="builder-section">
+                            <h4>Tamanho</h4>
+                            <div className="cards-grid" id="builder-sizes">
+                                {sizes.map(s => (
+                                    <div 
+                                        key={s.id} 
+                                        className={`size-card ${selectedSize?.id === s.id ? 'active' : ''}`}
+                                        onClick={() => setSelectedSize(s)}
+                                    >
+                                        <div className="size-icon"><i className="fa-solid fa-pizza-slice"></i></div>
+                                        <h5>{s.name}</h5>
+                                        <p style={{ marginTop: '0.2rem', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{s.maxSlices} fatias {s.maxSlices === 4 ? '(25cm)' : s.maxSlices === 6 ? '(30cm)' : s.maxSlices === 8 ? '(35cm)' : ''}</p>
+                                        <p style={{ color: 'var(--primary)', fontWeight: 'bold', fontSize: '0.9rem' }}>A partir de R$ {s.price.toFixed(2).replace('.', ',')}</p>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    )}
 
-                    {step === 2 && (
-                        <div id="builder-step-2" className="builder-step active">
+                        <div className="builder-section text-center">
+                            <h4>Quantidade de Sabores</h4>
+                            <div className="flavors-count-control mx-auto">
+                                <button className="qty-btn" onClick={() => setFlavorsCount(Math.max(1, flavorsCount - 1))}>-</button>
+                                <span style={{ margin: '0 15px' }} className="font-bold text-xl">{flavorsCount}</span>
+                                <button className="qty-btn" onClick={() => setFlavorsCount(Math.min(selectedSize?.maxSlices || 3, flavorsCount + 1))}>+</button>
+                            </div>
+                            <p className="fc-hint">Máximo de {selectedSize?.maxSlices || 3} sabores por pizza.</p>
+                        </div>
+
+                        <div className="step-footer mt-4">
+                            <button className="btn btn-primary btn-large w-100" disabled={!selectedSize} onClick={() => setStep(2)}>
+                                Avançar para Montagem <i className="fa-solid fa-arrow-right" style={{ marginLeft: '8px' }}></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="builder-step-2" className={`builder-step ${step === 2 ? 'active' : ''}`}>
                             <div className="builder-split">
                                 {/* Esquerda: Visual da Pizza */}
                                 <div className="builder-visual">
@@ -203,9 +193,8 @@ export default function PizzaBuilder() {
                                 </div>
                             </div>
                         </div>
-                    )}
+                    </div>
                 </div>
-            </div>
 
             {/* Flavor / Crust Selector Drawer */}
             <div id="options-drawer" className={`cart-drawer ${drawerOpen ? 'open' : ''}`} style={{ zIndex: 5100 }}>
