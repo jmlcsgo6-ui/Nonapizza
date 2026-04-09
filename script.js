@@ -31,92 +31,111 @@ document.addEventListener('DOMContentLoaded', () => {
     if (canvas) {
         const context = canvas.getContext('2d');
         const frameCount = 144;
+        const images = new Map(); // Use Map for better management
+        const preloadedFrames = new Set();
         
-        // Match the ezgif-frame-XXX.png file format found in the directory
         const currentFrame = index => `phhoto/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.png`;
 
-        const images = [];
-        let imagesLoaded = 0;
+        // Loading states
+        let lastRenderedIndex = -1;
+        let isPreloadingStarted = false;
 
-        // Preload images into memory
-        for (let i = 0; i < frameCount; i++) {
-            const img = new Image();
-            img.src = currentFrame(i);
-            img.onload = () => {
-                imagesLoaded++;
-                if (imagesLoaded === 1) {
-                    // Render the very first frame as soon as it's ready
-                    resizeCanvas();
-                }
-            };
-            images.push(img);
-        }
+        const preloadImage = (index) => {
+            if (images.has(index) || preloadedFrames.has(index)) return Promise.resolve(images.get(index));
+            
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.src = currentFrame(index);
+                img.onload = () => {
+                    images.set(index, img);
+                    preloadedFrames.add(index);
+                    resolve(img);
+                };
+            });
+        };
+
+        // Initial Batches (First 10 frames + key frames)
+        const initAnimation = async () => {
+            await preloadImage(0); // Load first frame FAST
+            resizeCanvas();
+            renderFrame(0);
+            
+            // Progressive preload of first batch
+            for (let i = 1; i < 20; i++) {
+                preloadImage(i);
+            }
+        };
 
         const renderFrame = (index) => {
-            if (images[index] && images[index].complete) {
-                // Determine scale equivalent to object-fit: cover
+            if (index === lastRenderedIndex) return;
+            
+            const img = images.get(index);
+            if (img && img.complete) {
                 const canvasAspect = canvas.width / canvas.height;
-                const imgAspect = images[index].width / images[index].height;
+                const imgAspect = img.width / img.height;
                 let renderWidth, renderHeight, x, y;
 
                 if (canvasAspect > imgAspect) {
-                    // Canvas is wider than image (proportionally)
                     renderWidth = canvas.width;
                     renderHeight = canvas.width / imgAspect;
                     x = 0;
                     y = (canvas.height - renderHeight) / 2;
                 } else {
-                    // Image is wider than canvas (proportionally)
                     renderHeight = canvas.height;
                     renderWidth = canvas.height * imgAspect;
                     y = 0;
-                    
-                    // On mobile, the animation/pizza is on the right side of the image (75% mark).
-                    // We change the focusX so it centers the pizza perfectly instead of being cut off on the right.
                     const focusX = window.innerWidth <= 768 ? 0.75 : 0.5;
                     x = (canvas.width * 0.5) - (renderWidth * focusX);
-                    
-                    // Clamp to ensure we don't draw outside the image bounds
                     x = Math.max(canvas.width - renderWidth, Math.min(0, x));
                 }
 
                 context.clearRect(0, 0, canvas.width, canvas.height);
-                context.drawImage(images[index], x, y, renderWidth, renderHeight);
+                context.drawImage(img, x, y, renderWidth, renderHeight);
+                lastRenderedIndex = index;
+            } else {
+                // If frame not ready, load it and surrounding frames
+                preloadImage(index).then(() => renderFrame(index));
+                // Predict direction and load neighbor frames
+                for(let i=1; i<=5; i++) {
+                    if(index+i < frameCount) preloadImage(index+i);
+                    if(index-i >= 0) preloadImage(index-i);
+                }
             }
         };
 
         const wrapper = document.querySelector('.hero-wrapper');
+        let scrollTicking = false;
 
         const handleScroll = () => {
-            if (!wrapper) return;
-            const scrollTop = window.scrollY;
-            
-            // Map the scroll across the wrapper's scrollable height
-            // Start animating when the wrapper hits the top of the viewport
-            const startScroll = wrapper.offsetTop; 
-            const maxScroll = wrapper.offsetHeight - window.innerHeight; 
-            
-            let scrollFraction = (scrollTop - startScroll) / maxScroll;
-            if (scrollFraction < 0) scrollFraction = 0;
-            if (scrollFraction > 1) scrollFraction = 1;
+            if (!scrollTicking) {
+                window.requestAnimationFrame(() => {
+                    if (wrapper) {
+                        const scrollTop = window.scrollY;
+                        const startScroll = wrapper.offsetTop; 
+                        const maxScroll = wrapper.offsetHeight - window.innerHeight; 
+                        
+                        let scrollFraction = (scrollTop - startScroll) / maxScroll;
+                        scrollFraction = Math.max(0, Math.min(1, scrollFraction));
 
-            const frameIndex = Math.min(
-                frameCount - 1,
-                Math.floor(scrollFraction * frameCount)
-            );
-
-            requestAnimationFrame(() => renderFrame(frameIndex));
+                        const frameIndex = Math.floor(scrollFraction * (frameCount - 1));
+                        renderFrame(frameIndex);
+                    }
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
         };
 
         const resizeCanvas = () => {
-            // Set canvas exact height/width to native screen res for sharp rendering
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            handleScroll(); // ensure current scroll position draws the right frame
+            handleScroll();
         };
 
         window.addEventListener('resize', resizeCanvas);
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        
+        initAnimation();
     }
 
     // --- MENU & CART SYSTEM ---
@@ -302,7 +321,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let itemsCount = 0;
 
         if (cart.length === 0) {
-            container.innerHTML = '<div class="empty-cart-msg">Seu carrinho está vazio.</div>';
+            container.innerHTML = `
+                <div class="empty-cart-msg">
+                    <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"><i class="fa-solid fa-basket-shopping"></i></div>
+                    <p>Seu carrinho está vazio.</p>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--text-muted);">Que tal começar com uma deliciosa Calabresa?</p>
+                    <button class="btn btn-primary btn-sm mt-2" onclick="document.getElementById('card-ver-cardapio').click()">Ver Cardápio</button>
+                </div>
+            `;
         } else {
             cart.forEach(item => {
                 const itemTotal = item.product.price * item.qty;

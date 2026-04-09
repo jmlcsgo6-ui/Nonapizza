@@ -17,6 +17,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="style.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff6600">
+    
+    <!-- SEO & Open Graph -->
+    <meta property="og:title" content="Nona Pizza Premium">
+    <meta property="og:description" content="A pizza perfeita, montada diante dos seus olhos. Delivery rápido e artesanal.">
+    <meta property="og:type" content="website">
+    <meta name="robots" content="index, follow">
+
+    <!-- Schema.org for Local Business -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Nona Pizza Premium",
+      "image": "https://nonapizza.vercel.app/favicon.svg",
+      "url": "https://nonapizza.vercel.app",
+      "telephone": "+5511999999999",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Rua das Pizzas Culturadas, 123",
+        "addressLocality": "São Paulo",
+        "addressRegion": "SP",
+        "addressCountry": "BR"
+      },
+      "menu": "https://nonapizza.vercel.app/#menu",
+      "servesCuisine": "Pizza"
+    }
+    </script>
 </head>
 
 <body>
@@ -524,6 +555,15 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('SW Registered!', reg))
+                    .catch(err => console.log('SW registration failed:', err));
+            });
+        }
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,16 @@
+{
+  "name": "Nona Pizza Premium",
+  "short_name": "Nona Pizza",
+  "description": "A pizza perfeita, montada diante dos seus olhos.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#ff6600",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
