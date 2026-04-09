@@ -1,16 +1,64 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>Nona Pizza | A Alquimia da Pizza Artesanal em 48h</title>
+    <meta name="description" content="Descubra a Nona Pizza. Massa de fermentação natural de 48h, ingredientes San Marzano e forno a lenha. Peça agora a melhor pizza artesanal da região.">
+    
+    <!-- Fonts: Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Nona - A Pizza Perfeita</title>
+
+    <!-- Schema.org for Local Business -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FoodEstablishment",
+      "name": "Nona Pizza Premium",
+      "image": "https://nonapizza.vercel.app/og-image.jpg",
+      "@id": "https://nonapizza.vercel.app",
+      "url": "https://nonapizza.vercel.app",
+      "telephone": "+5511999999999",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Rua das Pizzas Culturadas, 123",
+        "addressLocality": "São Paulo",
+        "addressRegion": "SP",
+        "postalCode": "01000-000",
+        "addressCountry": "BR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -23.5505,
+        "longitude": -46.6333
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "18:00",
+        "closes": "23:59"
+      },
+      "menu": "https://nonapizza.vercel.app/#cardapio",
+      "servesCuisine": "Pizza Italiana"
+    }
+    </script>
   </head>
-  <body>
+  <body class="bg-deep">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

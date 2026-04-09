@@ -72,6 +72,8 @@ model Order {
   customerName String
   phone        String?
   address      String
+  cep          String?
+  reference    String?
   payment      String
   total        Float
   status       String      @default("PENDING") // PENDING, COOKING, DELIVERING, COMPLETED

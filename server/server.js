@@ -115,7 +115,7 @@ app.get('/api/sizes', async (req, res) => {
 
 app.post('/api/orders', async (req, res) => {
     try {
-        const { customerName, phone, address, payment, total, items } = req.body;
+        const { customerName, phone, address, cep, reference, payment, total, items } = req.body;
         
         // Tentar extrair userId do Token se o cliente estiver logado
         let userId = null;
@@ -134,6 +134,8 @@ app.post('/api/orders', async (req, res) => {
                 customerName,
                 phone: phone || null,
                 address: address || 'Nao informado',
+                cep: cep || null,
+                reference: reference || null,
                 payment: payment || 'Nao informado',
                 total,
                 items: {

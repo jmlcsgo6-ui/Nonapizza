@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import api from '../api/api';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { User, Mail, Lock, Phone, ChevronRight, Utensils, ArrowLeft } from 'lucide-react';
 
 export default function CustomerAuth() {
     const [isLogin, setIsLogin] = useState(true);
@@ -20,68 +22,111 @@ export default function CustomerAuth() {
             localStorage.setItem('customer_name', res.data.name);
             navigate('/');
         } catch(err) {
-            setError(err.response?.data?.error || 'Erro na autenticação');
+            setError(err.response?.data?.error || 'Credenciais inválidas. Tente novamente.');
         } finally {
             setLoading(false);
         }
     };
 
-    const inputStyle = {
-        width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-        borderRadius: '12px', padding: '0.9rem 1.2rem', color: '#fff', fontSize: '1rem', outline: 'none',
-        marginBottom: '1rem', boxSizing: 'border-box'
-    };
+    const inputStyle = "w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white focus:border-primary outline-none transition-all placeholder:text-white/20";
 
     return (
-        <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
-            <div style={{ maxWidth: '400px', width: '100%' }}>
-                <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                    <a href="/" style={{ color: 'var(--primary, #e07b39)', textDecoration: 'none', fontSize: '0.9rem', display: 'block', marginBottom: '1.5rem' }}>← Voltar para a Home</a>
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>
-                        <span style={{ color: 'var(--primary, #e07b39)' }}>Nona</span> Auth
-                    </h1>
-                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.95rem' }}>
-                        {isLogin ? 'Faça login para gerenciar seus pedidos' : 'Crie sua conta na melhor pizzaria'}
-                    </p>
+        <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6 relative overflow-hidden">
+            {/* Immersive Background Decor */}
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full pointer-events-none"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary/5 blur-[100px] rounded-full pointer-events-none"></div>
+
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full max-w-[440px] z-10"
+            >
+                <div className="text-center mb-10">
+                    <button onClick={() => navigate('/')} className="mb-8 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-white transition-all mx-auto">
+                        <ArrowLeft size={14} /> Voltar ao Início
+                    </button>
+                    <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <Utensils size={32} strokeWidth={2.5} />
+                    </div>
+                    <h2 className="text-4xl font-black italic tracking-tighter text-white uppercase">ENTRADA <span className="text-primary">Membro</span></h2>
+                    <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mt-2">Acesso exclusivo à alquimia Nona</p>
                 </div>
 
-                <div style={{ background: '#111', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 30px 60px rgba(0,0,0,0.5)' }}>
-                    <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', padding: '4px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px' }}>
-                        <button onClick={() => setIsLogin(true)} style={{
-                            flex: 1, padding: '0.7rem', borderRadius: '10px', border: 'none', cursor: 'pointer', fontWeight: 700,
-                            background: isLogin ? 'var(--primary, #e07b39)' : 'transparent',
-                            color: isLogin ? '#fff' : 'rgba(255,255,255,0.5)',
-                            transition: 'all 0.3s'
-                        }}>Entrar</button>
-                        <button onClick={() => setIsLogin(false)} style={{
-                            flex: 1, padding: '0.7rem', borderRadius: '10px', border: 'none', cursor: 'pointer', fontWeight: 700,
-                            background: !isLogin ? 'var(--primary, #e07b39)' : 'transparent',
-                            color: !isLogin ? '#fff' : 'rgba(255,255,255,0.5)',
-                            transition: 'all 0.3s'
-                        }}>Cadastrar</button>
+                <div className="bg-card border border-white/5 rounded-[3rem] p-10 shadow-2xl overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+                    
+                    {/* Toggle Switch */}
+                    <div className="flex bg-white/5 p-1 rounded-2xl mb-10 border border-white/5">
+                        <button 
+                            onClick={() => setIsLogin(true)}
+                            className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${isLogin ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/30 hover:text-white'}`}
+                        >
+                            LOGIN
+                        </button>
+                        <button 
+                            onClick={() => setIsLogin(false)}
+                            className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${!isLogin ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/30 hover:text-white'}`}
+                        >
+                            CADASTRO
+                        </button>
                     </div>
 
-                    <form onSubmit={handleSubmit}>
-                        {error && <div style={{ color: '#e74c3c', background: 'rgba(231,76,60,0.1)', padding: '0.8rem', borderRadius: '10px', marginBottom: '1.5rem', fontSize: '0.85rem', textAlign: 'center' }}>{error}</div>}
-                        
-                        {!isLogin && (
-                            <input style={inputStyle} placeholder="Nome Completo" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required />
-                        )}
-                        
-                        <input style={inputStyle} type="email" placeholder="Seu melhor e-mail" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required />
-                        
-                        {!isLogin && (
-                            <input style={inputStyle} placeholder="Telefone" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
-                        )}
-                        
-                        <input style={inputStyle} type="password" placeholder="Sua senha" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} required />
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={isLogin ? 'login' : 'register'}
+                                initial={{ opacity: 0, x: isLogin ? -10 : 10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: isLogin ? 10 : -10 }}
+                                className="space-y-4"
+                            >
+                                {error && (
+                                    <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl text-red-500 text-[10px] font-black uppercase text-center tracking-widest">
+                                        {error}
+                                    </div>
+                                )}
+                                
+                                {!isLogin && (
+                                    <div className="relative">
+                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
+                                        <input className={inputStyle} placeholder="NOME COMPLETO" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required />
+                                    </div>
+                                )}
+                                
+                                <div className="relative">
+                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
+                                    <input className={inputStyle} type="email" placeholder="E-MAIL" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required />
+                                </div>
+                                
+                                {!isLogin && (
+                                    <div className="relative">
+                                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
+                                        <input className={inputStyle} placeholder="TELEFONE" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+                                    </div>
+                                )}
+                                
+                                <div className="relative">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
+                                    <input className={inputStyle} type="password" placeholder="SENHA" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} required />
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
 
-                        <button type="submit" className="btn btn-primary w-100" style={{ padding: '1rem', fontWeight: 800, fontSize: '1rem', marginTop: '1rem' }} disabled={loading}>
-                            {loading ? 'Carregando...' : (isLogin ? 'Entrar Agora' : 'Finalizar Cadastro')}
+                        <button 
+                            type="submit" 
+                            className="btn-premium w-full py-5 rounded-2xl flex justify-center items-center gap-4 text-xs tracking-widest"
+                            disabled={loading}
+                        >
+                            {loading ? 'PROCESSANDO...' : (isLogin ? 'ENTRAR AGORA' : 'FINALIZAR CADASTR0')}
+                            <ChevronRight size={18} strokeWidth={3} />
                         </button>
                     </form>
                 </div>
-            </div>
+
+                <p className="mt-8 text-center text-[10px] font-black text-white/20 uppercase tracking-widest">
+                    &copy; Nona Pizza Alquimia de 48h
+                </p>
+            </motion.div>
         </div>
     );
 }
