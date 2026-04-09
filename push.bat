@@ -4,6 +4,7 @@ if "%msg%"=="" set msg="Auto-push: %date% %time%"
 
 git add .
 git commit -m "%msg%"
+git pull --rebase origin main
 git push origin main
 
 echo.
