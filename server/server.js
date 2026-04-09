@@ -13,12 +13,19 @@ neonConfig.webSocketConstructor = ws;
 const app = express();
 
 const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
-const pool = new Pool({ connectionString });
-const adapter = new PrismaNeon(pool);
-const prisma = new PrismaClient({ 
-    adapter,
-    datasourceUrl: connectionString 
-});
+
+let prisma;
+if (connectionString) {
+    const pool = new Pool({ connectionString });
+    const adapter = new PrismaNeon(pool);
+    prisma = new PrismaClient({ 
+        adapter,
+        datasourceUrl: connectionString 
+    });
+} else {
+    // Fallback para não quebrar o servidor na largada se a chave sumir
+    prisma = new PrismaClient();
+}
 
 app.use(cors());
 app.use(express.json());
