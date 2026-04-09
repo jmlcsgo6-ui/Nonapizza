@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Instagram, Facebook, Twitter, Utensils, MapPin, Phone, Mail, ChevronRight } from 'lucide-react';
+import { Instagram, Facebook, X, Utensils, MapPin, Phone, Mail, ChevronRight } from 'lucide-react';
 
 export default function Footer() {
     return (
@@ -22,7 +22,7 @@ export default function Footer() {
                             A alquimia entre a fermentação natural de 48h e a paixão italiana. Simplesmente a pizza perfeita.
                         </p>
                         <div className="flex gap-4">
-                            {[Instagram, Facebook, Twitter].map((Icon, i) => (
+                            {[Instagram, Facebook, X].map((Icon, i) => (
                                 <motion.a 
                                     key={i}
                                     href="#" 

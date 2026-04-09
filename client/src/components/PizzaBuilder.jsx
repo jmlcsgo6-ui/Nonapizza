@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft, CartPlus, Flame, Info, CheckCircle2 } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, ShoppingBag, Flame, Info, CheckCircle2 } from 'lucide-react';
 import api from '../api/api';
 import { useBuilder } from '../context/BuilderContext';
 import { useCart } from '../context/CartContext';
@@ -291,7 +291,7 @@ export default function PizzaBuilder() {
                                     className="btn-premium w-full py-5 rounded-2xl flex items-center justify-center gap-3"
                                     onClick={handleAddToCart}
                                 >
-                                    ADICIONAR AO PEDIDO <CartPlus size={20} strokeWidth={3} />
+                                    ADICIONAR AO PEDIDO <ShoppingBag size={20} strokeWidth={3} />
                                 </button>
                             </motion.div>
                         )}
