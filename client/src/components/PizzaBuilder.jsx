@@ -121,7 +121,13 @@ export default function PizzaBuilder() {
                             </div>
 
                             <div className="step-footer mt-4">
-                                <button className="btn btn-primary btn-large w-100" disabled={!selectedSize} onClick={() => setStep(2)}>
+                                <button className="btn btn-primary btn-large w-100" onClick={() => {
+                                    if (!selectedSize) {
+                                        alert('Por favor, informe primeiro um tamanho!');
+                                        return;
+                                    }
+                                    setStep(2);
+                                }}>
                                     Avançar para Montagem <i className="fa-solid fa-arrow-right" style={{ marginLeft: '8px' }}></i>
                                 </button>
                             </div>

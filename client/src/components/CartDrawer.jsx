@@ -47,10 +47,7 @@ export default function CartDrawer() {
             });
             
             clearCart();
-            alert(`Pedido finalizado! Protocolo #${res.data.id}`);
-            setIsCartOpen(false);
-            setStep('cart');
-            navigate('/meu-pedido');
+            setStep('success');
         } catch(e) {
             console.error(e);
             alert('Erro ao processar pedido.');
@@ -122,7 +119,7 @@ export default function CartDrawer() {
                             </button>
                         </div>
                     </>
-                ) : (
+                ) : step === 'form' ? (
                     <div style={{ padding: '2rem', flex: 1, overflowY: 'auto' }}>
                           <form onSubmit={(e) => { e.preventDefault(); handleCheckout(); }}>
                               <div className="form-group" style={{ marginBottom: '1rem' }}>
@@ -156,6 +153,24 @@ export default function CartDrawer() {
                               
                               <button type="button" onClick={() => setStep('cart')} className="btn btn-secondary mt-2" style={{ marginTop: '1rem', width: '100%' }}>Voltar</button>
                           </form>
+                    </div>
+                ) : (
+                    <div style={{ padding: '2rem', flex: 1, overflowY: 'auto', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <div className="success-checkmark" style={{ fontSize: '4rem', color: 'var(--primary)', marginBottom: '1rem' }}>
+                            <i className="fa-solid fa-circle-check"></i>
+                        </div>
+                        <h4 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontWeight: 'bold' }}>Pedido Confirmado!</h4>
+                        <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>A Alquimia começou. A bruxaria já está no forno voando até sua casa.</p>
+                        
+                        <div className="order-timeline" style={{ marginBottom: '3rem', width: '100%' }}>
+                            <div className="ot-step active pulse-badge" style={{ margin: '0 auto' }}>
+                                <i className="fa-solid fa-fire"></i>
+                            </div>
+                        </div>
+
+                        <button className="btn btn-primary w-100" onClick={() => { setIsCartOpen(false); setStep('cart'); navigate('/meu-pedido'); }}>
+                            Mural de Entregas (Real-time)
+                        </button>
                     </div>
                 )}
             </div>
