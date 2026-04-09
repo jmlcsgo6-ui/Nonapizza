@@ -16,14 +16,14 @@ export default function AdminSettingsModal({ open, onClose }) {
                     <button
                         type="button"
                         aria-label="Fechar"
-                        className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+                        className="absolute inset-0 bg-stone-900/45 backdrop-blur-sm"
                         onClick={onClose}
                     />
                     <motion.div
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="admin-settings-title"
-                        className="relative z-10 w-full max-w-[420px] rounded-2xl border border-white/[0.08] bg-[#111] p-6 shadow-2xl"
+                        className="relative z-10 w-full max-w-[420px] rounded-2xl border border-stone-200 bg-[#f9f5f0] p-6 shadow-2xl"
                         initial={{ opacity: 0, scale: 0.96, y: 10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.98, y: 6 }}
@@ -31,56 +31,54 @@ export default function AdminSettingsModal({ open, onClose }) {
                     >
                         <div className="mb-5 flex items-start justify-between gap-4">
                             <div>
-                                <h2 id="admin-settings-title" className="text-lg font-semibold text-white">
+                                <h2 id="admin-settings-title" className="text-lg font-bold text-stone-900">
                                     Ajustes do painel
                                 </h2>
-                                <p className="mt-1 text-sm text-white/45">Links e comportamento da área admin.</p>
+                                <p className="mt-1 text-sm text-stone-500">Links e comportamento.</p>
                             </div>
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="rounded-lg p-2 text-white/40 transition hover:bg-white/[0.06] hover:text-white"
+                                className="rounded-xl p-2 text-stone-400 transition hover:bg-stone-200/80 hover:text-stone-700"
                             >
                                 <X size={20} />
                             </button>
                         </div>
-                        <ul className="space-y-3 text-sm text-white/70">
-                            <li className="flex gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+                        <ul className="space-y-3 text-sm text-stone-600">
+                            <li className="flex gap-3 rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
                                 <ExternalLink className="mt-0.5 shrink-0 text-primary" size={18} />
                                 <div>
-                                    <p className="font-medium text-white">Loja pública</p>
+                                    <p className="font-semibold text-stone-900">Loja pública</p>
                                     <a
                                         href="/"
-                                        className="mt-1 inline-flex items-center gap-1 text-primary hover:underline"
+                                        className="mt-1 inline-flex items-center gap-1 font-medium text-primary hover:underline"
                                     >
                                         Abrir site <span aria-hidden>→</span>
                                     </a>
                                 </div>
                             </li>
-                            <li className="flex gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-                                <RefreshCw className="mt-0.5 shrink-0 text-white/40" size={18} />
+                            <li className="flex gap-3 rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
+                                <RefreshCw className="mt-0.5 shrink-0 text-stone-400" size={18} />
                                 <div>
-                                    <p className="font-medium text-white">Pedidos em tempo real</p>
-                                    <p className="mt-1 text-white/50">
+                                    <p className="font-semibold text-stone-900">Pedidos</p>
+                                    <p className="mt-1 text-stone-500">
                                         Atualização automática a cada{' '}
-                                        <strong className="text-white/80">10 segundos</strong>.
+                                        <strong className="text-stone-800">10 segundos</strong>.
                                     </p>
                                 </div>
                             </li>
-                            <li className="flex gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-                                <Keyboard className="mt-0.5 shrink-0 text-white/40" size={18} />
+                            <li className="flex gap-3 rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
+                                <Keyboard className="mt-0.5 shrink-0 text-stone-400" size={18} />
                                 <div>
-                                    <p className="font-medium text-white">Busca na fila</p>
-                                    <p className="mt-1 text-white/50">
-                                        Filtre pedidos por nome, telefone ou número (#).
-                                    </p>
+                                    <p className="font-semibold text-stone-900">Busca</p>
+                                    <p className="mt-1 text-stone-500">Use o campo no topo do painel.</p>
                                 </div>
                             </li>
                         </ul>
                         <button
                             type="button"
                             onClick={onClose}
-                            className="mt-6 w-full rounded-xl bg-white/[0.06] py-3 text-sm font-medium text-white transition hover:bg-white/[0.1]"
+                            className="mt-6 w-full rounded-xl border border-stone-300 bg-stone-900 py-3 text-sm font-semibold text-white transition hover:bg-stone-800"
                         >
                             Fechar
                         </button>

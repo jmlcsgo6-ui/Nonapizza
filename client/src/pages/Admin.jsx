@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../api/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -11,6 +11,8 @@ import {
     ChefHat,
     Settings,
     Store,
+    Search,
+    Bell,
 } from 'lucide-react';
 import OrdersPanel from './admin/OrdersPanel';
 import ProductsManager from './admin/ProductsManager';
@@ -25,6 +27,12 @@ const NAV = [
     { id: 'flavors', label: 'Sabores', short: 'Sabores', icon: PieChart },
 ];
 
+const SEARCH_PLACEHOLDER = {
+    orders: 'Buscar pedidos por nome, telefone ou #…',
+    products: 'Buscar itens do cardápio…',
+    flavors: 'Buscar sabores cadastrados…',
+};
+
 export default function Admin() {
     const [token, setToken] = useState(localStorage.getItem('admin_token'));
     const [email, setEmail] = useState('');
@@ -32,6 +40,11 @@ export default function Admin() {
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState('dashboard');
     const [settingsOpen, setSettingsOpen] = useState(false);
+    const [headerSearch, setHeaderSearch] = useState('');
+
+    useEffect(() => {
+        setHeaderSearch('');
+    }, [activeTab]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -50,6 +63,7 @@ export default function Admin() {
     };
 
     const currentNav = NAV.find((i) => i.id === activeTab) || NAV[0];
+    const showHeaderSearch = ['orders', 'products', 'flavors'].includes(activeTab);
 
     if (!token) {
         return (
@@ -126,19 +140,19 @@ export default function Admin() {
     }
 
     return (
-        <div className="flex min-h-screen bg-[#050505] font-sans text-white">
-            <aside className="flex w-[220px] shrink-0 flex-col border-r border-white/[0.06] bg-[#0a0a0a]">
-                <div className="flex h-14 items-center gap-2 border-b border-white/[0.06] px-4">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-orange-600 text-white shadow-md shadow-primary/25">
-                        <ChefHat size={18} />
+        <div className="flex min-h-screen bg-[#e8e4dd] font-sans text-stone-800 antialiased">
+            <aside className="flex w-[232px] shrink-0 flex-col bg-[#1a1a1a] text-white">
+                <div className="flex items-center gap-3 px-5 py-6">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white shadow-lg shadow-primary/30">
+                        <ChefHat size={22} />
                     </div>
                     <div className="min-w-0 leading-tight">
-                        <p className="truncate text-sm font-semibold tracking-tight">Nona Hub</p>
-                        <p className="text-[10px] font-medium uppercase tracking-wide text-white/35">Admin</p>
+                        <p className="font-semibold tracking-tight text-white">Nona Hub</p>
+                        <p className="text-xs text-white/45">Admin</p>
                     </div>
                 </div>
 
-                <nav className="flex-1 space-y-0.5 p-2">
+                <nav className="flex-1 space-y-1 px-3 pb-4">
                     {NAV.map((item) => {
                         const active = activeTab === item.id;
                         return (
@@ -146,72 +160,101 @@ export default function Admin() {
                                 key={item.id}
                                 type="button"
                                 onClick={() => setActiveTab(item.id)}
-                                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition ${
+                                className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium transition ${
                                     active
-                                        ? 'bg-primary text-white shadow-md shadow-primary/20'
-                                        : 'text-white/50 hover:bg-white/[0.04] hover:text-white'
+                                        ? 'bg-white/12 text-white shadow-inner'
+                                        : 'text-white/50 hover:bg-white/[0.06] hover:text-white/90'
                                 }`}
                             >
-                                <item.icon size={18} strokeWidth={active ? 2.25 : 2} />
+                                <item.icon size={20} strokeWidth={active ? 2.25 : 1.75} className="opacity-90" />
                                 {item.short}
                             </button>
                         );
                     })}
                 </nav>
 
-                <div className="border-t border-white/[0.06] p-3">
-                    <div className="mb-3 flex items-center gap-2 rounded-lg bg-white/[0.03] px-2 py-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.06] text-primary">
-                            <User size={16} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                            <p className="truncate text-xs font-medium">Administrador</p>
-                            <p className="flex items-center gap-1 text-[10px] text-emerald-400">
-                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                                Online
-                            </p>
-                        </div>
-                    </div>
+                <div className="mt-auto border-t border-white/10 px-4 py-4">
                     <button
                         type="button"
                         onClick={handleLogout}
-                        className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/[0.06] py-2.5 text-xs font-medium text-white/45 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium text-white/45 transition hover:bg-white/[0.06] hover:text-white"
                     >
-                        <LogOut size={14} /> Sair
+                        <LogOut size={18} strokeWidth={1.75} />
+                        Sair
                     </button>
                 </div>
             </aside>
 
             <div className="flex min-w-0 flex-1 flex-col">
-                <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-white/[0.06] bg-[#050505]/90 px-5 backdrop-blur-md">
-                    <div className="min-w-0">
-                        <p className="text-[11px] font-medium uppercase tracking-wide text-white/35">
-                            Painel · {currentNav.label}
-                        </p>
-                        <h1 className="truncate text-base font-semibold text-white">{currentNav.label}</h1>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                        <a
-                            href="/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/70 transition hover:border-white/15 hover:bg-white/[0.06] hover:text-white"
-                        >
-                            <Store size={15} />
-                            Ver loja
-                        </a>
-                        <button
-                            type="button"
-                            onClick={() => setSettingsOpen(true)}
-                            className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/70 transition hover:border-white/15 hover:bg-white/[0.06] hover:text-white"
-                        >
-                            <Settings size={15} />
-                            Ajustes
-                        </button>
+                <header className="shrink-0 border-b border-stone-200/80 bg-[#f9f5f0] px-4 py-4 shadow-[0_1px_0_rgba(0,0,0,0.03)] sm:px-6">
+                    <div className="mx-auto flex max-w-[1400px] flex-col gap-4 lg:flex-row lg:items-center lg:gap-6">
+                        <div className="min-w-0 shrink-0 lg:max-w-[240px]">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-400">
+                                Painel · {currentNav.label}
+                            </p>
+                            <h1 className="mt-0.5 text-2xl font-bold tracking-tight text-stone-900">
+                                {currentNav.label}
+                            </h1>
+                        </div>
+
+                        {showHeaderSearch && (
+                            <div className="w-full flex-1 lg:max-w-xl lg:mx-auto">
+                                <div className="relative">
+                                    <Search
+                                        className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400"
+                                        size={18}
+                                        strokeWidth={2}
+                                    />
+                                    <input
+                                        type="search"
+                                        value={headerSearch}
+                                        onChange={(e) => setHeaderSearch(e.target.value)}
+                                        placeholder={SEARCH_PLACEHOLDER[activeTab] || 'Buscar…'}
+                                        className="h-11 w-full rounded-xl border border-stone-200/90 bg-white pl-11 pr-4 text-sm text-stone-800 shadow-sm outline-none ring-primary/20 placeholder:text-stone-400 focus:border-primary focus:ring-2"
+                                    />
+                                </div>
+                            </div>
+                        )}
+
+                        {!showHeaderSearch && <div className="hidden flex-1 lg:block" />}
+
+                        <div className="flex shrink-0 items-center justify-end gap-2 sm:gap-3">
+                            <a
+                                href="/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hidden items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-600 shadow-sm transition hover:border-stone-300 hover:bg-stone-50 sm:inline-flex"
+                            >
+                                <Store size={16} />
+                                Ver loja
+                            </a>
+                            <button
+                                type="button"
+                                onClick={() => setSettingsOpen(true)}
+                                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-stone-200 bg-white text-stone-500 shadow-sm transition hover:border-stone-300 hover:bg-stone-50 hover:text-stone-800"
+                                aria-label="Ajustes"
+                            >
+                                <Settings size={18} />
+                            </button>
+                            <button
+                                type="button"
+                                className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-md shadow-primary/25 transition hover:bg-primary-hover"
+                                aria-label="Notificações"
+                            >
+                                <Bell size={18} />
+                                <span className="absolute right-2 top-2 h-2 w-2 rounded-full border-2 border-primary bg-red-500" />
+                            </button>
+                            <div
+                                className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-stone-200 shadow-sm"
+                                title="Administrador"
+                            >
+                                <User size={18} className="text-stone-600" />
+                            </div>
+                        </div>
                     </div>
                 </header>
 
-                <main className="custom-scrollbar flex-1 overflow-y-auto p-5 md:p-6">
+                <main className="custom-scrollbar flex-1 overflow-y-auto bg-[#e8e4dd] p-4 sm:p-6">
                     <div className="mx-auto max-w-[1400px]">
                         <AnimatePresence mode="wait">
                             <motion.div
@@ -220,13 +263,28 @@ export default function Admin() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -6 }}
                                 transition={{ duration: 0.2 }}
+                                className="font-['DM_Sans',system-ui,sans-serif]"
                             >
                                 {activeTab === 'dashboard' && (
                                     <DashboardOverview token={token} onNavigate={setActiveTab} />
                                 )}
-                                {activeTab === 'orders' && <OrdersPanel token={token} />}
-                                {activeTab === 'products' && <ProductsManager token={token} />}
-                                {activeTab === 'flavors' && <FlavorsManager token={token} />}
+                                {activeTab === 'orders' && (
+                                    <OrdersPanel token={token} search={headerSearch} />
+                                )}
+                                {activeTab === 'products' && (
+                                    <ProductsManager
+                                        token={token}
+                                        search={headerSearch}
+                                        onSearchChange={setHeaderSearch}
+                                    />
+                                )}
+                                {activeTab === 'flavors' && (
+                                    <FlavorsManager
+                                        token={token}
+                                        search={headerSearch}
+                                        onSearchChange={setHeaderSearch}
+                                    />
+                                )}
                             </motion.div>
                         </AnimatePresence>
                     </div>

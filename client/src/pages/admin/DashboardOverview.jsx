@@ -76,9 +76,9 @@ export default function DashboardOverview({ token, onNavigate }) {
             delay: 0.1,
         },
         {
-            title: 'Receita total (hist.)',
+            title: 'Receita total',
             value: `R$ ${stats.revenueAll.toFixed(2)}`,
-            hint: 'Todos os pedidos concluídos',
+            hint: 'Histórico concluído',
             icon: Activity,
             delay: 0.15,
         },
@@ -93,16 +93,18 @@ export default function DashboardOverview({ token, onNavigate }) {
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: c.delay, duration: 0.25 }}
-                        className="rounded-xl border border-white/[0.06] bg-[#0c0c0c] p-5"
+                        className="rounded-2xl border border-stone-200/90 bg-white p-5 shadow-sm"
                     >
                         <div className="mb-4 flex items-center justify-between">
-                            <span className="text-xs font-medium uppercase tracking-wide text-white/40">{c.title}</span>
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.04] text-primary">
+                            <span className="text-[11px] font-bold uppercase tracking-wide text-stone-500">
+                                {c.title}
+                            </span>
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-primary">
                                 <c.icon size={18} />
                             </div>
                         </div>
-                        <p className="text-2xl font-semibold tabular-nums tracking-tight text-white">{c.value}</p>
-                        <p className="mt-2 text-xs text-white/40">{c.hint}</p>
+                        <p className="text-2xl font-bold tabular-nums tracking-tight text-stone-900">{c.value}</p>
+                        <p className="mt-2 text-xs text-stone-500">{c.hint}</p>
                     </motion.div>
                 ))}
             </div>
@@ -112,36 +114,36 @@ export default function DashboardOverview({ token, onNavigate }) {
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="rounded-xl border border-white/[0.06] bg-[#0c0c0c] lg:col-span-3"
+                    className="overflow-hidden rounded-2xl border border-stone-200/90 bg-white shadow-sm lg:col-span-3"
                 >
-                    <div className="border-b border-white/[0.06] px-5 py-4">
-                        <h2 className="text-sm font-semibold text-white">Pedidos recentes</h2>
-                        <p className="mt-0.5 text-xs text-white/45">Últimas movimentações na loja</p>
+                    <div className="border-b border-stone-200 bg-stone-50/80 px-5 py-4">
+                        <h2 className="text-sm font-bold text-stone-900">Pedidos recentes</h2>
+                        <p className="mt-0.5 text-xs text-stone-500">Últimas movimentações</p>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
                             <thead>
-                                <tr className="border-b border-white/[0.06] text-[11px] font-medium uppercase tracking-wide text-white/35">
+                                <tr className="border-b border-stone-100 text-[11px] font-bold uppercase tracking-wide text-stone-500">
                                     <th className="px-5 py-3">Pedido</th>
                                     <th className="px-5 py-3">Cliente</th>
                                     <th className="px-5 py-3">Status</th>
                                     <th className="px-5 py-3 text-right">Total</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/[0.04]">
+                            <tbody className="divide-y divide-stone-100">
                                 {stats.recent.length === 0 ? (
                                     <tr>
-                                        <td colSpan={4} className="px-5 py-12 text-center text-white/35">
+                                        <td colSpan={4} className="px-5 py-12 text-center text-stone-400">
                                             Nenhum pedido ainda.
                                         </td>
                                     </tr>
                                 ) : (
                                     stats.recent.map((o) => (
-                                        <tr key={o.id} className="text-white/80 hover:bg-white/[0.02]">
-                                            <td className="px-5 py-3 font-medium text-primary">#{o.id}</td>
-                                            <td className="px-5 py-3">{o.customerName}</td>
-                                            <td className="px-5 py-3 text-xs text-white/55">{o.status}</td>
-                                            <td className="px-5 py-3 text-right tabular-nums font-medium">
+                                        <tr key={o.id} className="text-stone-700 hover:bg-stone-50/80">
+                                            <td className="px-5 py-3 font-bold text-primary">#{o.id}</td>
+                                            <td className="px-5 py-3 font-medium">{o.customerName}</td>
+                                            <td className="px-5 py-3 text-xs text-stone-500">{o.status}</td>
+                                            <td className="px-5 py-3 text-right font-semibold tabular-nums">
                                                 R$ {Number(o.total).toFixed(2)}
                                             </td>
                                         </tr>
@@ -156,10 +158,10 @@ export default function DashboardOverview({ token, onNavigate }) {
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.25 }}
-                    className="flex flex-col rounded-xl border border-white/[0.06] bg-gradient-to-br from-primary/20 via-[#0c0c0c] to-[#0c0c0c] p-5 lg:col-span-2"
+                    className="flex flex-col rounded-2xl border border-stone-200/90 bg-gradient-to-br from-amber-50 via-white to-orange-50/40 p-5 shadow-sm lg:col-span-2"
                 >
-                    <h2 className="text-sm font-semibold text-white">Atalhos</h2>
-                    <p className="mt-1 text-xs text-white/50">Acesse as áreas mais usadas do painel.</p>
+                    <h2 className="text-sm font-bold text-stone-900">Atalhos</h2>
+                    <p className="mt-1 text-xs text-stone-600">Áreas mais usadas.</p>
                     <ul className="mt-5 space-y-2">
                         {[
                             { label: 'Fila de pedidos', tab: 'orders' },
@@ -169,18 +171,17 @@ export default function DashboardOverview({ token, onNavigate }) {
                             <li key={item.tab}>
                                 <button
                                     type="button"
-                                    className="flex w-full items-center justify-between rounded-lg border border-white/[0.08] bg-black/20 px-4 py-3 text-left text-sm font-medium text-white/90 transition hover:border-primary/40 hover:bg-primary/10"
+                                    className="flex w-full items-center justify-between rounded-xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-semibold text-stone-800 shadow-sm transition hover:border-primary/30 hover:bg-orange-50/50"
                                     onClick={() => onNavigate?.(item.tab)}
                                 >
                                     {item.label}
-                                    <ArrowRight size={16} className="text-white/35" />
+                                    <ArrowRight size={16} className="text-stone-400" />
                                 </button>
                             </li>
                         ))}
                     </ul>
-                    <p className="mt-4 text-[11px] leading-relaxed text-white/35">
-                        Dica: em <strong className="text-white/55">Pedidos</strong>, use busca e exporte CSV para
-                        conferência no final do dia.
+                    <p className="mt-4 text-[11px] leading-relaxed text-stone-500">
+                        Use a busca no topo em Pedidos, Produtos e Sabores.
                     </p>
                 </motion.div>
             </div>

@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import api from '../../api/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Search, Package } from 'lucide-react';
+import { Plus, Trash2, Package, X } from 'lucide-react';
 
-export default function ProductsManager({ token }) {
+function categoryAccent(name) {
+    let h = 0;
+    for (let i = 0; i < (name || '').length; i++) h = (h + name.charCodeAt(i) * 11) % 360;
+    return h;
+}
+
+export default function ProductsManager({ token, search, onSearchChange }) {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [form, setForm] = useState({ name: '', desc: '', price: '', categoryId: '' });
     const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('all');
+    const [addOpen, setAddOpen] = useState(false);
 
     const fetchData = async () => {
         try {
@@ -17,7 +23,8 @@ export default function ProductsManager({ token }) {
             const [p, c] = await Promise.all([api.get('/api/products'), api.get('/api/categories')]);
             setProducts(p.data);
             setCategories(c.data);
-            if (c.data.length > 0 && !form.categoryId) setForm((f) => ({ ...f, categoryId: c.data[0].id }));
+            if (c.data.length > 0 && !form.categoryId)
+                setForm((f) => ({ ...f, categoryId: String(c.data[0].id) }));
         } catch (e) {
             console.error(e);
         } finally {
@@ -37,9 +44,10 @@ export default function ProductsManager({ token }) {
                 { ...form, price: parseFloat(form.price), categoryId: parseInt(form.categoryId, 10) },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            setForm({ name: '', desc: '', price: '', categoryId: categories[0]?.id || '' });
+            setForm({ name: '', desc: '', price: '', categoryId: String(categories[0]?.id || '') });
+            setAddOpen(false);
             fetchData();
-        } catch (e) {
+        } catch (err) {
             alert('Erro ao adicionar produto');
         }
     };
@@ -54,10 +62,19 @@ export default function ProductsManager({ token }) {
         } catch (e) {}
     };
 
+    const countsByCat = useMemo(() => {
+        const m = {};
+        for (const p of products) {
+            const id = p.category?.id;
+            if (id != null) m[id] = (m[id] || 0) + 1;
+        }
+        return m;
+    }, [products]);
+
     const filtered = useMemo(() => {
         return products.filter((p) => {
             const matchCat = categoryFilter === 'all' || String(p.category?.id) === categoryFilter;
-            const q = search.trim().toLowerCase();
+            const q = (search || '').trim().toLowerCase();
             const matchText =
                 !q ||
                 p.name.toLowerCase().includes(q) ||
@@ -66,177 +83,249 @@ export default function ProductsManager({ token }) {
         });
     }, [products, search, categoryFilter]);
 
-    const inputStyle =
-        'w-full rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-primary';
+    const inputModal =
+        'w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-primary focus:ring-2 focus:ring-primary/20';
 
     return (
         <div className="space-y-6">
-            <p className="text-sm text-white/50">
-                Cadastre tamanhos e itens do cardápio. A lista à esquerda atualiza em tempo real após salvar.
-            </p>
-
-            <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
-                <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="space-y-4 lg:col-span-7"
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm text-stone-600">
+                    Total de <strong className="font-semibold text-stone-900">{filtered.length}</strong> itens
+                    {categoryFilter !== 'all' ? ' nesta categoria' : ' no catálogo'}.
+                </p>
+                <button
+                    type="button"
+                    onClick={() => {
+                        if (categories.length && !form.categoryId)
+                            setForm((f) => ({ ...f, categoryId: String(categories[0].id) }));
+                        setAddOpen(true);
+                    }}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-stone-900 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-stone-800"
                 >
-                    <div className="flex flex-col gap-3 sm:flex-row">
-                        <div className="relative min-w-0 flex-1">
-                            <Search
-                                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/30"
-                                size={16}
-                            />
-                            <input
-                                className="w-full rounded-lg border border-white/[0.08] bg-[#0c0c0c] py-2.5 pl-10 pr-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-primary"
-                                placeholder="Buscar por nome ou categoria…"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                        </div>
-                        <select
-                            value={categoryFilter}
-                            onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="rounded-lg border border-white/[0.08] bg-[#0c0c0c] px-3 py-2.5 text-sm text-white outline-none focus:border-primary"
-                        >
-                            <option value="all">Todas categorias</option>
-                            {categories.map((c) => (
-                                <option key={c.id} value={String(c.id)}>
-                                    {c.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="overflow-hidden rounded-xl border border-white/[0.06] bg-[#0c0c0c]">
-                        <table className="w-full border-collapse text-left text-sm">
-                            <thead>
-                                <tr className="border-b border-white/[0.06] bg-white/[0.03] text-[11px] font-medium uppercase tracking-wide text-white/40">
-                                    <th className="px-4 py-3">Produto</th>
-                                    <th className="hidden px-4 py-3 sm:table-cell">Categoria</th>
-                                    <th className="px-4 py-3 text-right">Preço</th>
-                                    <th className="w-14 px-2 py-3 text-right"> </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/[0.04]">
-                                <AnimatePresence initial={false} mode="popLayout">
-                                    {filtered.map((p) => (
-                                        <motion.tr
-                                            layout
-                                            key={p.id}
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            className="hover:bg-white/[0.02]"
-                                        >
-                                            <td className="px-4 py-3">
-                                                <p className="font-medium text-white">{p.name}</p>
-                                                <p className="mt-0.5 line-clamp-1 text-xs text-white/35">{p.desc}</p>
-                                                <p className="mt-1 text-[10px] text-white/25 sm:hidden">{p.category?.name}</p>
-                                            </td>
-                                            <td className="hidden px-4 py-3 sm:table-cell">
-                                                <span className="rounded-md bg-white/[0.05] px-2 py-0.5 text-[11px] text-white/55">
-                                                    {p.category?.name}
-                                                </span>
-                                            </td>
-                                            <td className="px-4 py-3 text-right font-medium tabular-nums text-white/90">
-                                                R$ {Number(p.price).toFixed(2)}
-                                            </td>
-                                            <td className="px-2 py-3 text-right">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleDelete(p.id)}
-                                                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-red-500/10 text-red-400 transition hover:bg-red-500 hover:text-white"
-                                                >
-                                                    <Trash2 size={15} />
-                                                </button>
-                                            </td>
-                                        </motion.tr>
-                                    ))}
-                                </AnimatePresence>
-                            </tbody>
-                        </table>
-                        {!loading && filtered.length === 0 && (
-                            <div className="flex flex-col items-center py-16 text-center">
-                                <Package size={36} className="mb-3 text-white/10" />
-                                <p className="text-sm text-white/35">Nenhum produto encontrado</p>
-                            </div>
-                        )}
-                    </div>
-                </motion.div>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.05 }}
-                    className="rounded-xl border border-white/[0.06] bg-[#0c0c0c] p-5 lg:col-span-5 lg:sticky lg:top-4 lg:self-start"
-                >
-                    <div className="mb-5 flex items-center gap-2">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                            <Plus size={18} />
-                        </div>
-                        <h2 className="text-sm font-semibold text-white">Novo produto</h2>
-                    </div>
-
-                    <form onSubmit={handleAdd} className="space-y-4">
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-white/45">Nome</label>
-                            <input
-                                className={inputStyle}
-                                value={form.name}
-                                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                placeholder="Ex.: Pizza média"
-                                required
-                            />
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-medium text-white/45">Categoria</label>
-                                <select
-                                    className={inputStyle}
-                                    value={form.categoryId}
-                                    onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-                                    required
-                                >
-                                    {categories.map((c) => (
-                                        <option key={c.id} value={c.id} className="bg-[#0c0c0c]">
-                                            {c.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-medium text-white/45">Preço (R$)</label>
-                                <input
-                                    className={inputStyle}
-                                    type="number"
-                                    step="0.01"
-                                    value={form.price}
-                                    onChange={(e) => setForm({ ...form, price: e.target.value })}
-                                    placeholder="0,00"
-                                    required
-                                />
-                            </div>
-                        </div>
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-white/45">Descrição</label>
-                            <textarea
-                                className={`${inputStyle} min-h-[88px] resize-none`}
-                                value={form.desc}
-                                onChange={(e) => setForm({ ...form, desc: e.target.value })}
-                                placeholder="Detalhes para o cardápio"
-                                required
-                            />
-                        </div>
-                        <button
-                            type="submit"
-                            className="w-full rounded-lg bg-primary py-3 text-sm font-semibold text-white shadow-md shadow-primary/20 transition hover:bg-primary-hover"
-                        >
-                            Cadastrar produto
-                        </button>
-                    </form>
-                </motion.div>
+                    <Plus size={18} strokeWidth={2.5} />
+                    Adicionar produto
+                </button>
             </div>
+
+            <div className="-mx-1 flex gap-3 overflow-x-auto pb-1 custom-scrollbar">
+                <button
+                    type="button"
+                    onClick={() => setCategoryFilter('all')}
+                    className={`flex min-w-[120px] shrink-0 flex-col items-center rounded-2xl border-2 bg-white p-4 text-center shadow-sm transition ${
+                        categoryFilter === 'all'
+                            ? 'border-amber-300 ring-2 ring-amber-200/60'
+                            : 'border-stone-200 hover:border-stone-300'
+                    }`}
+                >
+                    <div className="mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-stone-100 to-stone-200 text-xl">
+                        📋
+                    </div>
+                    <span className="text-xs font-semibold text-stone-800">Todos</span>
+                    <span className="mt-0.5 text-[11px] text-stone-500">{products.length} itens</span>
+                </button>
+                {categories.map((c) => {
+                    const active = categoryFilter === String(c.id);
+                    const h = categoryAccent(c.name);
+                    return (
+                        <button
+                            key={c.id}
+                            type="button"
+                            onClick={() => setCategoryFilter(String(c.id))}
+                            className={`flex min-w-[120px] shrink-0 flex-col items-center rounded-2xl border-2 bg-white p-4 text-center shadow-sm transition ${
+                                active
+                                    ? 'border-amber-300 ring-2 ring-amber-200/60'
+                                    : 'border-stone-200 hover:border-stone-300'
+                            }`}
+                        >
+                            <div
+                                className="mb-2 flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold text-stone-800 shadow-inner"
+                                style={{
+                                    background: `linear-gradient(145deg, hsl(${h} 65% 88%), hsl(${h} 50% 78%))`,
+                                }}
+                            >
+                                {(c.name || '?').charAt(0).toUpperCase()}
+                            </div>
+                            <span className="line-clamp-2 text-xs font-semibold leading-tight text-stone-800">
+                                {c.name}
+                            </span>
+                            <span className="mt-0.5 text-[11px] text-stone-500">
+                                {countsByCat[c.id] || 0} itens
+                            </span>
+                        </button>
+                    );
+                })}
+            </div>
+
+            {loading ? (
+                <div className="flex justify-center py-20 text-stone-500">Carregando…</div>
+            ) : filtered.length === 0 ? (
+                <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-300 bg-white/70 py-20 shadow-sm">
+                    <Package size={40} className="mb-3 text-stone-300" />
+                    <p className="text-sm font-medium text-stone-500">Nenhum produto encontrado</p>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            onSearchChange?.('');
+                            setCategoryFilter('all');
+                        }}
+                        className="mt-4 text-sm font-semibold text-primary hover:underline"
+                    >
+                        Limpar filtros
+                    </button>
+                </div>
+            ) : (
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <AnimatePresence mode="popLayout">
+                        {filtered.map((p) => {
+                            const h = categoryAccent(p.category?.name);
+                            return (
+                                <motion.article
+                                    layout
+                                    key={p.id}
+                                    initial={{ opacity: 0, scale: 0.98 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="group overflow-hidden rounded-2xl border border-stone-200/90 bg-white shadow-sm transition hover:shadow-md"
+                                >
+                                    <div
+                                        className="relative flex h-40 items-center justify-center"
+                                        style={{
+                                            background: `linear-gradient(160deg, hsl(${h} 60% 90%), hsl(${h} 45% 82%))`,
+                                        }}
+                                    >
+                                        <span className="text-5xl opacity-90 drop-shadow-sm">🍕</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDelete(p.id)}
+                                            className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white/90 text-red-500 shadow-md opacity-0 transition group-hover:opacity-100 hover:bg-red-50"
+                                            aria-label="Excluir"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                    <div className="p-4">
+                                        <div className="flex items-start justify-between gap-2">
+                                            <h3 className="text-base font-bold text-stone-900">{p.name}</h3>
+                                            <span className="shrink-0 text-base font-bold text-stone-900">
+                                                R$ {Number(p.price).toFixed(2)}
+                                            </span>
+                                        </div>
+                                        <p className="mt-1 line-clamp-2 text-sm text-stone-500">{p.desc}</p>
+                                        <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-stone-400">
+                                            {p.category?.name}
+                                        </p>
+                                    </div>
+                                </motion.article>
+                            );
+                        })}
+                    </AnimatePresence>
+                </div>
+            )}
+
+            <AnimatePresence>
+                {addOpen && (
+                    <motion.div
+                        className="fixed inset-0 z-[7000] flex items-center justify-center p-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <button
+                            type="button"
+                            aria-label="Fechar"
+                            className="absolute inset-0 bg-stone-900/40 backdrop-blur-sm"
+                            onClick={() => setAddOpen(false)}
+                        />
+                        <motion.div
+                            role="dialog"
+                            aria-modal="true"
+                            className="relative z-10 w-full max-w-md rounded-2xl border border-stone-200 bg-[#f9f5f0] p-6 shadow-2xl"
+                            initial={{ opacity: 0, scale: 0.96, y: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.98, y: 8 }}
+                            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                        >
+                            <div className="mb-5 flex items-start justify-between gap-4">
+                                <div>
+                                    <h2 className="text-lg font-bold text-stone-900">Novo produto</h2>
+                                    <p className="mt-1 text-sm text-stone-500">Preencha os dados do cardápio.</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setAddOpen(false)}
+                                    className="rounded-xl p-2 text-stone-400 transition hover:bg-stone-200/80 hover:text-stone-700"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+                            <form onSubmit={handleAdd} className="space-y-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold text-stone-600">Nome</label>
+                                    <input
+                                        className={inputModal}
+                                        value={form.name}
+                                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                                        placeholder="Ex.: Pizza média"
+                                        required
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-semibold text-stone-600">Categoria</label>
+                                        <select
+                                            className={inputModal}
+                                            value={form.categoryId}
+                                            onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+                                            required
+                                        >
+                                            {categories.map((c) => (
+                                                <option key={c.id} value={String(c.id)}>
+                                                    {c.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-semibold text-stone-600">Preço (R$)</label>
+                                        <input
+                                            className={inputModal}
+                                            type="number"
+                                            step="0.01"
+                                            value={form.price}
+                                            onChange={(e) => setForm({ ...form, price: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold text-stone-600">Descrição</label>
+                                    <textarea
+                                        className={`${inputModal} min-h-[88px] resize-none`}
+                                        value={form.desc}
+                                        onChange={(e) => setForm({ ...form, desc: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <div className="flex gap-3 pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setAddOpen(false)}
+                                        className="flex-1 rounded-xl border border-stone-300 bg-white py-3 text-sm font-semibold text-stone-700 transition hover:bg-stone-50"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="flex-1 rounded-xl bg-stone-900 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-stone-800"
+                                    >
+                                        Salvar
+                                    </button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

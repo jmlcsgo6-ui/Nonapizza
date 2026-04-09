@@ -10,7 +10,6 @@ import {
     Phone,
     MapPin,
     Inbox,
-    Search,
     Download,
     RefreshCw,
     Eye,
@@ -46,10 +45,9 @@ function downloadCsv(rows, filename) {
     URL.revokeObjectURL(url);
 }
 
-export default function OrdersPanel({ token }) {
+export default function OrdersPanel({ token, search }) {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState('');
     const [hideCompleted, setHideCompleted] = useState(false);
 
     const fetchOrders = useCallback(async () => {
@@ -86,7 +84,7 @@ export default function OrdersPanel({ token }) {
     };
 
     const filteredOrders = useMemo(() => {
-        const q = search.trim().toLowerCase();
+        const q = (search || '').trim().toLowerCase();
         return orders.filter((o) => {
             if (hideCompleted && o.status === 'COMPLETED') return false;
             if (!q) return true;
@@ -107,9 +105,9 @@ export default function OrdersPanel({ token }) {
     return (
         <div className="space-y-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-white/50">
-                    Arraste visualmente por coluna. Use <strong className="text-white/70">Próximo</strong> para avançar o
-                    status.
+                <p className="text-sm text-stone-600">
+                    Use <strong className="font-semibold text-stone-800">Próximo</strong> para mover o pedido na fila de
+                    produção.
                 </p>
                 <div className="flex flex-wrap items-center gap-2">
                     <button
@@ -118,7 +116,7 @@ export default function OrdersPanel({ token }) {
                             setLoading(true);
                             fetchOrders();
                         }}
-                        className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/80 transition hover:bg-white/[0.06]"
+                        className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-700 shadow-sm transition hover:bg-stone-50"
                     >
                         <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
                         Atualizar
@@ -126,7 +124,7 @@ export default function OrdersPanel({ token }) {
                     <button
                         type="button"
                         onClick={exportFiltered}
-                        className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/80 transition hover:bg-white/[0.06]"
+                        className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-700 shadow-sm transition hover:bg-stone-50"
                     >
                         <Download size={14} />
                         Exportar CSV
@@ -134,23 +132,14 @@ export default function OrdersPanel({ token }) {
                 </div>
             </div>
 
-            <div className="flex flex-col gap-3 rounded-xl border border-white/[0.06] bg-[#0c0c0c] p-4 sm:flex-row sm:items-center">
-                <div className="relative min-w-0 flex-1">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/30" size={16} />
-                    <input
-                        className="w-full rounded-lg border border-white/[0.08] bg-[#0a0a0a] py-2.5 pl-10 pr-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-primary"
-                        placeholder="Buscar por nome, telefone ou #pedido…"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                </div>
+            <div className="flex flex-wrap items-center gap-2 rounded-xl border border-stone-200/90 bg-white p-3 shadow-sm">
                 <button
                     type="button"
                     onClick={() => setHideCompleted((v) => !v)}
-                    className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-xs font-medium transition ${
+                    className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-semibold transition ${
                         hideCompleted
-                            ? 'border-primary/40 bg-primary/15 text-primary'
-                            : 'border-white/[0.08] bg-white/[0.03] text-white/60 hover:text-white'
+                            ? 'border-primary/40 bg-orange-50 text-primary'
+                            : 'border-stone-200 bg-stone-50 text-stone-600 hover:bg-stone-100'
                     }`}
                 >
                     {hideCompleted ? <Eye size={14} /> : <EyeOff size={14} />}
@@ -159,7 +148,7 @@ export default function OrdersPanel({ token }) {
             </div>
 
             {loading && orders.length === 0 ? (
-                <div className="flex items-center justify-center rounded-xl border border-white/[0.06] py-20 text-sm text-white/40">
+                <div className="flex items-center justify-center rounded-xl border border-stone-200 bg-white py-20 text-sm text-stone-500 shadow-sm">
                     Carregando pedidos…
                 </div>
             ) : (
@@ -171,7 +160,7 @@ export default function OrdersPanel({ token }) {
                         return (
                             <div key={statusKey} className="flex w-[min(100%,340px)] shrink-0 flex-col gap-3">
                                 <div
-                                    className={`flex items-center justify-between rounded-xl border border-y border-r border-white/[0.06] border-l-4 bg-[#0f0f0f] px-3 py-3 ${left}`}
+                                    className={`flex items-center justify-between rounded-xl border border-y border-r border-stone-200 bg-white px-3 py-3 shadow-sm border-l-4 ${left}`}
                                 >
                                     <div className="flex items-center gap-2.5">
                                         <div
@@ -179,9 +168,9 @@ export default function OrdersPanel({ token }) {
                                         >
                                             <Icon size={15} />
                                         </div>
-                                        <span className="text-sm font-semibold text-white">{label}</span>
+                                        <span className="text-sm font-semibold text-stone-900">{label}</span>
                                     </div>
-                                    <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-xs font-medium tabular-nums text-white/55">
+                                    <span className="rounded-lg bg-stone-100 px-2 py-0.5 text-xs font-semibold tabular-nums text-stone-500">
                                         {list.length}
                                     </span>
                                 </div>
@@ -195,16 +184,16 @@ export default function OrdersPanel({ token }) {
                                                 initial={{ opacity: 0, y: 10 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 exit={{ opacity: 0, scale: 0.98 }}
-                                                className="rounded-xl border border-white/[0.06] bg-[#0c0c0c] p-4 shadow-sm transition hover:border-white/[0.1]"
+                                                className="rounded-xl border border-stone-200/90 bg-white p-4 shadow-sm transition hover:shadow-md"
                                             >
                                                 <div className="mb-3 flex items-start justify-between gap-2">
                                                     <div className="min-w-0">
-                                                        <p className="truncate text-[15px] font-semibold text-white">
+                                                        <p className="truncate text-[15px] font-semibold text-stone-900">
                                                             {o.customerName}
                                                         </p>
-                                                        <p className="mt-0.5 text-xs text-white/40">
-                                                            <span className="font-medium text-primary/90">#{o.id}</span>
-                                                            <span className="mx-1.5 text-white/20">·</span>
+                                                        <p className="mt-0.5 text-xs text-stone-500">
+                                                            <span className="font-semibold text-primary">#{o.id}</span>
+                                                            <span className="mx-1.5 text-stone-300">·</span>
                                                             {new Date(o.createdAt).toLocaleString('pt-BR', {
                                                                 day: '2-digit',
                                                                 month: '2-digit',
@@ -215,25 +204,27 @@ export default function OrdersPanel({ token }) {
                                                     </div>
                                                 </div>
 
-                                                <div className="mb-3 space-y-1.5 text-xs text-white/55">
-                                                    <div className="flex items-start gap-2 rounded-lg bg-white/[0.03] px-2.5 py-2">
-                                                        <Phone size={13} className="mt-0.5 shrink-0 text-primary/80" />
+                                                <div className="mb-3 space-y-1.5 text-xs text-stone-600">
+                                                    <div className="flex items-start gap-2 rounded-lg bg-stone-50 px-2.5 py-2">
+                                                        <Phone size={13} className="mt-0.5 shrink-0 text-primary" />
                                                         <span className="break-all">{o.phone || '—'}</span>
                                                     </div>
-                                                    <div className="flex items-start gap-2 rounded-lg bg-white/[0.03] px-2.5 py-2">
-                                                        <MapPin size={13} className="mt-0.5 shrink-0 text-primary/80" />
+                                                    <div className="flex items-start gap-2 rounded-lg bg-stone-50 px-2.5 py-2">
+                                                        <MapPin size={13} className="mt-0.5 shrink-0 text-primary" />
                                                         <span className="line-clamp-3">{o.address || '—'}</span>
                                                     </div>
                                                 </div>
 
-                                                <div className="mb-3 space-y-2 rounded-lg border border-white/[0.04] bg-black/30 p-3">
+                                                <div className="mb-3 space-y-2 rounded-lg border border-stone-100 bg-stone-50/80 p-3">
                                                     {o.items.map((i, idx) => (
                                                         <div key={idx} className="flex justify-between gap-2 text-xs">
-                                                            <span className="min-w-0 text-white/75">
-                                                                <span className="mr-1.5 font-medium text-white/35">{i.qty}×</span>
+                                                            <span className="min-w-0 text-stone-700">
+                                                                <span className="mr-1.5 font-medium text-stone-400">
+                                                                    {i.qty}×
+                                                                </span>
                                                                 {i.productName}
                                                             </span>
-                                                            <span className="shrink-0 tabular-nums text-white/40">
+                                                            <span className="shrink-0 tabular-nums text-stone-500">
                                                                 R$ {(i.price * i.qty).toFixed(2)}
                                                             </span>
                                                         </div>
@@ -242,10 +233,10 @@ export default function OrdersPanel({ token }) {
 
                                                 <div className="flex items-end justify-between gap-3">
                                                     <div>
-                                                        <p className="text-[10px] font-medium uppercase tracking-wide text-white/35">
+                                                        <p className="text-[10px] font-semibold uppercase tracking-wide text-stone-400">
                                                             Total
                                                         </p>
-                                                        <p className="text-lg font-semibold tabular-nums text-primary">
+                                                        <p className="text-lg font-bold tabular-nums text-stone-900">
                                                             R$ {Number(o.total).toFixed(2)}
                                                         </p>
                                                     </div>
@@ -253,7 +244,7 @@ export default function OrdersPanel({ token }) {
                                                         <button
                                                             type="button"
                                                             onClick={() => updateStatus(o.id, next)}
-                                                            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-white shadow-md shadow-primary/25 transition hover:bg-primary-hover"
+                                                            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-stone-900 px-3 py-2 text-[11px] font-bold uppercase tracking-wide text-white shadow-md transition hover:bg-stone-800"
                                                         >
                                                             Próximo
                                                             <ChevronRight size={14} />
@@ -265,9 +256,9 @@ export default function OrdersPanel({ token }) {
                                     </AnimatePresence>
 
                                     {list.length === 0 && (
-                                        <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-white/[0.08] py-12 text-center">
-                                            <Inbox size={28} className="mb-2 text-white/15" />
-                                            <span className="text-xs font-medium text-white/30">Nenhum pedido</span>
+                                        <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-stone-300 bg-white/60 py-12 text-center">
+                                            <Inbox size={28} className="mb-2 text-stone-300" />
+                                            <span className="text-xs font-medium text-stone-400">Nenhum pedido</span>
                                         </div>
                                     )}
                                 </div>
