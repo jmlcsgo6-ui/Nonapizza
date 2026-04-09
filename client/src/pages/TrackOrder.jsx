@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 
 const STATUS_STEPS = [
@@ -35,6 +35,13 @@ export default function TrackOrder() {
             if (res.data.length > 0) setSelectedOrder(res.data[0]);
         } catch(e) { console.error(e); } finally { setLoading(false); }
     };
+
+    useEffect(() => {
+        const focusId = location.state?.focusOrderId;
+        if (focusId == null || orders.length === 0) return;
+        const match = orders.find((o) => o.id === focusId);
+        if (match) setSelectedOrder(match);
+    }, [orders, location.state?.focusOrderId]);
 
     useEffect(() => {
         if (!selectedOrder || selectedOrder.status === 'COMPLETED') return;
