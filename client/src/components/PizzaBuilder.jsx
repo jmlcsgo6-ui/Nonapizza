@@ -36,6 +36,7 @@ export default function PizzaBuilder() {
         fetchData();
     }, []);
 
+    const [qty, setQty] = useState(1);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [drawerTarget, setDrawerTarget] = useState(null); // 'crust' or segment index
     const [search, setSearch] = useState('');
