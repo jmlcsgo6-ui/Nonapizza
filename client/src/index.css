@@ -752,14 +752,14 @@ body {
     height: 100vh;
     background: #0a0a0a;
     border-left: 1px solid rgba(255,255,255,0.05);
-    z-index: 2000;
+    z-index: 5000;
     display: flex;
     flex-direction: column;
     transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-shadow: -10px 0 30px rgba(0,0,0,0.5);
 }
 
-.cart-drawer.open {
+.cart-drawer.active {
     right: 0;
 }
 
@@ -1334,6 +1334,27 @@ body {
         height: 75px;
         font-size: 0.88rem;
     }
+}
+
+/* Builder internal Options Drawer */
+.builder-drawer {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 100%;
+    max-width: 400px;
+    height: 100vh;
+    background: #0a0a0a;
+    border-left: 1px solid rgba(255,255,255,0.05);
+    z-index: 3100;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+}
+
+.builder-drawer.active {
+    right: 0;
 }
 
 /* Options Drawer */

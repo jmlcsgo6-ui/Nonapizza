@@ -203,10 +203,10 @@ export default function PizzaBuilder() {
             </div>
 
             {/* Options Drawer */}
-            <div className={`cart-drawer ${drawerOpen ? 'active' : ''}`} style={{zIndex: 3100, right: drawerOpen ? '0' : '-400px'}}>
+            <div className={`builder-drawer ${drawerOpen ? 'active' : ''}`}>
                 <div className="cart-header">
                     <h3>{drawerTarget === 'crust' ? 'Escolha a Borda' : 'Escolha o Sabor'}</h3>
-                    <button onClick={() => setDrawerOpen(false)}><i className="fa-solid fa-xmark"></i></button>
+                    <button onClick={() => { setDrawerOpen(false); setSearch(''); }}><i className="fa-solid fa-xmark"></i></button>
                 </div>
                 
                 {drawerTarget !== 'crust' && (
