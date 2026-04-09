@@ -57,15 +57,21 @@ export default function PizzaBuilder() {
     const isComplete = selectedSize && segments.every(s => s !== null);
 
     const handleAddToCart = () => {
+        console.log("Handle Add To Cart", { step, isComplete, selectedSize });
         if (!isComplete) return;
-        addToCart({
+        
+        const cartItem = {
             productId: `custom-${Date.now()}`,
             productName: `Pizza ${selectedSize.name} Personalizada`,
             qty: qty,
-            price: calculateTotal() / qty,
+            price: calculateTotal / qty,
             obs: obs,
-            segments: segments.map(s => s.name)
-        });
+            segments: segments.map(s => s?.name || 'Sabor não escolhido')
+        };
+        
+        console.log("Adding to cart:", cartItem);
+        addToCart(cartItem);
+        
         resetBuilder();
         setIsBuilderOpen(false);
         setTimeout(() => setIsCartOpen(true), 300);
@@ -133,7 +139,7 @@ export default function PizzaBuilder() {
                                 <div className="builder-visual">
                                     <div className="pizza-svg-wrapper">
                                         <div className="pizza-base"></div>
-                                        <div className="pizza-svg-container" id="pizza-svg-container">
+                                        <div className="pizza-svg-container">
                                             <PizzaSVG count={flavorsCount} segments={segments} onSliceClick={(idx) => { setDrawerTarget(idx); setDrawerOpen(true); }} />
                                         </div>
                                     </div>

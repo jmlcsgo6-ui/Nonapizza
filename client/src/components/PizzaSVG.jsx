@@ -50,7 +50,7 @@ export default function PizzaSVG({ count, segments, onSliceClick }) {
     };
 
     return (
-        <svg viewBox="0 0 400 400" className="pizza-svg-container">
+        <svg viewBox="0 0 400 400" className="pizza-svg-element">
             {renderSlices()}
         </svg>
     );
