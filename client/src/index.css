@@ -1,202 +1,18 @@
 @import "tailwindcss";
 
-:root {
-    --bg-deep: #050505;
-    --bg-card: #0c0c0c;
-    --primary: #FF5F00;
-    --primary-glow: rgba(255, 95, 0, 0.5);
-    --accent-gold: #D4AF37;
-    --text-main: #FFFFFF;
-    --text-muted: #999999;
-    --glass: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --nav-height: 80px;
-    --transition-premium: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.bg-card { 
-    background-color: #0c0c0c !important; 
-    backdrop-filter: blur(10px);
-}
+.bg-card { background-color: #0c0c0c !important; backdrop-filter: blur(10px); }
 .bg-deep { background-color: #050505 !important; }
+.bg-card.border-white\/5 { border-color: rgba(255, 255, 255, 0.08) !important; }
 
-/* Dashboard Card Enhancements */
-.bg-card.border-white\/5 {
-    border-color: rgba(255, 255, 255, 0.08) !important;
-}
+.custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: white; }
 
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    cursor: default;
-}
-
-body {
-    font-family: 'Outfit', 'Inter', sans-serif;
-    background-color: #050505;
-    color: #FFFFFF;
-    line-height: 1.6;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-}
-
-/* Custom Cursor Experience */
-.custom-cursor {
-    width: 20px;
-    height: 20px;
-    border: 1px solid var(--primary);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    transition: transform 0.1s ease;
-    mix-blend-mode: difference;
-}
-
-/* Typography Sensorial */
-h1, h2, h3, .font-display {
-    font-family: 'Outfit', sans-serif;
-    letter-spacing: -0.03em;
-}
-
-.text-gradient {
-    background: linear-gradient(135deg, #FF5F00 0%, #FFB000 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-/* Sticky Glassmorphism Header */
-.header-glass {
-    position: fixed;
-    top: 0;
-    left: 0;
+.pizza-svg-element {
     width: 100%;
-    height: var(--nav-height);
-    background: rgba(5, 5, 5, 0.7);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--glass-border);
-    z-index: 1000;
-    transition: var(--transition-premium);
-}
-
-.header-glass.scrolled {
-    height: 65px;
-    background: rgba(5, 5, 5, 0.9);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-/* Mobile Bottom Navigation Bar */
-@media (max-width: 768px) {
-    .mobile-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 70px;
-        background: rgba(10, 10, 10, 0.95);
-        backdrop-filter: blur(10px);
-        border-top: 1px solid var(--glass-border);
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        z-index: 1001;
-        padding-bottom: env(safe-area-inset-bottom);
-    }
-    
-    .mobile-nav-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        color: var(--text-muted);
-        text-decoration: none;
-        font-size: 0.7rem;
-        font-weight: 500;
-    }
-    
-    .mobile-nav-item.active {
-        color: var(--primary);
-    }
-    
-    .mobile-nav-item i {
-        font-size: 1.2rem;
-    }
-
-    /* Adjust main content for mobile nav */
-    main {
-        padding-bottom: 80px;
-    }
-
-    .header-glass {
-        display: none; /* Hide top header on mobile in favor of bottom nav */
-    }
-}
-
-/* Premium Buttons */
-.btn-premium {
-    position: relative;
-    padding: 1rem 2.5rem;
-    background: var(--primary);
-    color: #fff;
-    border-radius: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    overflow: hidden;
-    transition: var(--transition-premium);
-    box-shadow: 0 10px 20px rgba(255, 95, 0, 0.3);
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    border: none;
-}
-
-.btn-premium::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 300%;
-    height: 300%;
-    background: rgba(255, 255, 255, 0.1);
-    transform: translate(-50%, -50%) rotate(45deg) translateY(100%);
-    transition: transform 0.6s ease;
-}
-
-.btn-premium:hover::before {
-    transform: translate(-50%, -50%) rotate(45deg) translateY(-100%);
-}
-
-.btn-premium:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 30px rgba(255, 95, 0, 0.5);
-}
-
-/* Skeleton Screens */
-.skeleton-box {
-    background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 12px;
-}
-
-@keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-/* Success & Growth Elements */
-.nona-badge {
-    background: var(--accent-gold);
-    color: #000;
-    padding: 4px 12px;
-    border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    text-transform: uppercase;
+    height: 100%;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
 }
 :root {
     --bg-dark: #000000;
@@ -217,7 +33,7 @@ h1, h2, h3, .font-display {
 }
 
 body {
-    font-family: 'Outfit', 'Inter', sans-serif;
+    font-family: 'Inter', sans-serif;
     background-color: var(--bg-dark);
     color: var(--text-main);
     line-height: 1.5;
@@ -1416,36 +1232,9 @@ body {
     border: 8px solid #734215;
 }
 
-/* Industrial Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: white;
-}
-
 .pizza-svg-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 20;
-  pointer-events: none;
-  width: 100%;
-  height: 100%;
-}
-
-.pizza-svg-element {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+    position: absolute; top: 6%; left: 6%; width: 88%; height: 88%;
+    z-index: 2; border-radius: 50%; overflow: hidden;
 }
 
 .pizza-svg-container svg {

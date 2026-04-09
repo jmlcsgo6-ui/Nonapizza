@@ -19,9 +19,7 @@ export default function Home() {
         <>
             <Header />
             <main>
-                <div className="hero-wrapper">
-                    <Hero />
-                </div>
+                <Hero />
                 <HowItWorks />
                 <Explore />
                 <WhyUs />
