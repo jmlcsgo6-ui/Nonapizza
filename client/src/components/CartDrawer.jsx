@@ -32,18 +32,26 @@ export default function CartDrawer() {
             return;
         }
 
+        const payload = {
+            customerName: customerName || 'Cliente Nona',
+            phone: form.phone,
+            address: form.address,
+            cep: form.cep,
+            reference: form.reference,
+            payment: form.payment,
+            total: cartTotal,
+            items: cart.map(i => ({
+                productName: i.productName,
+                price: Number(i.price),
+                qty: Number(i.qty),
+                obs: i.obs || '',
+                desc: i.segments ? i.segments.join(' • ') : ''
+            })),
+        };
+
         setSubmitting(true);
         try {
-            await api.post('/api/orders', {
-                customerName: customerName,
-                phone: form.phone,
-                address: form.address,
-                cep: form.cep,
-                reference: form.reference,
-                payment: form.payment,
-                total: cartTotal,
-                items: cart,
-            }, {
+            await api.post('/api/orders', payload, {
                 headers: { Authorization: `Bearer ${customerToken}` }
             });
             
@@ -53,9 +61,9 @@ export default function CartDrawer() {
                 setIsCartOpen(false);
                 setTimeout(() => setView('cart'), 500);
             }, 3500);
-        } catch(e) {
-            console.error(e);
-            alert('Erro ao processar pedido.');
+        } catch(err) {
+            console.error('Checkout Error:', err.response?.data || err.message);
+            alert('Erro ao processar pedido: ' + (err.response?.data?.error || 'Erro interno do servidor.'));
         } finally {
             setSubmitting(false);
         }

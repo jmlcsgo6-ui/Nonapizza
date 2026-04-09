@@ -117,10 +117,14 @@ app.post('/api/orders', async (req, res) => {
     try {
         const { customerName, phone, address, cep, reference, payment, total, items } = req.body;
         
+        if (!items || !Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ error: 'Seu carrinho está vazio ou é inválido.' });
+        }
+
         // Tentar extrair userId do Token se o cliente estiver logado
         let userId = null;
         const authHeader = req.headers.authorization;
-        if (authHeader) {
+        if (authHeader && authHeader.startsWith('Bearer ')) {
             try {
                 const token = authHeader.split(' ')[1];
                 const decoded = jwt.verify(token, JWT_SECRET);
@@ -131,19 +135,19 @@ app.post('/api/orders', async (req, res) => {
         const order = await prisma.order.create({
             data: {
                 userId: userId,
-                customerName,
+                customerName: customerName || 'Cliente Nona',
                 phone: phone || null,
-                address: address || 'Nao informado',
+                address: address || 'Não informado',
                 cep: cep || null,
                 reference: reference || null,
-                payment: payment || 'Nao informado',
-                total,
+                payment: payment || 'Não informado',
+                total: parseFloat(total) || 0,
                 items: {
                     create: items.map(i => ({
-                        productName: i.productName,
+                        productName: i.productName || 'Produto',
                         desc: i.desc || '',
-                        price: i.price,
-                        qty: i.qty,
+                        price: parseFloat(i.price) || 0,
+                        qty: parseInt(i.qty) || 1,
                         obs: i.obs || ''
                     }))
                 }
@@ -151,7 +155,10 @@ app.post('/api/orders', async (req, res) => {
             include: { items: true }
         });
         res.json(order);
-    } catch (e) { res.status(500).json({ error: e.message }); }
+    } catch (e) { 
+        console.error('Order Creation Error:', e);
+        res.status(500).json({ error: 'Ocorreu um erro interno ao processar seu pedido: ' + e.message }); 
+    }
 });
 
 app.get('/api/customer/orders', async (req, res) => {
