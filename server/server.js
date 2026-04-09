@@ -137,10 +137,10 @@ app.post('/api/orders', async (req, res) => {
                 userId: userId,
                 customerName: customerName || 'Cliente Nona',
                 phone: phone || null,
-                address: cep ? `${address} - CEP: ${cep}` : address,
-                // Removido temporariamente para evitar erro de coluna inexistente no banco
+                address: `${address}${cep ? ` - CEP: ${cep}` : ''}${reference ? ` (Ref: ${reference})` : ''}`,
+                // Colunas removidas temporariamente pois não existem no banco do Vercel
                 // cep: cep || null, 
-                reference: reference || null,
+                // reference: reference || null,
                 payment: payment || 'Não informado',
                 total: parseFloat(total) || 0,
                 items: {

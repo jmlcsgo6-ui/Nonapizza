@@ -13,18 +13,22 @@ export default function Hero() {
 
         const context = canvas.getContext('2d');
         const frameCount = 144;
-        
-        const currentFrame = index => `/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.png`;
-
         const images = [];
         let imagesLoaded = 0;
-
+        
         for (let i = 0; i < frameCount; i++) {
             const img = new Image();
-            img.src = currentFrame(i);
+            // Caminho absoluto para garantir que carregue da pasta public
+            img.src = `${window.location.origin}/ezgif-frame-${(i + 1).toString().padStart(3, '0')}.png`;
             img.onload = () => {
                 imagesLoaded++;
-                if (imagesLoaded === 1) resizeCanvas();
+                if (imagesLoaded === 1) {
+                    resizeCanvas();
+                }
+            };
+            img.onerror = () => {
+                console.warn(`Erro ao carregar frame: ${i + 1}`);
+                imagesLoaded++; // Avançar para não travar
             };
             images.push(img);
         }
@@ -55,14 +59,18 @@ export default function Hero() {
         };
 
         const handleScroll = () => {
-            const scrollTop = window.scrollY;
-            const parentWrapper = wrapper.parentElement;
-            if (!parentWrapper) return;
-
-            const startScroll = parentWrapper.offsetTop; 
-            const maxScroll = parentWrapper.offsetHeight - window.innerHeight; 
+            if (!wrapper || !images.length) return;
             
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const startScroll = wrapper.offsetTop;
+            const wrapperHeight = wrapper.offsetHeight;
+            const viewportHeight = window.innerHeight;
+            
+            // A animação deve ocorrer enquanto o hero-wrapper está "passando" pela tela
+            // Como o .hero é sticky, ele fica preso no topo por 200vh (300vh total - 100vh da seção)
+            const maxScroll = wrapperHeight - viewportHeight;
             let scrollFraction = (scrollTop - startScroll) / maxScroll;
+            
             if (scrollFraction < 0) scrollFraction = 0;
             if (scrollFraction > 1) scrollFraction = 1;
 
@@ -71,17 +79,22 @@ export default function Hero() {
                 Math.floor(scrollFraction * frameCount)
             );
 
+            // Só renderiza se a imagem já tiver sido carregada
             requestAnimationFrame(() => renderFrame(frameIndex));
         };
 
         const resizeCanvas = () => {
+            if (!canvas) return;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             handleScroll();
         };
 
-        window.addEventListener('resize', resizeCanvas);
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', resizeCanvas, { passive: true });
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        // Inicializar
+        resizeCanvas();
 
         return () => {
             window.removeEventListener('resize', resizeCanvas);
