@@ -90,87 +90,46 @@ export default function Hero() {
     }, []);
 
     return (
-        <section id="home" className="hero relative overflow-hidden" ref={wrapperRef}>
-            <canvas id="hero-canvas" className="hero-canvas fixed top-0 left-0 w-full h-screen pointer-events-none" ref={canvasRef} style={{ zIndex: 0 }}></canvas>
-            
-            <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/80 to-transparent z-1"></div>
+        <div className="hero-wrapper" ref={wrapperRef}>
+            <section id="home" className="hero">
+                <canvas id="hero-canvas" className="hero-canvas" ref={canvasRef}></canvas>
+                <div className="hero-overlay"></div>
+                <div className="container hero-container" style={{ position: 'relative', zIndex: 2 }}>
+                    <div className="hero-left">
+                        <h1 className="hero-title">A pizza perfeita, montada diante dos seus olhos.</h1>
+                        <p className="hero-subtitle">Ingredientes frescos caindo em tempo real, sabor incomparável e entrega
+                            rápida direto na sua porta.</p>
 
-            <div className={`container mx-auto px-6 relative z-10 min-h-screen flex items-center`}>
-                <div className="max-w-3xl">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.05] mb-6">
-                            A pizza perfeita, montada diante dos seus olhos.
-                        </h1>
-                        <p className="text-xl text-white/60 mb-10 max-w-xl font-medium leading-relaxed">
-                            Ingredientes frescos caindo em tempo real, sabor incomparável e entrega rápida direto na sua porta.
-                        </p>
-
-                        <ul className="mb-12 space-y-4 list-none p-0">
-                            {[
-                                { icon: <Flame size={14} />, text: "Ingredientes selecionados diariamente" },
-                                { icon: <Flame size={14} />, text: "Entrega rápida e sempre quente" },
-                                { icon: <Award size={14} />, text: "Qualidade artesanal com sabor premium" }
-                            ].map((item, i) => (
-                                <li key={i} className="flex items-center gap-4 text-white font-medium">
-                                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white">
-                                        {item.icon}
-                                    </div>
-                                    <span>{item.text}</span>
-                                </li>
-                            ))}
+                        <ul className="highlights">
+                            <li>
+                                <i className="fa-solid fa-check"></i>
+                                <span>Ingredientes selecionados diariamente</span>
+                            </li>
+                            <li>
+                                <i className="fa-solid fa-fire"></i>
+                                <span>Entrega rápida e sempre quente</span>
+                            </li>
+                            <li>
+                                <i className="fa-solid fa-medal"></i>
+                                <span>Qualidade artesanal com sabor premium</span>
+                            </li>
                         </ul>
 
-                        <div className="flex flex-col sm:flex-row gap-4 mb-12">
-                            <motion.button 
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="bg-primary hover:bg-[#FF7A00] px-10 py-4 rounded-full font-black text-white shadow-2xl shadow-primary/40 flex items-center gap-3 transition-all"
-                                onClick={() => document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' })}
+                        <div className="cta-group">
+                            <a href="#explore" className="btn btn-primary hover-scale"
+                                style={{ fontSize: '1.1rem', padding: '1rem 2.5rem' }}
+                                onClick={(e) => { e.preventDefault(); document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' }) }}
                             >
-                                FAZER PEDIDO <div className="mt-1">↓</div>
-                            </motion.button>
+                                Fazer Pedido <i className="fa-solid fa-arrow-down" style={{ marginLeft: '8px' }}></i>
+                            </a>
                         </div>
-                    </motion.div>
-                </div>
-            </div>
-
-            {/* Floating Ingredients Decoration (Client side effect) */}
-            <AnimateIngredients />
-        </section>
-    );
-}
-
-function AnimateIngredients() {
-    return (
-        <div className="fixed inset-0 pointer-events-none overflow-hidden z-2">
-            {[...Array(6)].map((_, i) => (
-                <motion.div
-                    key={i}
-                    initial={{ y: -100, rotate: 0, opacity: 0 }}
-                    animate={{ 
-                        y: [null, window.innerHeight + 100], 
-                        rotate: 360, 
-                        opacity: [0, 0.4, 0] 
-                    }}
-                    transition={{
-                        duration: 8 + Math.random() * 5,
-                        repeat: Infinity,
-                        delay: i * 2,
-                        ease: "linear"
-                    }}
-                    className="absolute"
-                    style={{ left: `${Math.random() * 100}%` }}
-                >
-                    <div className="w-8 h-8 opacity-20 filter grayscale invert">
-                        {/* Simplified ingredient placeholders */}
-                        <i className="fa-solid fa-leaf text-primary"></i>
                     </div>
-                </motion.div>
-            ))}
+
+                    <div className="hero-right">
+                        {/* Right side remains empty for future animation as requested */}
+                    </div>
+                </div>
+            </section>
         </div>
     );
 }
