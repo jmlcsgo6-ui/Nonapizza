@@ -25,78 +25,73 @@ export default function DashboardOverview({ token }) {
 
     const MetricCard = ({ title, value, icon: Icon, color, delay }) => (
         <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay }}
-            className="flex-1 min-w-[240px] bg-[#0c0c0c] border border-white/5 p-8 rounded-3xl shadow-xl relative overflow-hidden group hover:scale-[1.02] transition-all"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay, type: "spring", stiffness: 100 }}
+            className="flex-1 min-w-[280px] bg-[#0c0c0c] border border-white/5 p-10 rounded-[40px] shadow-2xl relative overflow-hidden group hover:bg-white/[0.02] transition-all border border-white/[0.03]"
         >
-            <div className={`absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform ${color}`}>
-                <Icon size={80} />
-            </div>
+            <div className={`absolute -top-10 -right-10 w-40 h-40 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity blur-3xl rounded-full ${color.replace('text-', 'bg-')}`}></div>
             
             <div className="relative z-10">
-                <div className={`w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center mb-6 ${color}`}>
-                    <Icon size={24} />
+                <div className={`w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center mb-8 ${color} group-hover:scale-110 transition-transform`}>
+                    <Icon size={28} />
                 </div>
-                <p className="text-sm font-medium text-white/40 mb-1">{title}</p>
-                <h3 className="text-3xl font-black text-white italic tracking-tight">{value}</h3>
+                <p className="text-xs font-bold text-white/30 mb-2 uppercase tracking-[0.2em]">{title}</p>
+                <h3 className="text-4xl font-black text-white italic tracking-tighter">{value}</h3>
                 
-                <div className="mt-6 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-green-500">
-                    <TrendingUp size={12} />
-                    <span>+12% vs mês anterior</span>
+                <div className="mt-8 flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-green-500/10 rounded-full text-[10px] font-black text-green-500 uppercase tracking-tighter">
+                        <TrendingUp size={10} /> +12%
+                    </div>
+                    <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">vs mês anterior</span>
                 </div>
             </div>
         </motion.div>
     );
 
     return (
-        <div className="space-y-10">
-            <div>
-                <h2 className="text-3xl font-black text-white italic tracking-tight">Visão <span className="text-primary italic">Geral</span></h2>
-                <p className="text-white/40 mt-1 font-medium">Desempenho da Alquimia em tempo real</p>
-            </div>
-
-            <div className="flex flex-wrap gap-6">
+        <div className="space-y-12">
+            <div className="flex flex-wrap gap-8">
                 <MetricCard title="Receita Total" value={`R$ ${totalRevenue.toFixed(2)}`} icon={DollarSign} color="text-green-500" delay={0} />
                 <MetricCard title="Pedidos Pendentes" value={pendingCount} icon={Bell} color="text-red-500" delay={0.1} />
                 <MetricCard title="Em Preparo" value={cookingCount} icon={Flame} color="text-primary" delay={0.2} />
                 <MetricCard title="Finalizados" value={completedCount} icon={CheckCircle2} color="text-blue-500" delay={0.3} />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="lg:col-span-2 bg-[#0c0c0c] border border-white/5 p-8 rounded-3xl relative overflow-hidden"
+                    className="lg:col-span-2 bg-[#0c0c0c] border border-white/5 p-10 rounded-[40px] relative overflow-hidden border border-white/[0.03]"
                 >
-                    <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center justify-between mb-10">
                         <div>
-                            <h4 className="text-lg font-bold text-white tracking-tight">Atividade do Sistema</h4>
-                            <p className="text-sm text-white/40 font-medium">Status da infraestrutura Alquimia</p>
+                            <h4 className="text-xl font-bold text-white tracking-tight uppercase italic">Atividade do <span className="text-primary">Sistema</span></h4>
+                            <p className="text-xs text-white/30 font-bold uppercase tracking-widest mt-1">Status da infraestrutura Alquimia</p>
                         </div>
-                        <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/20 rounded-full text-green-500 text-[10px] font-bold uppercase tracking-widest">
-                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <div className="flex items-center gap-3 px-5 py-2.5 bg-green-500/5 border border-green-500/10 rounded-2xl text-green-500 text-[10px] font-black uppercase tracking-[0.2em]">
+                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]"></span>
                             Operacional
                         </div>
                     </div>
                     
-                    <div className="space-y-6">
-                        <p className="text-sm text-white/60 leading-relaxed">
-                            O banco de dados <strong>PostgreSQL</strong> está processando requisições com latência média de 12ms. 
+                    <div className="space-y-8">
+                        <p className="text-base text-white/50 leading-relaxed max-w-2xl font-medium">
+                            O banco de dados <span className="text-white font-bold">PostgreSQL</span> está processando requisições com latência média de 12ms. 
                             O motor de processamento está otimizado para a demanda atual.
                         </p>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                             {[
                                 { lab: 'API', val: '99.9%', icon: Activity },
                                 { lab: 'Banco', val: 'Sync', icon: Users },
                                 { lab: 'Cache', val: 'Hit', icon: ShoppingBag },
                                 { lab: 'Upload', val: 'OK', icon: CheckCircle2 }
                             ].map((item, i) => (
-                                <div key={i} className="bg-white/[0.02] border border-white/5 p-4 rounded-2xl text-center">
-                                    <item.icon size={16} className="mx-auto mb-2 text-white/20" />
-                                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">{item.lab}</p>
-                                    <p className="text-sm font-bold text-white mt-1">{item.val}</p>
+                                <div key={i} className="bg-white/[0.01] border border-white/5 p-6 rounded-3xl text-center hover:bg-white/[0.03] transition-colors">
+                                    <item.icon size={20} className="mx-auto mb-3 text-white/10" />
+                                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">{item.lab}</p>
+                                    <p className="text-lg font-black text-white mt-1">{item.val}</p>
                                 </div>
                             ))}
                         </div>
@@ -104,30 +99,33 @@ export default function DashboardOverview({ token }) {
                 </motion.div>
 
                 <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="bg-primary p-8 rounded-3xl flex flex-col justify-between text-white relative overflow-hidden"
+                    className="bg-gradient-to-br from-primary to-orange-600 p-10 rounded-[40px] flex flex-col justify-between text-white relative overflow-hidden shadow-2xl shadow-primary/20"
                 >
-                    <div className="absolute top-[-20%] right-[-20%] w-[60%] h-[60%] bg-white/10 blur-[60px] rounded-full"></div>
+                    <div className="absolute top-[-20%] right-[-20%] w-[80%] h-[80%] bg-white/10 blur-[80px] rounded-full"></div>
                     <div className="relative z-10">
-                        <h4 className="text-xl font-black italic tracking-tight uppercase mb-1">Meta Mensal</h4>
-                        <p className="text-white/60 text-xs font-bold uppercase tracking-widest">85% Atingido</p>
+                        <h4 className="text-2xl font-black italic tracking-tight uppercase mb-1">Meta Mensal</h4>
+                        <div className="w-fit px-3 py-1 bg-black/20 rounded-lg text-[10px] font-bold uppercase tracking-widest mt-2">85% Atingido</div>
                     </div>
                     
-                    <div className="relative z-10 my-8">
-                        <div className="text-6xl font-black tracking-tighter">85%</div>
-                        <div className="w-full h-2 bg-black/20 rounded-full mt-4 overflow-hidden">
+                    <div className="relative z-10 my-10">
+                        <div className="text-7xl font-black tracking-tighter italic">85<span className="text-3xl font-bold opacity-50">%</span></div>
+                        <div className="w-full h-3 bg-black/20 rounded-full mt-6 overflow-hidden p-0.5">
                             <motion.div 
                                 initial={{ width: 0 }}
                                 animate={{ width: '85%' }}
-                                transition={{ duration: 1, delay: 1 }}
-                                className="h-full bg-white shadow-[0_0_20px_rgba(255,255,255,0.5)]"
+                                transition={{ duration: 1.5, delay: 1, ease: "circOut" }}
+                                className="h-full bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.8)]"
                             />
                         </div>
                     </div>
                     
-                    <p className="relative z-10 text-[10px] font-bold text-white/50 uppercase tracking-[0.2em]">Sincronizado há 2min</p>
+                    <div className="relative z-10 flex items-center justify-between">
+                        <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Status: Sync</p>
+                        <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">2min atrás</p>
+                    </div>
                 </motion.div>
             </div>
         </div>

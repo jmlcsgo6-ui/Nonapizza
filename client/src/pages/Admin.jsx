@@ -114,74 +114,93 @@ export default function Admin() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#050505] flex">
-            {/* Sidebar Revert */}
-            <aside className="w-72 bg-[#0c0c0c] border-r border-white/5 flex flex-col m-4 rounded-3xl overflow-hidden shadow-2xl">
-                <div className="p-8 mb-4 border-b border-white/5">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 bg-primary/10 text-primary flex items-center justify-center rounded-xl">
-                            <ChefHat size={20} />
+        <div className="min-h-screen bg-[#050505] flex text-white relative overflow-hidden">
+            {/* Background Glows */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[150px] rounded-full -translate-y-1/2 translate-x-1/2 z-0 pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2 z-0 pointer-events-none"></div>
+
+            {/* Sidebar */}
+            <aside className="w-80 bg-[#0a0a0a]/80 backdrop-blur-2xl border-r border-white/5 flex flex-col m-6 rounded-[40px] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] z-10 border border-white/[0.03]">
+                <div className="p-10 mb-2">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-primary to-orange-600 text-white flex items-center justify-center rounded-2xl shadow-lg shadow-primary/20">
+                            <ChefHat size={24} />
                         </div>
-                        <h2 className="text-xl font-black tracking-tight text-white italic">NONA <span className="text-primary italic">HUB</span></h2>
+                        <div>
+                            <h2 className="text-xl font-black tracking-tight italic">NONA <span className="text-primary">HUB</span></h2>
+                            <p className="text-[10px] uppercase tracking-[0.3em] text-white/20 font-bold">Admin Panel</p>
+                        </div>
                     </div>
                 </div>
 
-                <nav className="flex-1 px-4 py-4 space-y-2">
+                <nav className="flex-1 px-6 space-y-2">
                     {navItems.map(item => (
                         <button 
                             key={item.id}
                             onClick={() => setActiveTab(item.id)}
-                            className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all ${activeTab === item.id ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white hover:bg-white/[0.02]'}`}
+                            className={`w-full flex items-center gap-4 px-6 py-5 rounded-[24px] transition-all group ${activeTab === item.id ? 'bg-primary text-white shadow-2xl shadow-primary/30' : 'text-white/30 hover:text-white hover:bg-white/[0.03]'}`}
                         >
-                            <item.icon size={20} />
-                            <span className="font-bold tracking-tight">{item.label}</span>
+                            <item.icon size={20} className={activeTab === item.id ? 'scale-110' : 'group-hover:scale-110 transition-transform'} />
+                            <span className="font-bold tracking-tight text-sm uppercase letter-spacing-1">{item.label}</span>
                         </button>
                     ))}
                 </nav>
 
-                <div className="p-6 border-t border-white/5 bg-black/20 m-4 rounded-2xl space-y-4">
+                <div className="p-8 border-t border-white/5 bg-black/40 m-6 rounded-[32px] space-y-5">
                     <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                            <User size={18} />
+                        <div className="w-12 h-12 rounded-full p-[2px] bg-gradient-to-tr from-white/10 to-primary/20">
+                            <div className="w-full h-full rounded-full bg-[#0a0a0a] flex items-center justify-center text-primary">
+                                <User size={20} />
+                            </div>
                         </div>
                         <div className="flex-1">
                             <p className="text-sm font-bold text-white leading-none">Administrador</p>
-                            <p className="text-[10px] font-medium text-green-500 uppercase mt-1 tracking-widest">Online</p>
+                            <div className="flex items-center gap-1.5 mt-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_#22c55e]"></span>
+                                <p className="text-[9px] font-bold text-green-500 uppercase tracking-widest">Sincronizado</p>
+                            </div>
                         </div>
                     </div>
                     <button 
                         onClick={handleLogout}
-                        className="w-full flex items-center justify-center gap-2 py-3 text-red-500 bg-red-500/5 hover:bg-red-500 hover:text-white rounded-xl transition-all text-sm font-bold"
+                        className="w-full flex items-center justify-center gap-2 py-4 text-white/40 bg-white/[0.03] hover:bg-red-500 hover:text-white rounded-2xl transition-all text-xs font-bold uppercase tracking-widest border border-white/5"
                     >
-                        <LogOut size={16} /> Sair do Painel
+                        <LogOut size={16} /> Sair
                     </button>
                 </div>
             </aside>
 
-            {/* Main Content Area Revert */}
-            <main className="flex-1 overflow-y-auto p-4 relative">
-                <header className="h-20 px-8 bg-[#0c0c0c]/50 backdrop-blur-xl border border-white/5 rounded-3xl flex items-center justify-between sticky top-0 z-20 shadow-xl mb-8">
-                    <div className="flex items-center gap-4">
-                        <div className="w-1 h-6 bg-primary rounded-full"></div>
-                        <h1 className="text-lg font-bold text-white tracking-tight">
-                            {navItems.find(i => i.id === activeTab)?.label}
+            {/* Main Content Area */}
+            <main className="flex-1 overflow-y-auto px-10 py-10 relative z-10 custom-scrollbar">
+                <header className="mb-12 flex items-center justify-between">
+                    <div>
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em]">Dashboard</span>
+                            <ChevronRight size={10} className="text-white/20" />
+                            <span className="text-[10px] font-bold text-primary uppercase tracking-[0.3em]">
+                                {navItems.find(i => i.id === activeTab)?.label}
+                            </span>
+                        </div>
+                        <h1 className="text-4xl font-black text-white tracking-tighter italic uppercase">
+                            Painel de <span className="text-primary">Controle</span>
                         </h1>
                     </div>
+                    
                     <div className="flex items-center gap-4">
-                        <button className="p-3 bg-white/[0.03] border border-white/10 rounded-xl text-white/40 hover:text-primary transition-all">
-                            <Settings size={20} />
+                        <button className="h-14 px-8 bg-white/[0.03] border border-white/5 rounded-2xl text-white/60 hover:text-white hover:border-white/10 transition-all flex items-center gap-3 font-bold text-xs uppercase tracking-widest backdrop-blur-xl">
+                            <Settings size={18} /> Configurações
                         </button>
                     </div>
                 </header>
 
-                <div className="max-w-7xl mx-auto pb-12">
+                <div className="max-w-7xl pb-12">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={activeTab}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.3 }}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.4, ease: "circOut" }}
                         >
                             {activeTab === 'dashboard' && <DashboardOverview token={token} />}
                             {activeTab === 'orders' && <OrdersPanel token={token} />}

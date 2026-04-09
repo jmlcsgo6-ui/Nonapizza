@@ -137,8 +137,9 @@ app.post('/api/orders', async (req, res) => {
                 userId: userId,
                 customerName: customerName || 'Cliente Nona',
                 phone: phone || null,
-                address: address || 'Não informado',
-                cep: cep || null,
+                address: cep ? `${address} - CEP: ${cep}` : address,
+                // Removido temporariamente para evitar erro de coluna inexistente no banco
+                // cep: cep || null, 
                 reference: reference || null,
                 payment: payment || 'Não informado',
                 total: parseFloat(total) || 0,
