@@ -1,151 +1,281 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import api from '../../api/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Flame, Truck, CheckCircle2, ChevronRight, Phone, MapPin, Inbox, ShoppingBag } from 'lucide-react';
+import {
+    Clock,
+    Flame,
+    Truck,
+    CheckCircle2,
+    ChevronRight,
+    Phone,
+    MapPin,
+    Inbox,
+    Search,
+    Download,
+    RefreshCw,
+    Eye,
+    EyeOff,
+} from 'lucide-react';
 
 const STATUS_CONFIG = {
-    PENDING:    { label: 'Recebido',         color: 'bg-orange-500', next: 'COOKING',    icon: Clock },
-    COOKING:    { label: 'No Forno',         color: 'bg-primary',    next: 'DELIVERING', icon: Flame },
-    DELIVERING: { label: 'Em Entrega',       color: 'bg-blue-500',   next: 'COMPLETED',  icon: Truck },
-    COMPLETED:  { label: 'Concluído',        color: 'bg-green-500',  next: null,         icon: CheckCircle2 },
+    PENDING: { label: 'Recebido', left: 'border-l-orange-500', badge: 'bg-orange-500', next: 'COOKING', icon: Clock },
+    COOKING: { label: 'No forno', left: 'border-l-[#FF5F00]', badge: 'bg-primary', next: 'DELIVERING', icon: Flame },
+    DELIVERING: { label: 'Em entrega', left: 'border-l-blue-500', badge: 'bg-blue-500', next: 'COMPLETED', icon: Truck },
+    COMPLETED: { label: 'Concluído', left: 'border-l-emerald-500', badge: 'bg-emerald-500', next: null, icon: CheckCircle2 },
 };
+
+const COLS = ['PENDING', 'COOKING', 'DELIVERING', 'COMPLETED'];
+
+function downloadCsv(rows, filename) {
+    const esc = (s) => `"${String(s ?? '').replace(/"/g, '""')}"`;
+    const header = ['id', 'cliente', 'telefone', 'status', 'total', 'criado_em'];
+    const lines = [header.join(',')];
+    for (const o of rows) {
+        lines.push(
+            [o.id, o.customerName, o.phone, o.status, o.total, new Date(o.createdAt).toISOString()]
+                .map(esc)
+                .join(',')
+        );
+    }
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+}
 
 export default function OrdersPanel({ token }) {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState('');
+    const [hideCompleted, setHideCompleted] = useState(false);
 
-    const fetchOrders = async () => {
+    const fetchOrders = useCallback(async () => {
         try {
             const res = await api.get('/api/admin/orders', {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` },
             });
             setOrders(res.data);
+        } catch (e) {
+            console.error('Error fetching orders', e);
+        } finally {
             setLoading(false);
-        } catch(e) { console.error('Error fetching orders', e); }
-    };
+        }
+    }, [token]);
 
     useEffect(() => {
         fetchOrders();
         const interval = setInterval(fetchOrders, 10000);
         return () => clearInterval(interval);
-    }, [token]);
+    }, [fetchOrders]);
 
     const updateStatus = async (id, status) => {
         try {
-            setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
-            await api.put(`/api/admin/orders/${id}/status`, { status }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-        } catch(e) { 
-            console.error('Failed to update status', e); 
-            fetchOrders(); 
+            setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
+            await api.put(
+                `/api/admin/orders/${id}/status`,
+                { status },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+        } catch (e) {
+            console.error('Failed to update status', e);
+            fetchOrders();
         }
     };
 
-    const columns = ['PENDING','COOKING','DELIVERING','COMPLETED'];
+    const filteredOrders = useMemo(() => {
+        const q = search.trim().toLowerCase();
+        return orders.filter((o) => {
+            if (hideCompleted && o.status === 'COMPLETED') return false;
+            if (!q) return true;
+            const idMatch = String(o.id).includes(q.replace('#', ''));
+            return (
+                idMatch ||
+                (o.customerName && o.customerName.toLowerCase().includes(q)) ||
+                (o.phone && o.phone.replace(/\D/g, '').includes(q.replace(/\D/g, '')))
+            );
+        });
+    }, [orders, search, hideCompleted]);
+
+    const exportFiltered = () => {
+        const list = filteredOrders.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        downloadCsv(list, `pedidos-nona-${new Date().toISOString().slice(0, 10)}.csv`);
+    };
 
     return (
-        <div className="space-y-12">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h2 className="text-4xl font-black text-white italic tracking-tighter uppercase">Fila de <span className="text-primary">Produção</span></h2>
-                    <p className="text-xs font-bold text-white/30 uppercase tracking-[0.2em] mt-1">Gerencie o fluxo de pedidos em tempo real</p>
-                </div>
-                <div className="px-6 py-3 bg-white/[0.03] border border-white/10 rounded-2xl flex items-center gap-3 shadow-xl backdrop-blur-xl">
-                    <span className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]"></span>
-                    <span className="text-[10px] font-black text-white/60 uppercase tracking-widest">Servidor Online</span>
+        <div className="space-y-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm text-white/50">
+                    Arraste visualmente por coluna. Use <strong className="text-white/70">Próximo</strong> para avançar o
+                    status.
+                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setLoading(true);
+                            fetchOrders();
+                        }}
+                        className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/80 transition hover:bg-white/[0.06]"
+                    >
+                        <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+                        Atualizar
+                    </button>
+                    <button
+                        type="button"
+                        onClick={exportFiltered}
+                        className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/80 transition hover:bg-white/[0.06]"
+                    >
+                        <Download size={14} />
+                        Exportar CSV
+                    </button>
                 </div>
             </div>
 
-            <div className="flex gap-8 overflow-x-auto pb-10 custom-scrollbar pt-2 scroll-smooth">
-                {columns.map(statusKey => {
-                    const { label, color, next, icon: Icon } = STATUS_CONFIG[statusKey];
-                    const list = orders.filter(o => o.status === statusKey);
-                    
-                    return (
-                        <div key={statusKey} className="flex-1 min-w-[360px] max-w-[420px] flex flex-col gap-8">
-                            <div className={`p-6 rounded-[32px] flex justify-between items-center bg-[#0c0c0c] border border-white/5 border-l-[6px] ${color.replace('bg-', 'border-')} shadow-xl`}>
-                                <div className="flex items-center gap-4">
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color} shadow-lg`}>
-                                        <Icon size={18} className="text-white" />
-                                    </div>
-                                    <h4 className="text-base font-black text-white uppercase tracking-tight italic">{label}</h4>
-                                </div>
-                                <span className="w-8 h-8 flex items-center justify-center bg-white/5 rounded-full text-[10px] font-black text-white/40">{list.length}</span>
-                            </div>
-                            
-                            <div className="flex-1 space-y-6 min-h-[60vh]">
-                                <AnimatePresence mode="popLayout">
-                                    {list.map(o => (
-                                        <motion.div 
-                                            layout
-                                            key={o.id}
-                                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.8 }}
-                                            className="group bg-[#0c0c0c]/60 backdrop-blur-xl border border-white/5 p-8 rounded-[40px] hover:border-white/10 transition-all shadow-2xl hover:shadow-primary/5 hover:translate-y-[-4px]"
+            <div className="flex flex-col gap-3 rounded-xl border border-white/[0.06] bg-[#0c0c0c] p-4 sm:flex-row sm:items-center">
+                <div className="relative min-w-0 flex-1">
+                    <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/30" size={16} />
+                    <input
+                        className="w-full rounded-lg border border-white/[0.08] bg-[#0a0a0a] py-2.5 pl-10 pr-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-primary"
+                        placeholder="Buscar por nome, telefone ou #pedido…"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
+                <button
+                    type="button"
+                    onClick={() => setHideCompleted((v) => !v)}
+                    className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-xs font-medium transition ${
+                        hideCompleted
+                            ? 'border-primary/40 bg-primary/15 text-primary'
+                            : 'border-white/[0.08] bg-white/[0.03] text-white/60 hover:text-white'
+                    }`}
+                >
+                    {hideCompleted ? <Eye size={14} /> : <EyeOff size={14} />}
+                    {hideCompleted ? 'Mostrar concluídos' : 'Ocultar concluídos'}
+                </button>
+            </div>
+
+            {loading && orders.length === 0 ? (
+                <div className="flex items-center justify-center rounded-xl border border-white/[0.06] py-20 text-sm text-white/40">
+                    Carregando pedidos…
+                </div>
+            ) : (
+                <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
+                    {COLS.map((statusKey) => {
+                        const { label, left, next, badge, icon: Icon } = STATUS_CONFIG[statusKey];
+                        const list = filteredOrders.filter((o) => o.status === statusKey);
+
+                        return (
+                            <div key={statusKey} className="flex w-[min(100%,340px)] shrink-0 flex-col gap-3">
+                                <div
+                                    className={`flex items-center justify-between rounded-xl border border-y border-r border-white/[0.06] border-l-4 bg-[#0f0f0f] px-3 py-3 ${left}`}
+                                >
+                                    <div className="flex items-center gap-2.5">
+                                        <div
+                                            className={`flex h-8 w-8 items-center justify-center rounded-lg ${badge} text-white shadow-md`}
                                         >
-                                            <div className="flex justify-between items-start mb-6">
-                                                <div>
-                                                    <p className="text-xl font-black text-white italic tracking-tighter uppercase leading-tight">{o.customerName}</p>
-                                                    <div className="flex items-center gap-2 mt-1.5">
-                                                        <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Pedido #{o.id}</span>
-                                                        <span className="text-white/10">•</span>
-                                                        <span className="text-[10px] font-bold text-white/30">{new Date(o.createdAt).toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'})}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="w-10 h-10 bg-white/[0.03] rounded-xl flex items-center justify-center text-white/20 group-hover:text-primary transition-colors">
-                                                    <ShoppingBag size={18} />
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-3 mb-8 text-xs font-bold text-white/40 uppercase tracking-wider">
-                                                <div className="flex items-center gap-3 bg-white/[0.02] p-3 rounded-2xl"><Phone size={14} className="text-primary" /> {o.phone}</div>
-                                                <div className="flex items-center gap-3 bg-white/[0.02] p-3 rounded-2xl"><MapPin size={14} className="text-primary" /> {o.address}</div>
-                                            </div>
-                                            
-                                            <div className="bg-black/40 border border-white/5 rounded-[32px] p-6 mb-8 space-y-4">
-                                                {o.items.map((i, idx) => (
-                                                    <div key={idx} className="text-xs flex justify-between items-center">
-                                                        <span className="flex items-center gap-3">
-                                                            <span className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-primary font-black text-[10px]">{i.qty}x</span>
-                                                            <span className="font-bold text-white/70 tracking-tight">{i.productName}</span>
-                                                        </span>
-                                                        <span className="text-white/20 font-black">R$ {(i.price * i.qty).toFixed(2)}</span>
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                            <div className="flex justify-between items-center">
-                                                <div>
-                                                    <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] block mb-1">Total</span>
-                                                    <span className="text-3xl font-black text-primary italic tracking-tighter">R$ {o.total.toFixed(2)}</span>
-                                                </div>
-                                                {next && (
-                                                    <button
-                                                        onClick={() => updateStatus(o.id, next)}
-                                                        className="h-14 px-8 bg-primary hover:bg-white hover:text-black text-white rounded-[24px] font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-3 transition-all shadow-xl shadow-primary/20 hover:shadow-white/10"
-                                                    >
-                                                        Próximo <ChevronRight size={16} />
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
-
-                                {list.length === 0 && (
-                                    <div className="h-40 rounded-[40px] border-2 border-dashed border-white/5 flex flex-col items-center justify-center text-white/10">
-                                        <Inbox size={32} className="mb-3 opacity-20" />
-                                        <span className="text-[10px] font-black uppercase tracking-[0.3em]">Sem pedidos</span>
+                                            <Icon size={15} />
+                                        </div>
+                                        <span className="text-sm font-semibold text-white">{label}</span>
                                     </div>
-                                )}
+                                    <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-xs font-medium tabular-nums text-white/55">
+                                        {list.length}
+                                    </span>
+                                </div>
+
+                                <div className="flex min-h-[52vh] flex-col gap-3">
+                                    <AnimatePresence initial={false} mode="popLayout">
+                                        {list.map((o) => (
+                                            <motion.div
+                                                layout
+                                                key={o.id}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, scale: 0.98 }}
+                                                className="rounded-xl border border-white/[0.06] bg-[#0c0c0c] p-4 shadow-sm transition hover:border-white/[0.1]"
+                                            >
+                                                <div className="mb-3 flex items-start justify-between gap-2">
+                                                    <div className="min-w-0">
+                                                        <p className="truncate text-[15px] font-semibold text-white">
+                                                            {o.customerName}
+                                                        </p>
+                                                        <p className="mt-0.5 text-xs text-white/40">
+                                                            <span className="font-medium text-primary/90">#{o.id}</span>
+                                                            <span className="mx-1.5 text-white/20">·</span>
+                                                            {new Date(o.createdAt).toLocaleString('pt-BR', {
+                                                                day: '2-digit',
+                                                                month: '2-digit',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit',
+                                                            })}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mb-3 space-y-1.5 text-xs text-white/55">
+                                                    <div className="flex items-start gap-2 rounded-lg bg-white/[0.03] px-2.5 py-2">
+                                                        <Phone size={13} className="mt-0.5 shrink-0 text-primary/80" />
+                                                        <span className="break-all">{o.phone || '—'}</span>
+                                                    </div>
+                                                    <div className="flex items-start gap-2 rounded-lg bg-white/[0.03] px-2.5 py-2">
+                                                        <MapPin size={13} className="mt-0.5 shrink-0 text-primary/80" />
+                                                        <span className="line-clamp-3">{o.address || '—'}</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mb-3 space-y-2 rounded-lg border border-white/[0.04] bg-black/30 p-3">
+                                                    {o.items.map((i, idx) => (
+                                                        <div key={idx} className="flex justify-between gap-2 text-xs">
+                                                            <span className="min-w-0 text-white/75">
+                                                                <span className="mr-1.5 font-medium text-white/35">{i.qty}×</span>
+                                                                {i.productName}
+                                                            </span>
+                                                            <span className="shrink-0 tabular-nums text-white/40">
+                                                                R$ {(i.price * i.qty).toFixed(2)}
+                                                            </span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+
+                                                <div className="flex items-end justify-between gap-3">
+                                                    <div>
+                                                        <p className="text-[10px] font-medium uppercase tracking-wide text-white/35">
+                                                            Total
+                                                        </p>
+                                                        <p className="text-lg font-semibold tabular-nums text-primary">
+                                                            R$ {Number(o.total).toFixed(2)}
+                                                        </p>
+                                                    </div>
+                                                    {next && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => updateStatus(o.id, next)}
+                                                            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-white shadow-md shadow-primary/25 transition hover:bg-primary-hover"
+                                                        >
+                                                            Próximo
+                                                            <ChevronRight size={14} />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </AnimatePresence>
+
+                                    {list.length === 0 && (
+                                        <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-white/[0.08] py-12 text-center">
+                                            <Inbox size={28} className="mb-2 text-white/15" />
+                                            <span className="text-xs font-medium text-white/30">Nenhum pedido</span>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    );
-                })}
-            </div>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 }
-

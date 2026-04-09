@@ -8,6 +8,7 @@ export default {
     extend: {
       colors: {
         primary: "#FF5F00",
+        "primary-hover": "#e05200",
         gold: "#D4AF37",
         deep: "#050505",
         card: "#0c0c0c",
