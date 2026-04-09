@@ -1,89 +1,95 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import api from '../../api/api';
 
 export default function FlavorsManager({ token }) {
-    const [ingredients, setIngredients] = useState([]);
-    
+    const [flavors, setFlavors] = useState([]);
     const [name, setName] = useState('');
-    const [desc, setDesc] = useState('');
     const [price, setPrice] = useState('');
 
-    const fetchData = async () => {
+    const fetchFlavors = async () => {
         try {
-            const res = await axios.get('http://localhost:3001/api/ingredients');
-            setIngredients(res.data);
-        } catch(e) { console.error(e); }
+            const res = await api.get('/api/ingredients');
+            setFlavors(res.data);
+        } catch(e) {}
     };
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => { fetchFlavors(); }, []);
 
-    const handleCreate = async (e) => {
+    const handleAdd = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3001/api/ingredients', {
-                name, description: desc, price: parseFloat(price)
-            }, { headers: { Authorization: `Bearer ${token}` } });
-            setName(''); setDesc(''); setPrice('');
-            fetchData();
-        } catch(e) { console.error(e); alert('Erro ao salvar ingrediente'); }
+            await api.post('/api/admin/ingredients', { name, price: parseFloat(price) }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setName(''); setPrice('');
+            fetchFlavors();
+        } catch(e) { alert('Erro ao adicionar sabor'); }
     };
 
     const handleDelete = async (id) => {
-        if(!window.confirm('Tem certeza?')) return;
+        if(!window.confirm('Excluir este sabor?')) return;
         try {
-            await axios.delete(`http://localhost:3001/api/ingredients/${id}`, {
+            await api.delete(`/api/admin/ingredients/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            fetchData();
-        } catch(e) { console.error(e); alert('Erro ao deletar ingrediente'); }
+            fetchFlavors();
+        } catch(e) {}
+    };
+
+    const inputStyle = {
+        width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: '10px', padding: '0.8rem 1rem', color: '#fff', marginBottom: '1rem', outline: 'none'
     };
 
     return (
-        <div>
-            <h3>Gerenciamento de Sabores do Pizza Builder</h3>
-            <p style={{ color: '#666', marginBottom: '2rem' }}>Esses ingredientes aparecem na gaveta flutuante durante a montagem fracionada da pizza do usuário.</p>
+        <div style={{ color: '#fff' }}>
+            <div style={{ marginBottom: '2rem' }}>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Sabores do Builder</h3>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>Gerencie os ingredientes que aparecem na montagem da pizza</p>
+            </div>
 
-            <div style={{ display: 'flex', gap: '2rem' }}>
-                <div style={{ flex: 1, background: '#f9f9f9', padding: '1rem', borderRadius: '8px' }}>
-                    <h4>Novo Sabor / Ingrediente</h4>
-                    <form onSubmit={handleCreate} style={{ marginTop: '1rem' }}>
-                        <div className="form-group" style={{ marginBottom: '1rem' }}>
-                            <label>Nome do Sabor</label>
-                            <input className="form-input" value={name} onChange={e => setName(e.target.value)} required />
-                        </div>
-                        <div className="form-group" style={{ marginBottom: '1rem' }}>
-                            <label>Adicional no Preço (R$)</label>
-                            <input type="number" step="0.01" className="form-input" value={price} onChange={e => setPrice(e.target.value)} required />
-                            <small style={{ color: '#666' }}>O valor base da pizza é definido pelo Tamanho. Esse valor é cobrado no custo da fração.</small>
-                        </div>
-                        <button type="submit" className="btn btn-primary w-100">Habilitar Sabor</button>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '2.5rem', alignItems: 'start' }}>
+                {/* Form Card */}
+                <div style={{ background: '#111', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <h4 style={{ marginBottom: '1.2rem', fontSize: '1rem', color: 'var(--primary, #e07b39)' }}>Novo Sabor</h4>
+                    <form onSubmit={handleAdd}>
+                        <label style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem' }}>Nome do Sabor</label>
+                        <input style={inputStyle} value={name} onChange={e => setName(e.target.value)} placeholder="Ex: Calabresa Especial" required />
+                        
+                        <label style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem' }}>Adicional (R$)</label>
+                        <input style={inputStyle} type="number" step="0.01" value={price} onChange={e => setPrice(e.target.value)} placeholder="0.00" required />
+                        
+                        <button type="submit" className="btn btn-primary w-100" style={{ padding: '0.8rem', fontWeight: 700 }}>Habilitar Sabor</button>
                     </form>
                 </div>
-                
-                <div style={{ flex: 2 }}>
-                    <h4>Sabores Liberados na Plataforma</h4>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem', background: '#fff' }}>
+
+                {/* List Table */}
+                <div style={{ background: '#111', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                         <thead>
-                            <tr style={{ background: '#eee', textAlign: 'left' }}>
-                                <th style={{ padding: '0.8rem' }}>ID</th>
-                                <th>Sabor</th>
-                                <th>Adicional (+R$)</th>
-                                <th>Ações</th>
+                            <tr style={{ background: 'rgba(255,255,255,0.03)', color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                                <th style={{ padding: '1rem 1.5rem' }}>ID</th>
+                                <th style={{ padding: '1rem 1.5rem' }}>Sabor</th>
+                                <th style={{ padding: '1rem 1.5rem' }}>Adicional</th>
+                                <th style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {ingredients.map(i => (
-                                <tr key={i.id} style={{ borderBottom: '1px solid #eee' }}>
-                                    <td style={{ padding: '0.8rem' }}>{i.id}</td>
-                                    <td><strong>{i.name}</strong></td>
-                                    <td style={i.price > 0 ? {color: '#d32f2f', fontWeight: 'bold'} : {}}>{i.price > 0 ? '+ R$ ' + i.price.toFixed(2) : 'Sem custo'}</td>
-                                    <td>
-                                        <button className="btn btn-sm" style={{ background: '#d32f2f', color: '#fff' }} onClick={() => handleDelete(i.id)}>Excluir</button>
+                            {flavors.map(f => (
+                                <tr key={f.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                                    <td style={{ padding: '1rem 1.5rem', opacity: 0.4 }}>#{f.id}</td>
+                                    <td style={{ padding: '1rem 1.5rem', fontWeight: 600 }}>{f.name}</td>
+                                    <td style={{ padding: '1rem 1.5rem', color: 'var(--primary, #e07b39)', fontWeight: 700 }}>R$ {f.price.toFixed(2)}</td>
+                                    <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>
+                                        <button onClick={() => handleDelete(f.id)} style={{ background: 'rgba(231,76,60,0.1)', color: '#e74c3c', border: 'none', borderRadius: '6px', padding: '0.4rem 0.8rem', cursor: 'pointer', fontSize: '0.8rem' }}>
+                                            <i className="fa-solid fa-trash"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
+                    {flavors.length === 0 && <div style={{ padding: '3rem', textAlign: 'center', color: 'rgba(255,255,255,0.2)' }}>Nenhum sabor cadastrado</div>}
                 </div>
             </div>
         </div>
