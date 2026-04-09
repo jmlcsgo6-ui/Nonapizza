@@ -115,10 +115,22 @@ app.get('/api/sizes', async (req, res) => {
 
 app.post('/api/orders', async (req, res) => {
     try {
-        const { customerName, phone, address, payment, total, items, userId } = req.body;
+        const { customerName, phone, address, payment, total, items } = req.body;
+        
+        // Tentar extrair userId do Token se o cliente estiver logado
+        let userId = null;
+        const authHeader = req.headers.authorization;
+        if (authHeader) {
+            try {
+                const token = authHeader.split(' ')[1];
+                const decoded = jwt.verify(token, JWT_SECRET);
+                userId = decoded.id;
+            } catch(e) { /* Token inválido, ignorar userId */ }
+        }
+
         const order = await prisma.order.create({
             data: {
-                userId: userId || null,
+                userId: userId,
                 customerName,
                 phone: phone || null,
                 address: address || 'Nao informado',

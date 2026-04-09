@@ -170,16 +170,32 @@ export default function CartDrawer() {
 
                 {/* STEP: Success */}
                 {step === 'success' && placedOrder && (
-                    <div style={{ padding: '2rem', textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
-                        <div style={{ fontSize: '3.5rem' }}>🍕</div>
-                        <h3 style={{ fontSize: '1.3rem', fontWeight: 800 }}>Sucesso!</h3>
-                        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.95rem' }}>Seu pedido está sendo preparado.</p>
-                        <div style={{ background: 'var(--primary, #e07b39)', color: '#fff', borderRadius: '12px', padding: '0.75rem 2rem', fontSize: '1.8rem', fontWeight: 900 }}>
-                            #{placedOrder.id}
+                    <div style={{ padding: '2rem', textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(to bottom, #111, #0a0a0a)' }}>
+                        <div className="success-icon-wrapper">
+                            <i className="fa-solid fa-check"></i>
                         </div>
-                        <button className="btn btn-primary w-100" onClick={() => navigate('/meu-pedido')}>
-                            Ver Status em Tempo Real →
-                        </button>
+                        
+                        <h3 className="animate-text" style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '0.5rem', color: '#fff' }}>
+                            Pedido <span style={{ color: '#27ae60' }}>Confirmado!</span>
+                        </h3>
+                        
+                        <p className="animate-text" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1rem', marginBottom: '2.5rem', textWrap: 'balance' }}>
+                            Prepare o coração (e o apetite), sua Nona Pizza já está sendo preparada com todo carinho.
+                        </p>
+
+                        <div className="animate-pop" style={{ background: 'rgba(255,255,255,0.03)', border: '2px solid rgba(255,255,255,0.08)', borderRadius: '24px', padding: '1.5rem 2.5rem', marginBottom: '2.5rem', width: '100%' }}>
+                            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.5rem' }}>Número do Pedido</p>
+                            <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--primary, #e07b39)', margin: 0 }}>#{placedOrder.id}</h2>
+                        </div>
+
+                        <div className="animate-text" style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <button className="btn btn-primary w-100" onClick={() => { setIsCartOpen(false); navigate('/meu-pedido'); }} style={{ padding: '1.1rem', fontSize: '1rem', fontWeight: 800 }}>
+                                ACOMPANHAR EM TEMPO REAL
+                            </button>
+                            <button onClick={handleClose} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 600 }}>
+                                Voltar para o Site
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
