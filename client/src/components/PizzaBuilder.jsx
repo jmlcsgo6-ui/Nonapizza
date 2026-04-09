@@ -101,7 +101,9 @@ export default function PizzaBuilder() {
                                     >
                                         <div className="size-icon"><i className="fa-solid fa-pizza-slice"></i></div>
                                         <h5>{s.name}</h5>
-                                        <p style={{ marginTop: '0.2rem', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{s.maxSlices} fatias {s.maxSlices === 4 ? '(25cm)' : s.maxSlices === 6 ? '(30cm)' : s.maxSlices === 8 ? '(35cm)' : ''}</p>
+                                        <p style={{ marginTop: '0.2rem', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                            {s.name === 'Pequena' ? '4 fatias (25cm)' : s.name === 'Média' ? '6 fatias (30cm)' : s.name === 'Grande' ? '8 fatias (35cm)' : `${s.maxSlices} fatias`}
+                                        </p>
                                         <p style={{ color: 'var(--primary)', fontWeight: 'bold', fontSize: '0.9rem' }}>A partir de R$ {s.price.toFixed(2).replace('.', ',')}</p>
                                     </div>
                                 ))}
@@ -173,7 +175,7 @@ export default function PizzaBuilder() {
                                         </ul>
                                         <div className="builder-total">
                                             <span>Total:</span>
-                                            <strong>R$ {calculateTotal().toFixed(2)}</strong>
+                                            <strong>R$ {calculateTotal.toFixed(2)}</strong>
                                         </div>
                                     </div>
 
