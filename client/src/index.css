@@ -549,8 +549,11 @@ body {
 }
 
 .btn-large {
-    padding: 1.25rem 3rem;
-    font-size: 1.1rem;
+    padding: 1.5rem 3rem !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* Footer */
@@ -1286,7 +1289,7 @@ body {
 .crust-value { font-weight: 600; font-size: 1.1rem; }
 
 .builder-summary {
-    background: rgba(255, 255, 255, 0.02); border-radius: 16px; padding: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.02); border-radius: 16px; padding: 2.5rem !important; margin-top: 2rem; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.05);
 }
 
 .builder-summary h4 { margin-bottom: 1rem; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
@@ -1296,10 +1299,11 @@ body {
 
 .builder-total {
     display: flex; justify-content: space-between; align-items: center;
-    font-size: 1.25rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;
+    font-size: 1.25rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem !important;
+    margin-top: 1rem;
 }
 
-#builder-total-price { color: var(--primary); }
+.builder-total strong { color: var(--primary); font-weight: 800; }
 
 #builder-obs {
     width: 100%; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1);

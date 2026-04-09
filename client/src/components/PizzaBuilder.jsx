@@ -98,10 +98,10 @@ export default function PizzaBuilder() {
                 {/* Step 1 */}
                 <div className={`builder-step ${step === 1 ? 'active' : 'slide-left'}`}>
                     <h2 className="step-title">Como começamos?</h2>
-                    <p className="step-desc">Escolha o tamanho e a quantidade de sabores.</p>
+                    <p className="step-desc">Escolha o tamanho e quantos sabores deseja.</p>
 
                     <div className="builder-section">
-                        <h4>Selecione o Tamanho</h4>
+                        <h4 className="text-center">Tamanho</h4>
                         <div className="cards-grid">
                             {sizes.map(s => (
                                 <div 
@@ -111,25 +111,27 @@ export default function PizzaBuilder() {
                                 >
                                     <div className="size-icon"><i className="fa-solid fa-pizza-slice"></i></div>
                                     <h5>{s.name}</h5>
-                                    <p>{s.maxSlices} fatias</p>
-                                    <p className="mt-2" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>R$ {s.price.toFixed(2)}</p>
+                                    <p>{s.maxSlices} fatias ({s.name === 'Pequena' ? '25cm' : s.name === 'Média' ? '30cm' : '35cm'})</p>
+                                    <p className="mt-2" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>A partir de R$ {s.price.toFixed(2).replace('.', ',')}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    <div className="builder-section">
+                    <div className="builder-section text-center">
                         <h4>Quantidade de Sabores</h4>
                         <div className="flavors-count-control mx-auto">
-                            <button className="btn-text" onClick={() => setFlavorsCount(Math.max(1, flavorsCount - 1))}><i className="fa-solid fa-minus"></i></button>
-                            <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{flavorsCount}</span>
-                            <button className="btn-text" onClick={() => setFlavorsCount(Math.min(selectedSize?.maxSlices || 3, flavorsCount + 1))}><i className="fa-solid fa-plus"></i></button>
+                            <button className="qty-btn" onClick={() => setFlavorsCount(Math.max(1, flavorsCount - 1))}>-</button>
+                            <span>{flavorsCount}</span>
+                            <button className="qty-btn" onClick={() => setFlavorsCount(Math.min(selectedSize?.maxSlices || 3, flavorsCount + 1))}>+</button>
                         </div>
-                        <p className="fc-hint">Você pode dividir sua pizza em até {selectedSize?.maxSlices || 3} sabores.</p>
+                        <p className="fc-hint">Máximo de 3 sabores por pizza.</p>
                     </div>
 
-                    <div className="step-footer">
-                        <button className="btn btn-primary w-100" disabled={!selectedSize} onClick={() => setStep(2)}>Avançar para Montagem &rarr;</button>
+                    <div className="step-footer mt-4">
+                        <button className="btn btn-primary btn-large w-100" disabled={!selectedSize} onClick={() => setStep(2)}>
+                            Avançar para Montagem <i className="fa-solid fa-arrow-right" style={{ marginLeft: '8px' }}></i>
+                        </button>
                     </div>
                 </div>
 
@@ -176,52 +178,56 @@ export default function PizzaBuilder() {
                                     </svg>
                                 </div>
                             </div>
-                            <p className="visual-hint">Clique nos pedaços para escolher os sabores</p>
-                            <button className="btn-text mt-2" onClick={() => setStep(1)}><i className="fa-solid fa-arrow-left"></i> Voltar ao Tamanho</button>
+                            <p className="visual-hint"><i className="fa-solid fa-hand-pointer"></i> Clique em um pedaço para escolher o sabor</p>
                         </div>
 
                         <div className="builder-options">
-                            <button className="crust-select-btn" onClick={() => { setDrawerTarget('crust'); setDrawerOpen(true); }}>
-                                <div className="crust-info">
-                                    <span className="crust-label">Borda Recheada</span>
-                                    <span className="crust-value">{selectedCrust?.name || 'Selecione'}</span>
-                                </div>
-                                <i className="fa-solid fa-chevron-right"></i>
-                            </button>
+                            <button className="btn-text" onClick={() => setStep(1)}><i className="fa-solid fa-arrow-left"></i> Voltar tamanhos</button>
+
+                            <div className="builder-section" style={{ marginTop: '2rem' }}>
+                                <button className="crust-select-btn" onClick={() => { setDrawerTarget('crust'); setDrawerOpen(true); }}>
+                                    <div className="crust-info">
+                                        <span className="crust-label">Borda</span>
+                                        <span className="crust-value">{selectedCrust?.name || 'Tradicional'}</span>
+                                    </div>
+                                    <i className="fa-solid fa-chevron-right"></i>
+                                </button>
+                            </div>
 
                             <div className="builder-summary">
-                                <h4>Resumo da sua Pizza</h4>
+                                <h4>Sua Pizza</h4>
                                 <ul id="builder-summary-list">
-                                    <li><span>Pizza {selectedSize?.name}</span><span>R$ {selectedSize?.price.toFixed(2)}</span></li>
+                                    <li><span>Tamanho {selectedSize?.name}</span><span>R$ {selectedSize?.price.toFixed(2).replace('.', ',')}</span></li>
                                     {segments.map((seg, i) => (
                                         <li key={i}>
-                                            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>- Pedaço {i+1}: {seg?.name || 'Pendente...'}</span>
-                                            <span>{seg ? `+ R$ ${(seg.price / (segments.length || 1)).toFixed(2)}` : ''}</span>
+                                            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>- Sabor {i+1}: {seg?.name || 'Pendente...'}</span>
+                                            <span>{seg ? (seg.price > 0 ? `+ R$ ${(seg.price / (segments.length || 1)).toFixed(2).replace('.', ',')}` : 'Incluso') : ''}</span>
                                         </li>
                                     ))}
-                                    {selectedCrust && selectedCrust.price > 0 && (
-                                        <li><span>Borda {selectedCrust.name}</span><span>+ R$ {selectedCrust.price.toFixed(2)}</span></li>
-                                    )}
+                                    <li><span>Borda {selectedCrust?.name || 'Tradicional'}</span><span>{selectedCrust?.price > 0 ? `+ R$ ${selectedCrust.price.toFixed(2).replace('.', ',')}` : 'Inclusa'}</span></li>
                                 </ul>
                                 <div className="builder-total">
-                                    <span>Total</span>
-                                    <span id="builder-total-price">R$ {calculateTotal.toFixed(2)}</span>
+                                    <span>Total:</span>
+                                    <strong id="builder-total-price">R$ {calculateTotal.toFixed(2).replace('.', ',')}</strong>
                                 </div>
                             </div>
 
-                            <textarea 
-                                id="builder-obs" 
-                                placeholder="Alguma observação? (ex: sem cebola, bem assada...)"
-                                value={obs}
-                                onChange={e => setObs(e.target.value)}
-                            ></textarea>
+                            <div className="builder-obs" style={{ marginBottom: '2rem' }}>
+                                <h4>Observações</h4>
+                                <textarea 
+                                    id="builder-obs" 
+                                    placeholder="Ex: Sem cebola, bem assada..."
+                                    value={obs}
+                                    onChange={e => setObs(e.target.value)}
+                                ></textarea>
+                            </div>
 
                             <button 
-                                className="btn btn-primary w-100 mt-2" 
+                                className="btn btn-primary btn-large w-100" 
                                 disabled={!isComplete}
                                 onClick={handleAddToCart}
                             >
-                                Adicionar ao Carrinho <i className="fa-solid fa-cart-shopping"></i>
+                                <i className="fa-solid fa-cart-plus" style={{ marginRight: '8px' }}></i> Adicionar ao Pedido
                             </button>
                         </div>
                     </div>
@@ -263,12 +269,12 @@ export default function PizzaBuilder() {
                         }}>
                             <div className="option-item-info">
                                 <h5>{item.name}</h5>
-                                <p>{item.desc || (item.price > 0 ? `+ R$ ${item.price.toFixed(2)}` : 'Sabor Tradicional')}</p>
+                                <p>{item.desc || (item.price > 0 ? `+ R$ ${item.price.toFixed(2).replace('.', ',')}` : 'Sabor Tradicional')}</p>
                             </div>
                             <div className="option-price">
                                 {drawerTarget === 'crust' 
-                                    ? (item.price > 0 ? `+ R$ ${item.price.toFixed(2)}` : 'Grátis')
-                                    : (item.price > 0 ? `+ R$ ${(item.price / segments.length).toFixed(2)}` : 'Incluso')}
+                                    ? (item.price > 0 ? `+ R$ ${item.price.toFixed(2).replace('.', ',')}` : 'Grátis')
+                                    : (item.price > 0 ? `+ R$ ${(item.price / segments.length).toFixed(2).replace('.', ',')}` : 'Incluso')}
                             </div>
                         </div>
                     ))}
