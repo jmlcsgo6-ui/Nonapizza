@@ -90,10 +90,11 @@ app.get('/api/sizes', async (req, res) => {
 
 app.post('/api/orders', async (req, res) => {
     try {
-        const { customerName, address, payment, total, items } = req.body;
+        const { customerName, phone, address, payment, total, items } = req.body;
         const order = await prisma.order.create({
             data: {
                 customerName,
+                phone: phone || null,
                 address: address || 'Nao informado',
                 payment: payment || 'Nao informado',
                 total,
@@ -110,6 +111,30 @@ app.post('/api/orders', async (req, res) => {
             include: { items: true }
         });
         res.json(order);
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// --- Tracking Routes (Public) ---
+app.get('/api/track/:id', async (req, res) => {
+    try {
+        const order = await prisma.order.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: { items: true }
+        });
+        if (!order) return res.status(404).json({ error: 'Pedido não encontrado' });
+        res.json(order);
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/track/phone/:phone', async (req, res) => {
+    try {
+        const orders = await prisma.order.findMany({
+            where: { phone: req.params.phone },
+            include: { items: true },
+            orderBy: { createdAt: 'desc' },
+            take: 5
+        });
+        res.json(orders);
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 

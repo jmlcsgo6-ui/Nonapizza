@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
+import TrackOrder from './pages/TrackOrder';
 import { CartProvider } from './context/CartContext';
 import { BuilderProvider } from './context/BuilderContext';
 import './index.css';
@@ -12,8 +13,9 @@ function App() {
         <Router>
           <div className="app-container">
             <Routes>
-              <Route path="/admin/*" element={<Admin />} />
-              <Route path="/" element={<Home />} />
+                <Route path="/admin/*" element={<Admin />} />
+                <Route path="/meu-pedido" element={<TrackOrder />} />
+                <Route path="/" element={<Home />} />
             </Routes>
           </div>
         </Router>

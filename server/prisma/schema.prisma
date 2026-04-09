@@ -58,10 +58,11 @@ model SizeOption {
 model Order {
   id           Int         @id @default(autoincrement())
   customerName String
+  phone        String?
   address      String
   payment      String
   total        Float
-  status       String      @default("PENDING") // PENDING, COOKING, DELIVERING, DELIVERED
+  status       String      @default("PENDING") // PENDING, COOKING, DELIVERING, COMPLETED
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   items        OrderItem[]
