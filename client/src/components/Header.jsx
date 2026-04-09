@@ -30,84 +30,60 @@ export default function Header() {
     return (
         <>
             {/* DESKTOP HEADER: Glassmorphism */}
-            <header className={`header-glass hidden md:flex items-center transition-all duration-500 ${scrolled ? 'h-[65px] bg-[#050505]/90' : 'h-[80px]'}`}>
-                <div className="container mx-auto px-6 flex justify-between items-center">
-                    <div className="flex items-center gap-12">
-                        <motion.div 
-                            whileHover={{ scale: 1.05 }}
-                            className="flex items-center gap-2 cursor-pointer" 
-                            onClick={() => navigate('/')}
-                        >
-                            <div className="bg-primary w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+            <header className={`fixed top-0 left-0 w-full z-[1000] flex items-center transition-all duration-300 ${scrolled ? 'h-[65px] bg-black/95 shadow-xl' : 'h-[80px] bg-black/80 backdrop-blur-md'}`}>
+                <div className="container mx-auto px-6 flex justify-between items-center w-full">
+                    <div className="logo cursor-pointer" onClick={() => navigate('/')}>
+                        <div className="flex items-center gap-3">
+                            <div className="bg-primary w-8 h-8 rounded-lg flex items-center justify-center">
                                 <Utensils size={18} color="#fff" strokeWidth={3} />
                             </div>
-                            <span className="text-xl font-display font-black tracking-tighter text-white">
-                                NONA<span className="text-primary">PIZZA</span>
+                            <span className="text-xl font-black tracking-tighter text-white">
+                                NONA <span className="text-primary">PIZZA</span>
                             </span>
-                        </motion.div>
-
-                        <nav>
-                            <ul className="flex gap-8 list-none m-0 p-0">
-                                {['Início', 'Cardápio', 'Sobre'].map((item) => (
-                                    <li key={item}>
-                                        <a href={`#${item.toLowerCase()}`} className="text-sm font-bold text-white/60 hover:text-primary transition-colors no-underline uppercase tracking-widest text-[0.7rem]">
-                                            {item}
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
-                        </nav>
+                        </div>
                     </div>
 
-                    <div className="flex items-center gap-6">
-                        <button 
-                            onClick={() => setIsCartOpen(true)}
-                            className="relative bg-white/5 hover:bg-white/10 p-2.5 rounded-full border border-white/10 transition-all"
-                        >
-                            <ShoppingBag size={20} strokeWidth={2.5} />
-                            {cartCount > 0 && (
-                                <motion.span 
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    className="absolute -top-1 -right-1 bg-primary text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-lg"
+                    <nav className="hidden md:block">
+                        <ul className="flex items-center gap-6 m-0 p-0 list-none">
+                            <li><a href="#home" className="text-[13px] font-bold text-white hover:text-primary transition-colors no-underline uppercase tracking-wide">Início</a></li>
+                            <li><a href="#menu" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors no-underline uppercase tracking-wide">Cardápio</a></li>
+                            <li>
+                                <button 
+                                    onClick={() => navigate('/meu-pedido')}
+                                    className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-[12px] font-bold text-white/80 transition-all uppercase tracking-wide"
                                 >
-                                    {cartCount}
-                                </motion.span>
+                                    MEUS PEDIDOS
+                                </button>
+                            </li>
+                            {!customerToken ? (
+                                <li>
+                                    <button 
+                                        onClick={() => navigate('/login')}
+                                        className="bg-primary hover:bg-[#FF7A00] px-6 py-2.5 rounded-full text-[12px] font-bold text-white transition-all shadow-lg shadow-primary/20 uppercase tracking-wide"
+                                    >
+                                        ENTRAR
+                                    </button>
+                                </li>
+                            ) : (
+                                <li className="flex items-center gap-3 border-l border-white/10 pl-6 ml-2">
+                                    <span className="text-xs font-bold text-white/60 underline cursor-pointer" onClick={handleLogout}>Sair</span>
+                                </li>
                             )}
-                        </button>
+                        </ul>
+                    </nav>
 
-                        {customerToken ? (
-                            <div className="flex items-center gap-4 border-l border-white/10 pl-6 h-10">
-                                <div className="text-right">
-                                    <p className="text-[10px] text-white/40 uppercase font-black leading-none">Bem-vindo</p>
-                                    <p className="text-sm font-black text-white leading-tight">{customerName.split(' ')[0]}</p>
-                                </div>
-                                <div className="flex gap-2">
-                                    <button 
-                                        onClick={() => navigate('/meu-pedido')}
-                                        className="bg-white/5 hover:bg-white/10 p-2 rounded-lg border border-white/10"
-                                    >
-                                        <ClipboardList size={18} />
-                                    </button>
-                                    <button 
-                                        onClick={handleLogout}
-                                        className="bg-red-500/10 hover:bg-red-500/20 p-2 rounded-lg border border-red-500/20 text-red-500"
-                                    >
-                                        <LogOut size={18} />
-                                    </button>
-                                </div>
-                            </div>
-                        ) : (
-                            <button 
-                                onClick={() => navigate('/login')}
-                                className="group flex items-center gap-2 bg-primary hover:bg-[#FF7A00] px-6 py-2.5 rounded-full font-black text-xs transition-all shadow-xl shadow-primary/20 hover:-translate-y-0.5"
-                            >
-                                <User size={16} strokeWidth={3} />
-                                ENTRAR
-                                <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                            </button>
+                    {/* Shopping Bag Button for both mobile (header) and desktop if needed */}
+                    <button 
+                        onClick={() => setIsCartOpen(true)}
+                        className="md:hidden relative bg-white/5 p-2.5 rounded-full border border-white/10"
+                    >
+                        <ShoppingBag size={20} strokeWidth={2.5} />
+                        {cartCount > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-primary text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full">
+                                {cartCount}
+                            </span>
                         )}
-                    </div>
+                    </button>
                 </div>
             </header>
 

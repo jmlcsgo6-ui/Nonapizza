@@ -95,65 +95,44 @@ export default function Hero() {
             
             <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/80 to-transparent z-1"></div>
 
-            <div className="container mx-auto px-6 relative z-10 min-h-screen flex items-center">
+            <div className={`container mx-auto px-6 relative z-10 min-h-screen flex items-center`}>
                 <div className="max-w-3xl">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <span className="nona-badge mb-6 inline-block tracking-widest">Alquimia Italiana</span>
                         <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.05] mb-6">
-                            A alquimia entre a <span className="text-gradient">fermentação de 48h</span> e o calor do forno.
+                            A pizza perfeita, montada diante dos seus olhos.
                         </h1>
                         <p className="text-xl text-white/60 mb-10 max-w-xl font-medium leading-relaxed">
-                            Simplesmente a pizza perfeita. Ingredientes San Marzano frescos caindo em sincronia com seu apetite.
+                            Ingredientes frescos caindo em tempo real, sabor incomparável e entrega rápida direto na sua porta.
                         </p>
+
+                        <ul className="mb-12 space-y-4 list-none p-0">
+                            {[
+                                { icon: <Flame size={14} />, text: "Ingredientes selecionados diariamente" },
+                                { icon: <Flame size={14} />, text: "Entrega rápida e sempre quente" },
+                                { icon: <Award size={14} />, text: "Qualidade artesanal com sabor premium" }
+                            ].map((item, i) => (
+                                <li key={i} className="flex items-center gap-4 text-white font-medium">
+                                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white">
+                                        {item.icon}
+                                    </div>
+                                    <span>{item.text}</span>
+                                </li>
+                            ))}
+                        </ul>
 
                         <div className="flex flex-col sm:flex-row gap-4 mb-12">
                             <motion.button 
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="btn-premium"
-                                onClick={() => document.dispatchEvent(new CustomEvent('open-menu'))}
+                                className="bg-primary hover:bg-[#FF7A00] px-10 py-4 rounded-full font-black text-white shadow-2xl shadow-primary/40 flex items-center gap-3 transition-all"
+                                onClick={() => document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' })}
                             >
-                                EXPLORAR CARDÁPIO <ChevronRight size={18} strokeWidth={3} />
+                                FAZER PEDIDO <div className="mt-1">↓</div>
                             </motion.button>
-                            
-                            <motion.div 
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 1 }}
-                                className="flex items-center gap-3 px-6 py-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md"
-                            >
-                                <div className="flex -space-x-3">
-                                    {[1,2,3].map(i => (
-                                        <div key={i} className="w-8 h-8 rounded-full border-2 border-[#050505] bg-deep overflow-hidden">
-                                            <img src={`https://i.pravatar.cc/100?u=${i}`} alt="User" />
-                                        </div>
-                                    ))}
-                                </div>
-                                <span className="text-sm font-bold text-white/80">4.9/5 <span className="text-white/40 font-normal">baseado em +2k pedidos</span></span>
-                            </motion.div>
-                        </div>
-
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                            <div className="flex flex-col gap-2">
-                                <Flame className="text-primary" size={24} />
-                                <span className="text-xs font-black uppercase tracking-widest text-white/40">Forno a Lenha</span>
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <Leaf className="text-primary" size={24} />
-                                <span className="text-xs font-black uppercase tracking-widest text-white/40">San Marzano</span>
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <Award className="text-primary" size={24} />
-                                <span className="text-xs font-black uppercase tracking-widest text-white/40">Premium 48h</span>
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <MapPin className="text-primary" size={24} />
-                                <span className="text-xs font-black uppercase tracking-widest text-white/40">Entrega Veloz</span>
-                            </div>
                         </div>
                     </motion.div>
                 </div>
