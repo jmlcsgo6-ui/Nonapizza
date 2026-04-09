@@ -118,13 +118,31 @@ export default function CartDrawer() {
                                 <span>Total</span>
                                 <strong>R$ {cartTotal.toFixed(2)}</strong>
                             </div>
-                            <button
-                                className="btn btn-primary w-100"
-                                onClick={handleCheckout}
-                                disabled={cart.length === 0}
-                            >
-                                {!customerToken ? 'Fazer Login para Comprar' : 'Continuar para Entrega →'}
-                            </button>
+                            
+                            {!customerToken ? (
+                                <div style={{ textAlign: 'center', width: '100%' }}>
+                                    <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', marginBottom: '1rem' }}>
+                                        <i className="fa-solid fa-lock" style={{ marginRight: '5px' }}></i> 
+                                        Login obrigatório para pedir
+                                    </p>
+                                    <button
+                                        className="btn btn-primary w-100"
+                                        onClick={() => { setIsCartOpen(false); navigate('/login'); }}
+                                        style={{ background: 'linear-gradient(135deg, #ff5e00, #ff9d00)', fontWeight: 800 }}
+                                    >
+                                        FAZER LOGIN AGORA
+                                    </button>
+                                </div>
+                            ) : (
+                                <button
+                                    className="btn btn-primary w-100"
+                                    onClick={handleCheckout}
+                                    disabled={cart.length === 0}
+                                    style={{ fontWeight: 800 }}
+                                >
+                                    CONTINUAR PARA ENTREGA <i className="fa-solid fa-arrow-right" style={{ marginLeft: '10px' }}></i>
+                                </button>
+                            )}
                         </div>
                     </>
                 )}
