@@ -42,66 +42,67 @@ export default function Admin() {
 
     if (!token) {
         return (
-            <div className="min-h-screen bg-[#000] flex items-center justify-center p-6 relative overflow-hidden">
-                {/* Immersive Background Decor - same as login */}
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
-                
+            <div className="min-h-screen bg-[#000] flex items-center justify-center p-6 relative overflow-hidden font-mono">
+                {/* Tactical grid background */}
+                <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none"></div>
+
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="w-full max-w-md z-10"
                 >
                     <div className="text-center mb-10">
-                        <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <div className="w-16 h-16 bg-primary/10 text-primary border border-primary/20 flex items-center justify-center mx-auto mb-6">
                             <ChefHat size={32} />
                         </div>
-                        <h2 className="text-3xl font-black italic tracking-tighter text-white uppercase">Nona <span className="text-primary">Admin</span></h2>
-                        <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mt-2">Portal da Alquimia</p>
+                        <h2 className="text-3xl font-black italic tracking-tighter text-white uppercase">Nona <span className="text-primary italic">Admin</span></h2>
+                        <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.4em] mt-2">SISTEMA INTEGRADO DE ALQUIMIA</p>
                     </div>
 
-                    <div className="bg-card border border-white/5 rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden">
-                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+                    <div className="bg-[#0a0a0a] border border-white/10 p-10 shadow-2xl relative">
+                        <div className="absolute top-0 left-0 w-full h-0.5 bg-primary"></div>
 
                         <form onSubmit={handleLogin} className="space-y-6">
                             {error && (
                                 <motion.div 
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl text-red-500 text-[10px] font-black uppercase text-center tracking-widest"
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    className="bg-red-500/10 border-l-2 border-red-500 p-4 text-red-500 text-[10px] font-bold uppercase tracking-widest"
                                 >
                                     {error}
                                 </motion.div>
                             )}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] pl-2">Login Administrativo</label>
+                                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.3em] block">ID DO OPERADOR</label>
                                 <input 
                                     type="email" 
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all placeholder:text-white/5"
-                                    placeholder="USUÁRIO"
+                                    className="w-full bg-white/[0.03] border border-white/10 py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all placeholder:text-white/5 uppercase"
+                                    placeholder="EMAIL@NONA.COM"
                                     value={email} 
                                     onChange={e => setEmail(e.target.value)} 
                                     required 
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] pl-2">Chave de Acesso</label>
+                                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.3em] block">CHAVE CRIPTOGRÁFICA</label>
                                 <input 
                                     type="password" 
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all placeholder:text-white/5"
+                                    className="w-full bg-white/[0.03] border border-white/10 py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all placeholder:text-white/5"
                                     placeholder="••••••••"
                                     value={password} 
                                     onChange={e => setPassword(e.target.value)} 
                                     required 
                                 />
                             </div>
-                            <button type="submit" className="btn btn-primary w-full py-4.5 rounded-xl flex justify-center items-center gap-3 font-bold text-xs tracking-[0.2em]">
-                                ACESSAR PAINEL <ChevronRight size={18} strokeWidth={3} />
+                            <button type="submit" className="w-full bg-primary py-4 flex justify-center items-center gap-3 font-black text-[10px] uppercase tracking-[0.3em] text-black hover:bg-white transition-all group">
+                                AUTENTICAR SESSÃO <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                             </button>
                         </form>
                     </div>
 
-                    <a href="/" className="block text-center mt-10 text-[10px] font-black text-white/20 uppercase tracking-[0.3em] hover:text-white transition-colors">
-                        ← Retornar ao Início
+                    <a href="/" className="block text-center mt-10 text-[10px] font-bold text-white/20 uppercase tracking-[0.5em] hover:text-white transition-colors">
+                        Sair do terminal
                     </a>
                 </motion.div>
             </div>
@@ -109,85 +110,87 @@ export default function Admin() {
     }
 
     const navItems = [
-        { id: 'dashboard', label: 'Estatísticas', icon: LayoutDashboard },
-        { id: 'orders', label: 'Gerenciar Pedidos', icon: ShoppingBag },
-        { id: 'products', label: 'Cardápio Fixo', icon: Pizza },
-        { id: 'flavors', label: 'Sabores Builder', icon: PieChart },
+        { id: 'dashboard', label: 'OVERVIEW_STATS', icon: LayoutDashboard },
+        { id: 'orders', label: 'ORDERS_QUEUE', icon: ShoppingBag },
+        { id: 'products', label: 'FIXED_INVENTORY', icon: Pizza },
+        { id: 'flavors', label: 'FLAVOR_MODULES', icon: PieChart },
     ];
 
     return (
-        <div className="min-h-screen bg-[#050505] flex">
-            {/* Sidebar */}
-            <aside className="w-80 bg-card border-r border-white/5 flex flex-col pt-10">
-                <div className="px-8 mb-12 flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary/20 text-primary rounded-xl flex items-center justify-center">
-                        <ChefHat size={20} strokeWidth={2.5} />
+        <div className="min-h-screen bg-[#050505] flex font-mono">
+            {/* Sidebar Sharp Redesign */}
+            <aside className="w-64 bg-black border-r border-white/10 flex flex-col">
+                <div className="p-8 mb-4 border-b border-white/5">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-primary text-black flex items-center justify-center">
+                            <ChefHat size={16} strokeWidth={3} />
+                        </div>
+                        <h2 className="text-lg font-black italic tracking-tighter text-white uppercase">NONA <span className="text-primary italic">HUB</span></h2>
                     </div>
-                    <div>
-                        <h2 className="text-xl font-black italic tracking-tighter text-white">NONA <span className="text-white/20 italic">ADMIN</span></h2>
-                        <span className="text-[9px] font-black text-primary uppercase tracking-widest leading-none">v2.0 Premium</span>
-                    </div>
+                    <span className="text-[9px] font-bold text-white/20 uppercase tracking-[0.4em]">ADMIN-CORE-V2</span>
                 </div>
 
-                <nav className="flex-1 px-4">
+                <nav className="flex-1 px-4 py-4 space-y-1">
                     {navItems.map(item => (
                         <button 
                             key={item.id}
                             onClick={() => setActiveTab(item.id)}
-                            className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl mb-2 transition-all group ${activeTab === item.id ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                            className={`w-full flex items-center gap-4 px-6 py-3 transition-all border-l-2 ${activeTab === item.id ? 'bg-primary/5 text-primary border-primary' : 'text-white/40 hover:text-white hover:bg-white/[0.02] border-transparent'}`}
                         >
-                            <item.icon size={20} strokeWidth={activeTab === item.id ? 2.5 : 2} />
-                            <span className="text-xs font-black uppercase tracking-widest">{item.label}</span>
-                            {activeTab === item.id && (
-                                <motion.div layoutId="admin-nav" className="ml-auto">
-                                    <ChevronRight size={14} />
-                                </motion.div>
-                            )}
+                            <item.icon size={16} />
+                            <span className="text-[10px] font-black uppercase tracking-widest">{item.label}</span>
                         </button>
                     ))}
                 </nav>
 
-                <div className="p-8 border-t border-white/5 space-y-4">
-                    <div className="flex items-center gap-3 px-2">
-                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/40">
-                            <User size={16} />
+                <div className="p-6 border-t border-white/10 bg-black/50 space-y-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-white/5 border border-white/10 flex items-center justify-center text-white/40">
+                            <User size={14} />
                         </div>
                         <div className="flex-1">
-                            <p className="text-[10px] font-black text-white uppercase tracking-widest leading-none">Administrador</p>
-                            <p className="text-[9px] font-medium text-white/30 uppercase mt-1">Sessão Ativa</p>
+                            <p className="text-[9px] font-bold text-white uppercase tracking-widest leading-none">ROOT_USER</p>
+                            <p className="text-[8px] font-medium text-green-500 uppercase mt-1 tracking-widest">ONLINE</p>
                         </div>
                     </div>
                     <button 
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 bg-red-500/5 hover:bg-red-500/10 border border-red-500/10 transition-all text-[10px] font-black uppercase tracking-widest"
+                        className="w-full flex items-center justify-center gap-2 py-3 text-red-500 bg-red-500/5 hover:bg-red-500 hover:text-white border border-red-500/20 transition-all text-[9px] font-black uppercase tracking-widest"
                     >
-                        <LogOut size={16} /> ENCERRAR SESSÃO
+                        <LogOut size={12} /> TERMINAR SESSÃO
                     </button>
                 </div>
             </aside>
 
-            {/* Main Content Area */}
-            <main className="flex-1 overflow-y-auto custom-scrollbar bg-[#050505]">
-                <header className="h-24 px-12 border-b border-white/5 flex items-center justify-between sticky top-0 bg-[#050505]/80 backdrop-blur-xl z-10">
-                    <div>
-                        <h1 className="text-sm font-black text-white uppercase tracking-[0.3em]">
-                            {navItems.find(i => i.id === activeTab)?.label}
+            {/* Main Content Area Sharp Redesign */}
+            <main className="flex-1 overflow-y-auto bg-[#080808] relative">
+                {/* Technical background effect */}
+                <div className="fixed inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '100px 100px' }}></div>
+
+                <header className="h-20 px-10 border-b border-white/10 flex items-center justify-between sticky top-0 bg-[#080808]/90 backdrop-blur-md z-20">
+                    <div className="flex items-center gap-4">
+                        <div className="w-0.5 h-6 bg-primary"></div>
+                        <h1 className="text-[10px] font-black text-white uppercase tracking-[0.5em]">
+                            SYSTEM_NODE / {navItems.find(i => i.id === activeTab)?.id.toUpperCase()}
                         </h1>
                     </div>
-                    <div className="flex items-center gap-6">
-                        <button className="p-3 bg-white/5 border border-white/10 rounded-xl text-white/40 hover:text-white transition-all">
-                            <Settings size={20} />
+                    <div className="flex items-center gap-4">
+                        <div className="text-[9px] font-bold text-white/20 uppercase tracking-widest hidden md:block">
+                            COORD_X: 48.293 / Y: 12.002
+                        </div>
+                        <button className="p-2 border border-white/10 text-white/40 hover:text-primary transition-all">
+                            <Settings size={16} />
                         </button>
                     </div>
                 </header>
 
-                <div className="p-12 max-w-7xl mx-auto min-h-[calc(100vh-6rem)]">
+                <div className="p-10 max-w-7xl mx-auto z-10 relative">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={activeTab}
-                            initial={{ opacity: 0, scale: 0.98 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 1.02 }}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
                             transition={{ duration: 0.2 }}
                         >
                             {activeTab === 'dashboard' && <DashboardOverview token={token} />}
