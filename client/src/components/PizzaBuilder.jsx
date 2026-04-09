@@ -11,7 +11,7 @@ export default function PizzaBuilder() {
         segments, setSegments, selectedCrust, setSelectedCrust,
         obs, setObs, resetBuilder
     } = useBuilder();
-    const { addToCart } = useCart();
+    const { addToCart, setIsCartOpen } = useCart();
 
     const [sizes, setSizes] = useState([]);
     const [crusts, setCrusts] = useState([]);
@@ -91,6 +91,7 @@ export default function PizzaBuilder() {
         });
         resetBuilder();
         setIsBuilderOpen(false);
+        setTimeout(() => setIsCartOpen(true), 150);
     };
 
     return (

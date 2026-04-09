@@ -42,7 +42,33 @@ export default function Header() {
                             </li>
                         ) : (
                             <li>
-                                <button onClick={() => navigate('/login')} className="btn btn-primary" style={{ padding: '0.6rem 1.5rem', fontSize: '0.85rem', borderRadius: '30px', fontWeight: 800 }}>ENTRAR</button>
+                                <button 
+                                    onClick={() => navigate('/login')} 
+                                    style={{ 
+                                        padding: '0.7rem 1.8rem', 
+                                        fontSize: '0.85rem', 
+                                        borderRadius: '30px', 
+                                        fontWeight: 900,
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        background: 'linear-gradient(135deg, #ff5e00 0%, #ff9d00 100%)',
+                                        color: '#fff',
+                                        boxShadow: '0 8px 25px rgba(255, 94, 0, 0.4)',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '1px',
+                                        transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                                    }}
+                                    onMouseEnter={e => {
+                                        e.target.style.transform = 'translateY(-2px) scale(1.05)';
+                                        e.target.style.boxShadow = '0 12px 30px rgba(255, 94, 0, 0.5)';
+                                    }}
+                                    onMouseLeave={e => {
+                                        e.target.style.transform = 'translateY(0) scale(1)';
+                                        e.target.style.boxShadow = '0 8px 25px rgba(255, 94, 0, 0.4)';
+                                    }}
+                                >
+                                    ENTRAR
+                                </button>
                             </li>
                         )}
                     </ul>
