@@ -1540,6 +1540,17 @@ body {
     100% { transform: scale(1.05); box-shadow: 0 0 25px rgba(255,94,0,0.6); }
 }
 
+.pulse-dot {
+    width: 10px; height: 10px; background: #fff; border-radius: 50%;
+    position: absolute; top: 0; right: 0;
+    box-shadow: 0 0 10px #fff;
+    animation: dot-pulse 1s infinite alternate;
+}
+@keyframes dot-pulse {
+    from { transform: scale(0.8); opacity: 0.5; }
+    to { transform: scale(1.4); opacity: 1; }
+}
+
 /* Transitions */
 .header {
     transition: background 0.3s, box-shadow 0.3s, height 0.3s !important;

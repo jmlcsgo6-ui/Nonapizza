@@ -182,20 +182,61 @@ export default function CartDrawer() {
                 )}
 
                 {view === 'success' && (
-                    <div id="order-success-fx" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-                        <div className="success-checkmark" style={{ fontSize: '4rem', color: '#4cd964', marginBottom: '1.5rem' }}>
+                    <div id="order-success-fx" style={{ padding: '3rem 2rem', textAlign: 'center' }}>
+                        <motion.div 
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                            className="success-checkmark" 
+                            style={{ fontSize: '5rem', color: '#4cd964', marginBottom: '1.5rem' }}
+                        >
                             <i className="fa-solid fa-circle-check"></i>
-                        </div>
-                        <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Pedido Recebido!</h3>
-                        <p style={{ color: 'var(--text-muted)' }}>Sua pizza já está sendo preparada em nossa cozinha.</p>
-                        <div className="order-timeline">
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem', fontWeight: '800' }}>Pedido em Preparo!</h3>
+                            <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Sua pizza está sendo preparada com todo carinho. Você pode acompanhar cada passo agora mesmo.</p>
+                        </motion.div>
+
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.6 }}
+                            className="order-timeline"
+                            style={{ marginBottom: '3rem' }}
+                        >
                             <div className="ot-step active"><i className="fa-solid fa-receipt"></i></div>
                             <div className="ot-line"></div>
-                            <div className="ot-step"><i className="fa-solid fa-fire-burner"></i></div>
+                            <div className="ot-step"><div className="pulse-dot"></div><i className="fa-solid fa-fire-burner"></i></div>
                             <div className="ot-line"></div>
                             <div className="ot-step"><i className="fa-solid fa-motorcycle"></i></div>
-                        </div>
-                        <button className="btn btn-primary mt-2 w-100" onClick={() => { setIsCartOpen(false); navigate('/meu-pedido'); }}>Ver Status do Pedido</button>
+                        </motion.div>
+
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.8 }}
+                            style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+                        >
+                            <button 
+                                className="btn btn-primary w-100 btn-large" 
+                                onClick={() => { setIsCartOpen(false); navigate('/meu-pedido'); }}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+                            >
+                                <i className="fa-solid fa-map-location-dot"></i> Acompanhar Entrega
+                            </button>
+                            <button 
+                                className="btn-text w-100" 
+                                onClick={() => { setIsCartOpen(false); setView('cart'); }}
+                                style={{ padding: '1rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}
+                            >
+                                Continuar
+                            </button>
+                        </motion.div>
                     </div>
                 )}
             </div>
