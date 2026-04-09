@@ -29,7 +29,7 @@ export default function PizzaSVG({ count, segments, onSliceClick }) {
                 const endPercent = (i + 1) / count;
                 const [startX, startY] = getCoordinatesForPercent(startPercent);
                 const [endX, endY] = getCoordinatesForPercent(endPercent);
-                const largeArcFlag = 0;
+                const largeArcFlag = (1 / count) > 0.5 ? 1 : 0;
                 
                 const pathData = `M 200 200 L ${startX} ${startY} A 190 190 0 ${largeArcFlag} 1 ${endX} ${endY} L 200 200`;
                 
