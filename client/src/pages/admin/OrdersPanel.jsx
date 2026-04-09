@@ -39,53 +39,96 @@ export default function OrdersPanel({ token }) {
 
     const colStyle = (statusKey) => ({
         flex: 1,
-        background: '#f9f9f9',
-        padding: '1rem',
-        borderRadius: '8px',
-        border: `2px solid ${STATUS_LABELS[statusKey].color}22`,
-        minWidth: '200px',
+        background: '#1a1a1a',
+        padding: '1.25rem',
+        borderRadius: '12px',
+        border: `1px solid rgba(255,255,255,0.05)`,
+        minWidth: '280px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem'
     });
 
     return (
         <div>
-            <h3 style={{ color: '#111' }}>Fila de Pedidos — Kanban</h3>
-            <p style={{ color: '#555', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-                Atualiza automaticamente a cada 8 segundos. Clique em "Avançar" para mover o pedido.
-            </p>
+            <div style={{ marginBottom: '2rem' }}>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Fila de Pedidos</h3>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>Acompanhamento em tempo real</p>
+            </div>
 
-            <div style={{ display: 'flex', gap: '1rem', minHeight: '60vh', overflowX: 'auto' }}>
+            <div style={{ display: 'flex', gap: '1.25rem', minHeight: '70vh', overflowX: 'auto', paddingBottom: '1rem' }}>
                 {columns.map(statusKey => {
                     const { label, color, next } = STATUS_LABELS[statusKey];
                     const list = orders.filter(o => o.status === statusKey);
                     return (
                         <div key={statusKey} style={colStyle(statusKey)}>
-                            <h4 style={{ color: '#111', marginBottom: '1rem', borderBottom: `2px solid ${color}`, paddingBottom: '0.5rem', fontSize: '0.95rem' }}>
-                                {label} <span style={{ background: color, color: '#fff', borderRadius: '50%', padding: '1px 7px', fontSize: '0.8rem', marginLeft: '4px' }}>{list.length}</span>
-                            </h4>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                <h4 style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                    {label}
+                                </h4>
+                                <span style={{ background: color, color: '#fff', borderRadius: '20px', padding: '2px 10px', fontSize: '0.75rem', fontWeight: 800 }}>
+                                    {list.length}
+                                </span>
+                            </div>
+                            
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                 {list.map(o => (
-                                    <div key={o.id} style={{ background: '#fff', padding: '1rem', borderRadius: '8px', boxShadow: '0 2px 6px rgba(0,0,0,0.08)', borderLeft: `4px solid ${color}` }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-                                            <strong style={{ color: '#111', fontSize: '0.95rem' }}>Pedido #{o.id}</strong>
-                                            <span style={{ color: '#666', fontSize: '0.8rem' }}>{new Date(o.createdAt).toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'})}</span>
+                                    <div key={o.id} style={{ 
+                                        background: '#222', 
+                                        padding: '1.25rem', 
+                                        borderRadius: '10px', 
+                                        border: '1px solid rgba(255,255,255,0.05)',
+                                        borderTop: `4px solid ${color}`,
+                                        transition: 'transform 0.2s'
+                                    }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
+                                            <strong style={{ color: '#fff', fontSize: '1rem' }}>#{o.id}</strong>
+                                            <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>
+                                                {new Date(o.createdAt).toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'})}
+                                            </span>
                                         </div>
-                                        <p style={{ color: '#333', fontWeight: 600, margin: '0 0 0.3rem' }}>{o.customerName}</p>
-                                        {o.phone && <p style={{ color: '#555', fontSize: '0.82rem', margin: '0 0 0.3rem' }}>📱 {o.phone}</p>}
-                                        <p style={{ color: '#555', fontSize: '0.83rem', margin: '0 0 0.5rem' }}>
-                                            {o.items.map(i => `${i.qty}x ${i.productName}`).join(' · ')}
-                                        </p>
-                                        <strong style={{ color: '#d32f2f', fontSize: '1rem' }}>R$ {o.total.toFixed(2)}</strong>
-                                        {next && (
-                                            <button
-                                                onClick={() => updateStatus(o.id, next)}
-                                                style={{ marginTop: '0.75rem', width: '100%', background: color, color: '#fff', border: 'none', borderRadius: '6px', padding: '0.5rem', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}
-                                            >
-                                                Avançar → {STATUS_LABELS[next].label}
-                                            </button>
-                                        )}
+                                        <p style={{ color: 'var(--primary, #e07b39)', fontWeight: 700, margin: '0 0 0.4rem', fontSize: '0.95rem' }}>{o.customerName}</p>
+                                        {o.phone && <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.82rem', margin: '0 0 0.4rem' }}>📱 {o.phone}</p>}
+                                        
+                                        <div style={{ background: 'rgba(0,0,0,0.2)', padding: '0.6rem', borderRadius: '6px', margin: '0.8rem 0' }}>
+                                            {o.items.map((i, idx) => (
+                                                <p key={idx} style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.8rem', margin: '0.2rem 0' }}>
+                                                    • {i.qty}x <strong>{i.productName}</strong>
+                                                </p>
+                                            ))}
+                                        </div>
+
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
+                                            <strong style={{ color: '#fff', fontSize: '1.1rem' }}>R$ {o.total.toFixed(2)}</strong>
+                                            {next && (
+                                                <button
+                                                    onClick={() => updateStatus(o.id, next)}
+                                                    style={{ 
+                                                        background: color, 
+                                                        color: '#fff', 
+                                                        border: 'none', 
+                                                        borderRadius: '6px', 
+                                                        padding: '0.5rem 0.8rem', 
+                                                        cursor: 'pointer', 
+                                                        fontWeight: 700, 
+                                                        fontSize: '0.75rem',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '5px'
+                                                    }}
+                                                >
+                                                    Mover <i className="fa-solid fa-chevron-right"></i>
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
-                                {list.length === 0 && <p style={{ color: '#aaa', fontSize: '0.85rem', textAlign: 'center', marginTop: '1rem' }}>Nenhum pedido aqui</p>}
+                                {list.length === 0 && (
+                                    <div style={{ padding: '2rem 1rem', textAlign: 'center', color: 'rgba(255,255,255,0.15)', border: '2px dashed rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+                                        <i className="fa-solid fa-inbox" style={{ fontSize: '1.5rem', display: 'block', marginBottom: '0.5rem' }}></i>
+                                        Vazio
+                                    </div>
+                                )}
                             </div>
                         </div>
                     );

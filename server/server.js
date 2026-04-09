@@ -39,7 +39,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-// --- Auth ---
+// --- Auth Admin ---
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -47,9 +47,34 @@ app.post('/api/auth/login', async (req, res) => {
         if (!user) return res.status(401).json({ error: 'Credenciais inválidas' });
         const valid = await bcrypt.compare(password, user.password);
         if (!valid) return res.status(401).json({ error: 'Credenciais inválidas' });
-        const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign({ id: user.id, role: 'ADMIN' }, JWT_SECRET, { expiresIn: '1d' });
         res.json({ token, name: user.name });
-    } catch (e) { res.status(500).json({ error: e.message }); }
+    } catch(e) { res.status(500).json({error: e.message}); }
+});
+
+// --- Auth Customer (Login do Site) ---
+app.post('/api/customer/register', async (req, res) => {
+    try {
+        const { name, email, password, phone } = req.body;
+        const hashed = await bcrypt.hash(password, 10);
+        const user = await prisma.user.create({
+            data: { name, email, password: hashed, phone }
+        });
+        const token = jwt.sign({ id: user.id, role: 'USER' }, JWT_SECRET, { expiresIn: '7d' });
+        res.json({ token, name: user.name });
+    } catch(e) { res.status(400).json({ error: 'Email já cadastrado' }); }
+});
+
+app.post('/api/customer/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) return res.status(401).json({ error: 'Usuário não encontrado' });
+        const valid = await bcrypt.compare(password, user.password);
+        if (!valid) return res.status(401).json({ error: 'Senha incorreta' });
+        const token = jwt.sign({ id: user.id, role: 'USER' }, JWT_SECRET, { expiresIn: '7d' });
+        res.json({ token, name: user.name });
+    } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 // --- Public Routes ---
@@ -90,9 +115,10 @@ app.get('/api/sizes', async (req, res) => {
 
 app.post('/api/orders', async (req, res) => {
     try {
-        const { customerName, phone, address, payment, total, items } = req.body;
+        const { customerName, phone, address, payment, total, items, userId } = req.body;
         const order = await prisma.order.create({
             data: {
+                userId: userId || null,
                 customerName,
                 phone: phone || null,
                 address: address || 'Nao informado',
@@ -112,6 +138,21 @@ app.post('/api/orders', async (req, res) => {
         });
         res.json(order);
     } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/customer/orders', async (req, res) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ error: 'Não autorizado' });
+    try {
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const orders = await prisma.order.findMany({
+            where: { userId: decoded.id },
+            include: { items: true },
+            orderBy: { createdAt: 'desc' }
+        });
+        res.json(orders);
+    } catch(e) { res.status(401).json({ error: 'Sessão expirada' }); }
 });
 
 // --- Tracking Routes (Public) ---

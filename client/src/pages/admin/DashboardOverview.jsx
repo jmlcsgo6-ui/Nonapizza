@@ -22,49 +22,82 @@ export default function DashboardOverview({ token }) {
     const completedCount = orders.filter(o => o.status === 'COMPLETED').length;
 
     const MetricCard = ({ title, value, icon, color }) => (
-        <div style={{ flex: 1, background: '#fff', padding: '1.5rem 2rem', borderRadius: '10px', boxShadow: '0 4px 10px rgba(0,0,0,0.07)', display: 'flex', alignItems: 'center', gap: '1.5rem', border: `1px solid #eee`, minWidth: '160px' }}>
-            <div style={{ background: color, width: '52px', height: '52px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#fff', fontSize: '1.3rem', flexShrink: 0 }}>
+        <div style={{ 
+            flex: 1, 
+            background: '#1a1a1a', 
+            padding: '1.5rem', 
+            borderRadius: '16px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '1.5rem', 
+            border: `1px solid rgba(255,255,255,0.05)`, 
+            minWidth: '220px' 
+        }}>
+            <div style={{ 
+                background: `${color}22`, 
+                width: '56px', 
+                height: '56px', 
+                borderRadius: '12px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                color: color, 
+                fontSize: '1.4rem', 
+                flexShrink: 0 
+            }}>
                 <i className={icon}></i>
             </div>
             <div>
-                <p style={{ color: '#666', marginBottom: '0.3rem', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{title}</p>
-                <p style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#111' }}>{value}</p>
+                <p style={{ color: 'rgba(255,255,255,0.4)', marginBottom: '0.4rem', fontSize: '0.8rem', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.05em' }}>{title}</p>
+                <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#fff' }}>{value}</p>
             </div>
         </div>
     );
 
     return (
         <div>
-            <h3 style={{ color: '#111', marginBottom: '0.3rem' }}>Painel Geral</h3>
-            <p style={{ color: '#555', marginBottom: '2rem', fontSize: '0.9rem' }}>Métricas e status do delivery em tempo real.</p>
-
-            <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-                <MetricCard title="Receita (Concluídos)" value={`R$ ${totalRevenue.toFixed(2)}`} icon="fa-solid fa-money-bill-wave" color="#27ae60" />
-                <MetricCard title="Aguardando" value={pendingCount} icon="fa-solid fa-clock" color="#e74c3c" />
-                <MetricCard title="No Forno" value={cookingCount} icon="fa-solid fa-fire" color="#e67e22" />
-                <MetricCard title="Entregues Hoje" value={completedCount} icon="fa-solid fa-box-open" color="#3498db" />
+            <div style={{ marginBottom: '2.5rem' }}>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Dashboard</h3>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>Visão geral da operação Nona</p>
             </div>
 
-            <div style={{ background: '#fff', padding: '2rem', borderRadius: '10px', boxShadow: '0 4px 10px rgba(0,0,0,0.07)', border: '1px solid #eee' }}>
-                <h4 style={{ color: '#111', marginBottom: '1rem' }}>Sobre o Sistema</h4>
-                <p style={{ color: '#555', lineHeight: 1.7 }}>
-                    O <strong>Painel Kanban</strong> (aba "Pedidos") permite mover cada pedido pelos estágios:
-                    <strong> Recebido → No Forno → Saiu para Entrega → Concluído</strong>.
-                    O cliente acompanha o status em tempo real na página <strong>/meu-pedido</strong>.
-                </p>
-                <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                    <div style={{ flex: 1, background: '#f8f9fa', padding: '1rem', borderRadius: '8px', minWidth: '140px' }}>
-                        <h5 style={{ color: '#111', marginBottom: '0.4rem' }}>Frontend</h5>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#333', fontSize: '0.88rem' }}>
-                            <span style={{ display: 'inline-block', width: '8px', height: '8px', background: '#27ae60', borderRadius: '50%' }}></span>
-                            React + Vite — Online
+            <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
+                <MetricCard title="Receita (Total)" value={`R$ ${totalRevenue.toFixed(2)}`} icon="fa-solid fa-money-bill-trend-up" color="#27ae60" />
+                <MetricCard title="Pendentes" value={pendingCount} icon="fa-solid fa-bell" color="#e74c3c" />
+                <MetricCard title="No Forno" value={cookingCount} icon="fa-solid fa-fire-flame-curved" color="#e67e22" />
+                <MetricCard title="Concluídos" value={completedCount} icon="fa-solid fa-check-double" color="#3498db" />
+            </div>
+
+            <div style={{ 
+                background: 'linear-gradient(145deg, #111, #161616)', 
+                padding: '2.5rem', 
+                borderRadius: '20px', 
+                border: '1px solid rgba(255,255,255,0.05)',
+                position: 'relative',
+                overflow: 'hidden'
+            }}>
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                    <h4 style={{ color: '#fff', fontSize: '1.2rem', fontWeight: 800, marginBottom: '1.2rem' }}>Status da Unidade</h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
+                        <div>
+                            <p style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, fontSize: '0.95rem' }}>
+                                O painel está conectado ao cluster Neon Postgres. Todos os pedidos realizados via frontend aparecem instantaneamente na fila Kanban.
+                                Utilize o menu lateral para gerenciar as especialidades e os ingredientes do Builder.
+                            </p>
                         </div>
-                    </div>
-                    <div style={{ flex: 1, background: '#f8f9fa', padding: '1rem', borderRadius: '8px', minWidth: '140px' }}>
-                        <h5 style={{ color: '#111', marginBottom: '0.4rem' }}>Backend</h5>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#333', fontSize: '0.88rem' }}>
-                            <span style={{ display: 'inline-block', width: '8px', height: '8px', background: '#27ae60', borderRadius: '50%' }}></span>
-                            Express + Neon Postgres — Online
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)' }}>API Server</span>
+                                    <span style={{ background: '#27ae6022', color: '#27ae60', fontSize: '0.7rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>ONLINE</span>
+                                </div>
+                            </div>
+                            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)' }}>Banco Neon</span>
+                                    <span style={{ background: '#27ae6022', color: '#27ae60', fontSize: '0.7rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>CONNECTED</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

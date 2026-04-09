@@ -87,8 +87,40 @@ export default function Hero() {
         };
     }, []);
 
+    const customerToken = localStorage.getItem('customer_token');
+    const customerName = localStorage.getItem('customer_name');
+
+    const handleLogout = () => {
+        localStorage.removeItem('customer_token');
+        localStorage.removeItem('customer_name');
+        window.location.reload();
+    };
+
     return (
         <section id="home" className="hero" ref={wrapperRef}>
+            <nav style={{ position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 100, padding: '1.5rem 2rem', background: 'linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)' }}>
+                <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ background: 'var(--primary, #e07b39)', width: '32px', height: '32px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <i className="fa-solid fa-pizza-slice" style={{ color: '#fff', fontSize: '0.9rem' }}></i>
+                        </div>
+                        <h2 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#fff', letterSpacing: '1px' }}>NONA PIZZA</h2>
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                        <a href="/meu-pedido" style={{ color: '#fff', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}>Meus Pedidos</a>
+                        {customerToken ? (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>Olá, <strong>{customerName}</strong></span>
+                                <button onClick={handleLogout} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '0.4rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.75rem' }}>Sair</button>
+                            </div>
+                        ) : (
+                            <a href="/login" className="btn btn-primary btn-sm" style={{ padding: '0.5rem 1.2rem', fontSize: '0.8rem' }}>Entrar / Criar Conta</a>
+                        )}
+                    </div>
+                </div>
+            </nav>
+
             <canvas id="hero-canvas" className="hero-canvas" ref={canvasRef}></canvas>
             <div className="hero-overlay"></div>
             <div className="container hero-container" style={{ position: 'relative', zIndex: 2 }}>
