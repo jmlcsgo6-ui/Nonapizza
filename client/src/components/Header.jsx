@@ -6,6 +6,7 @@ export default function Header() {
     const navigate = useNavigate();
     const location = useLocation();
     const { cart, setIsCartOpen } = useCart();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     
     const customerToken = localStorage.getItem('customer_token');
     const customerName = localStorage.getItem('customer_name');
@@ -20,26 +21,27 @@ export default function Header() {
 
     return (
         <>
-            <header className="header">
+            <header className={`header ${isMobileMenuOpen ? 'mobile-menu-active' : ''}`}>
                 <div className="container nav-container">
                     <div className="logo">
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/'); }}>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/'); setIsMobileMenuOpen(false); }}>
                             <div className="logo-icon"><i className="fa-solid fa-pizza-slice"></i></div>
                             NONA <span>PIZZA</span>
                         </a>
                     </div>
-                    <nav className="nav">
+                    
+                    <nav className={`nav ${isMobileMenuOpen ? 'open' : ''}`}>
                         <ul>
-                            <li><a href="#home" className="active" onClick={(e) => { e.preventDefault(); navigate('/'); }}>Início</a></li>
-                            <li><a href="#menu" onClick={(e) => { e.preventDefault(); document.dispatchEvent(new CustomEvent('open-menu')); }}>Cardápio</a></li>
-                            <li><a href="#orders" className="nav-pill" onClick={(e) => { e.preventDefault(); navigate('/meu-pedido'); }}>MEUS PEDIDOS</a></li>
+                            <li><a href="#home" onClick={(e) => { e.preventDefault(); navigate('/'); setIsMobileMenuOpen(false); }}>Início</a></li>
+                            <li><a href="#menu" onClick={(e) => { e.preventDefault(); document.dispatchEvent(new CustomEvent('open-menu')); setIsMobileMenuOpen(false); }}>Cardápio</a></li>
+                            <li><a href="#orders" className="nav-pill" onClick={(e) => { e.preventDefault(); navigate('/meu-pedido'); setIsMobileMenuOpen(false); }}>MEUS PEDIDOS</a></li>
                             {!customerToken ? (
-                                <li><a href="#login" className="nav-btn-primary" onClick={(e) => { e.preventDefault(); navigate('/login'); }}>ENTRAR</a></li>
+                                <li><a href="#login" className="nav-btn-primary" onClick={(e) => { e.preventDefault(); navigate('/login'); setIsMobileMenuOpen(false); }}>ENTRAR</a></li>
                             ) : (
                                 <>
-                                    <li><a href="#logout" className="nav-btn-primary" style={{ background: '#333' }} onClick={(e) => { e.preventDefault(); handleLogout(); }}>SAIR</a></li>
+                                    <li><a href="#logout" className="nav-btn-primary logout-btn" onClick={(e) => { e.preventDefault(); handleLogout(); setIsMobileMenuOpen(false); }}>SAIR</a></li>
                                     <li>
-                                        <button className="nav-btn-primary" onClick={() => setIsCartOpen(true)} style={{ background: '#222', border: 'none', cursor: 'pointer', marginLeft: '10px' }}>
+                                        <button className="nav-btn-primary cart-btn" onClick={() => { setIsCartOpen(true); setIsMobileMenuOpen(false); }}>
                                             <i className="fa-solid fa-cart-shopping"></i> {cartCount > 0 ? `(${cartCount})` : ''}
                                         </button>
                                     </li>
@@ -47,6 +49,16 @@ export default function Header() {
                             )}
                         </ul>
                     </nav>
+
+                    <button 
+                        className={`mobile-toggle ${isMobileMenuOpen ? 'active' : ''}`} 
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        aria-label="Menu"
+                    >
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
                 </div>
             </header>
 

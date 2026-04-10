@@ -152,7 +152,7 @@ export default function PizzaBuilder() {
                                 <div className="pizza-base"></div>
                                 <div className="pizza-crust-visual" style={{ 
                                     position: 'absolute', inset: '4%', borderRadius: '50%', 
-                                    border: selectedCrust ? '14px solid #c2521s' : 'none',
+                                    border: selectedCrust ? '14px solid #c25215' : 'none',
                                     zIndex: 2, pointerEvents: 'none',
                                     borderColor: selectedCrust?.price > 0 ? 'var(--primary)' : '#d08f37'
                                 }}></div>
@@ -185,7 +185,7 @@ export default function PizzaBuilder() {
                                                 return (
                                                     <g key={i} onClick={() => { setDrawerTarget(i); setDrawerOpen(true); }} style={{ cursor: 'pointer' }}>
                                                         <path d={pathData} className={`pizza-slice ${isSelected ? 'has-flavor' : ''}`} />
-                                                        <text x={textX} y={textY} className="slice-text">{textContent.length > 12 ? textContent.substring(0,12)+'...' : textContent}</text>
+                                                        <text x={textX} y={textY} className="slice-text">{textContent}</text>
                                                     </g>
                                                 );
                                             }
@@ -193,7 +193,9 @@ export default function PizzaBuilder() {
                                     </svg>
                                 </div>
                             </div>
-                            <p className="visual-hint"><i className="fa-solid fa-hand-pointer"></i> Clique em um pedaço para escolher o sabor</p>
+                            <p className="visual-hint" style={{ textAlign: 'center', width: '100%' }}>
+                                <i className="fa-solid fa-hand-pointer"></i> Toque para escolher o sabor
+                            </p>
                         </div>
 
                         <div className="builder-options">
