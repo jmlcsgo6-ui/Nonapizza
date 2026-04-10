@@ -18,8 +18,8 @@ export default function Hero() {
         
         for (let i = 0; i < frameCount; i++) {
             const img = new Image();
-            // Caminho absoluto para garantir que carregue da pasta public
-            img.src = `${window.location.origin}/ezgif-frame-${(i + 1).toString().padStart(3, '0')}.png`;
+            // Caminho relativo para melhor compatibilidade com subdiretórios
+            img.src = `/ezgif-frame-${(i + 1).toString().padStart(3, '0')}.png`;
             img.onload = () => {
                 imagesLoaded++;
                 if (imagesLoaded === 1) {
@@ -27,8 +27,7 @@ export default function Hero() {
                 }
             };
             img.onerror = () => {
-                console.warn(`Erro ao carregar frame: ${i + 1}`);
-                imagesLoaded++; // Avançar para não travar
+                imagesLoaded++;
             };
             images.push(img);
         }
@@ -48,7 +47,7 @@ export default function Hero() {
                     renderHeight = canvas.height;
                     renderWidth = canvas.height * imgAspect;
                     y = 0;
-                    const focusX = window.innerWidth <= 768 ? 0.75 : 0.5;
+                    const focusX = window.innerWidth <= 768 ? 0.6 : 0.5; // Ajuste fino para mobile
                     x = (canvas.width * 0.5) - (renderWidth * focusX);
                     x = Math.max(canvas.width - renderWidth, Math.min(0, x));
                 }
@@ -66,8 +65,6 @@ export default function Hero() {
             const wrapperHeight = wrapper.offsetHeight;
             const viewportHeight = window.innerHeight;
             
-            // A animação deve ocorrer enquanto o hero-wrapper está "passando" pela tela
-            // Como o .hero é sticky, ele fica preso no topo por 200vh (300vh total - 100vh da seção)
             const maxScroll = wrapperHeight - viewportHeight;
             let scrollFraction = (scrollTop - startScroll) / maxScroll;
             
@@ -79,7 +76,6 @@ export default function Hero() {
                 Math.floor(scrollFraction * frameCount)
             );
 
-            // Só renderiza se a imagem já tiver sido carregada
             requestAnimationFrame(() => renderFrame(frameIndex));
         };
 
@@ -93,10 +89,11 @@ export default function Hero() {
         window.addEventListener('resize', resizeCanvas, { passive: true });
         window.addEventListener('scroll', handleScroll, { passive: true });
 
-        // Inicializar
-        resizeCanvas();
+        // Timer para garantir renderização mesmo se o carregamento demorar
+        const initTimer = setTimeout(resizeCanvas, 500);
 
         return () => {
+            clearTimeout(initTimer);
             window.removeEventListener('resize', resizeCanvas);
             window.removeEventListener('scroll', handleScroll);
         };
@@ -105,8 +102,13 @@ export default function Hero() {
     return (
         <div className="hero-wrapper" ref={wrapperRef}>
             <section id="home" className="hero">
-                <canvas id="hero-canvas" className="hero-canvas" ref={canvasRef}></canvas>
-                <div className="hero-overlay"></div>
+                <canvas 
+                    id="hero-canvas" 
+                    className="hero-canvas" 
+                    ref={canvasRef}
+                    style={{ background: '#000' }}
+                ></canvas>
+                <div className="hero-overlay" style={{ opacity: window.innerWidth <= 768 ? 0.6 : 0.8 }}></div>
                 <div className="container hero-container" style={{ position: 'relative', zIndex: 2 }}>
                     <div className="hero-left">
                         <h1 className="hero-title">A pizza perfeita, montada diante dos seus olhos.</h1>
@@ -139,7 +141,7 @@ export default function Hero() {
                     </div>
 
                     <div className="hero-right">
-                        {/* Right side remains empty for future animation as requested */}
+                        {/* Area for future interactions */}
                     </div>
                 </div>
             </section>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api/api';
 import { useBuilder } from '../context/BuilderContext';
 import { useCart } from '../context/CartContext';
@@ -166,7 +167,13 @@ export default function PizzaBuilder() {
                                             if (total === 1) {
                                                 return (
                                                     <g key={i} onClick={() => { setDrawerTarget(i); setDrawerOpen(true); }} style={{ cursor: 'pointer' }}>
-                                                        <circle cx="200" cy="200" r="190" className={`pizza-slice ${isSelected ? 'has-flavor' : ''}`} />
+                                                        <motion.circle 
+                                                            cx="200" cy="200" r="190" 
+                                                            className={`pizza-slice ${isSelected ? 'has-flavor' : ''}`} 
+                                                            initial={{ scale: 0.9, opacity: 0 }}
+                                                            animate={{ scale: 1, opacity: 1 }}
+                                                            transition={{ type: 'spring', damping: 15 }}
+                                                        />
                                                         <text x="200" y="200" className="slice-text">{textContent}</text>
                                                     </g>
                                                 );
@@ -184,7 +191,13 @@ export default function PizzaBuilder() {
                                                 
                                                 return (
                                                     <g key={i} onClick={() => { setDrawerTarget(i); setDrawerOpen(true); }} style={{ cursor: 'pointer' }}>
-                                                        <path d={pathData} className={`pizza-slice ${isSelected ? 'has-flavor' : ''}`} />
+                                                        <motion.path 
+                                                            d={pathData} 
+                                                            className={`pizza-slice ${isSelected ? 'has-flavor' : ''}`} 
+                                                            initial={{ scale: 0.8, opacity: 0 }}
+                                                            animate={{ scale: 1, opacity: 1 }}
+                                                            transition={{ type: 'spring', stiffness: 200, delay: i * 0.1 }}
+                                                        />
                                                         <text x={textX} y={textY} className="slice-text">{textContent}</text>
                                                     </g>
                                                 );
