@@ -201,7 +201,7 @@ export default function PizzaBuilder() {
                         <div className="builder-options">
                             <button className="btn-text" onClick={() => setStep(1)}><i className="fa-solid fa-arrow-left"></i> Voltar tamanhos</button>
 
-                            <div className="builder-section" style={{ marginTop: '2rem' }}>
+                            <div className="builder-section">
                                 <button className="crust-select-btn" onClick={() => { setDrawerTarget('crust'); setDrawerOpen(true); }}>
                                     <div className="crust-info">
                                         <span className="crust-label">Borda</span>
@@ -229,7 +229,7 @@ export default function PizzaBuilder() {
                                 </div>
                             </div>
 
-                            <div className="builder-obs" style={{ marginBottom: '2rem' }}>
+                            <div className="builder-obs">
                                 <h4>Observações</h4>
                                 <textarea 
                                     id="builder-obs" 
