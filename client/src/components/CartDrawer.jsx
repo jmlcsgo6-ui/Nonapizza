@@ -29,8 +29,19 @@ export default function CartDrawer() {
             return;
         }
 
-        if (!form.phone.trim() || !form.address.trim() || !form.cep.trim()) {
-            alert('Por favor, preencha telefone, endereço e CEP para a entrega.');
+        const phoneRegex = /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
+        const cepRegex = /^\d{5}-?\d{3}$/;
+
+        if (!form.phone.trim() || !phoneRegex.test(form.phone)) {
+            alert('Por favor, informe um telefone válido: (00) 00000-0000');
+            return;
+        }
+        if (!form.cep.trim() || !cepRegex.test(form.cep)) {
+            alert('Por favor, informe um CEP válido: 00000-000');
+            return;
+        }
+        if (!form.address.trim() || form.address.length < 10) {
+            alert('Por favor, informe o endereço completo (Rua, Número, Bairro).');
             return;
         }
 
@@ -131,7 +142,7 @@ export default function CartDrawer() {
                 )}
 
                 {view === 'checkout' && (
-                    <div style={{ padding: '2rem', height: 'calc(100% - 70px)', overflowY: 'auto' }}>
+                    <div className="checkout-container">
                         <form id="checkout-form" onSubmit={handleCheckout}>
                             <div className="form-group">
                                 <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Telefone</label>
@@ -178,10 +189,10 @@ export default function CartDrawer() {
                                     <option value="cash">Dinheiro</option>
                                 </select>
                             </div>
-                            <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', marginBottom: '1.5rem' }}>
+                            <div className="checkout-footer">
+                                <div className="checkout-total-row">
                                     <span>Total</span>
-                                    <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>R$ {cartTotal.toFixed(2).replace('.', ',')}</span>
+                                    <span className="checkout-total-value">R$ {cartTotal.toFixed(2).replace('.', ',')}</span>
                                 </div>
                                 <button type="submit" className="btn btn-primary w-100" disabled={submitting}>
                                     {submitting ? 'Processando...' : 'Confirmar Pedido'}

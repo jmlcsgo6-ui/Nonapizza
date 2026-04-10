@@ -70,6 +70,15 @@ export default function PizzaBuilder() {
         addToCart(cartItem);
         setIsBuilderOpen(false);
         resetBuilder();
+        const notification = document.createElement('div');
+        notification.className = 'cart-notification';
+        notification.innerHTML = '<i class="fa-solid fa-circle-check"></i> Pizza adicionada ao carrinho!';
+        document.body.appendChild(notification);
+        setTimeout(() => notification.classList.add('visible'), 100);
+        setTimeout(() => {
+            notification.classList.remove('visible');
+            setTimeout(() => notification.remove(), 500);
+        }, 3000);
         setTimeout(() => setIsCartOpen(true), 300);
     };
 
@@ -141,6 +150,12 @@ export default function PizzaBuilder() {
                         <div className="builder-visual">
                             <div className="pizza-svg-wrapper">
                                 <div className="pizza-base"></div>
+                                <div className="pizza-crust-visual" style={{ 
+                                    position: 'absolute', inset: '4%', borderRadius: '50%', 
+                                    border: selectedCrust ? '14px solid #c2521s' : 'none',
+                                    zIndex: 2, pointerEvents: 'none',
+                                    borderColor: selectedCrust?.price > 0 ? 'var(--primary)' : '#d08f37'
+                                }}></div>
                                 <div className="pizza-svg-container">
                                     <svg viewBox="0 0 400 400" className="pizza-svg-element">
                                         {segments.map((seg, i) => {

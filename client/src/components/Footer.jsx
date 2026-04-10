@@ -30,9 +30,9 @@ export default function Footer() {
                     <div className="footer-col">
                         <h4>Redes Sociais</h4>
                         <div className="social-links">
-                            <a href="#"><i className="fa-brands fa-instagram"></i></a>
-                            <a href="#"><i className="fa-brands fa-facebook-f"></i></a>
-                            <a href="#"><i className="fa-brands fa-tiktok"></i></a>
+                            <a href="https://instagram.com/nonapizza" target="_blank" rel="noopener noreferrer"><i className="fa-brands fa-instagram"></i></a>
+                            <a href="https://facebook.com/nonapizza" target="_blank" rel="noopener noreferrer"><i className="fa-brands fa-facebook-f"></i></a>
+                            <a href="https://tiktok.com/@nonapizza" target="_blank" rel="noopener noreferrer"><i className="fa-brands fa-tiktok"></i></a>
                         </div>
                     </div>
                 </div>
