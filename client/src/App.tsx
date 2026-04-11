@@ -4,6 +4,7 @@ import { BuilderProvider } from "./context/BuilderContext";
 import Home from "./pages/Home";
 import TrackOrder from "./pages/TrackOrder";
 import CustomerAuth from "./pages/CustomerAuth";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import "./nona.css";
 
@@ -14,6 +15,7 @@ const App = () => (
         <div className="app-container">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/admin/*" element={<Admin />} />
             <Route path="/meu-pedido" element={<TrackOrder />} />
             <Route path="/login" element={<CustomerAuth />} />
             <Route path="*" element={<NotFound />} />
