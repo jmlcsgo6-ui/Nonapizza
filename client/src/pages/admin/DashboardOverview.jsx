@@ -38,7 +38,8 @@ export default function DashboardOverview({ token, onNavigate }) {
     const [period, setPeriod] = useState('today'); // today | week | month
 
     useEffect(() => {
-        const fetch = async () => {
+        const fetch = async (silent = false) => {
+            if (!silent) setLoading(true);
             try {
                 const res = await api.get('/api/admin/orders', {
                     headers: { Authorization: `Bearer ${token}` },
@@ -51,6 +52,8 @@ export default function DashboardOverview({ token, onNavigate }) {
             }
         };
         fetch();
+        const interval = setInterval(() => fetch(true), 10000);
+        return () => clearInterval(interval);
     }, [token]);
 
     const stats = useMemo(() => {

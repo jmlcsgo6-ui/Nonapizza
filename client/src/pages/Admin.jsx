@@ -85,97 +85,81 @@ export default function Admin() {
     // ----- LOGIN PAGE -----
     if (!token) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[#040408] p-4">
-                {/* Background ambient */}
-                <div className="pointer-events-none fixed inset-0">
-                    <div className="absolute left-1/3 top-1/4 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-orange-600/8 blur-[120px]" />
-                    <div className="absolute right-1/4 bottom-1/4 h-[300px] w-[300px] rounded-full bg-blue-600/5 blur-[100px]" />
-                </div>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 24, scale: 0.97 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="relative w-full max-w-[420px]"
-                >
-                    {/* Logo */}
-                    <div className="text-center mb-8">
-                        <div className="inline-flex mb-4 p-4 rounded-3xl bg-orange-500/10 border border-orange-500/20 shadow-[0_0_40px_rgba(249,115,22,0.15)]">
-                            <ChefHat size={32} className="text-orange-400" />
-                        </div>
-                        <h1 className="text-2xl font-black text-white tracking-tight">Nona Hub</h1>
-                        <p className="text-sm text-white/30 mt-1">Acesso restrito ao painel administrativo</p>
-                    </div>
-
-                    {/* Form Card */}
-                    <div className="rounded-3xl border border-white/[0.08] bg-[#0c0c18] p-8 shadow-2xl">
-                        <form onSubmit={handleLogin}>
-                            <AnimatePresence>
-                                {loginError && (
-                                    <motion.div
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        exit={{ opacity: 0, height: 0 }}
-                                        className="mb-5 overflow-hidden rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-400"
-                                    >
-                                        {loginError}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                            <div className="space-y-4">
-                                <div className="space-y-1.5">
-                                    <label className="text-[11px] font-bold uppercase tracking-widest text-white/30 block">
-                                        Email
-                                    </label>
-                                    <input
-                                        type="email"
-                                        className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-sm text-white outline-none transition placeholder:text-white/20 focus:border-orange-500/50 focus:bg-white/[0.06] focus:ring-1 focus:ring-orange-500/20"
-                                        placeholder="admin@nonapizza.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                <div className="space-y-1.5">
-                                    <label className="text-[11px] font-bold uppercase tracking-widest text-white/30 block">
-                                        Senha
-                                    </label>
-                                    <input
-                                        type="password"
-                                        className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-sm text-white outline-none transition placeholder:text-white/20 focus:border-orange-500/50 focus:bg-white/[0.06] focus:ring-1 focus:ring-orange-500/20"
-                                        placeholder="••••••••"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <motion.button
-                                type="submit"
-                                whileHover={{ scale: 1.01 }}
-                                whileTap={{ scale: 0.99 }}
-                                disabled={loginLoading}
-                                className="mt-6 w-full rounded-xl bg-orange-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-orange-500/25 transition hover:bg-orange-400 disabled:opacity-50"
-                            >
-                                {loginLoading ? (
-                                    <span className="inline-flex items-center gap-2">
-                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                                        Entrando...
-                                    </span>
-                                ) : (
-                                    'Entrar no Painel'
-                                )}
-                            </motion.button>
-                        </form>
-                    </div>
-
-                    <div className="text-center mt-6">
-                        <a href="/" className="text-sm font-semibold text-white/30 transition hover:text-white/60">
-                            ← Voltar ao site
-                        </a>
-                    </div>
-                </motion.div>
-            </div>
+             <div className="flex min-h-screen items-center justify-center p-4 bg-black relative">
+                 <div className="absolute inset-0 pointer-events-none">
+                     <div className="hero-overlay"></div>
+                 </div>
+ 
+                 <motion.div
+                     initial={{ opacity: 0, scale: 0.96, y: 16 }}
+                     animate={{ opacity: 1, scale: 1, y: 0 }}
+                     transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                     className="relative z-10 w-full max-w-[420px] bg-card border border-white/5 p-8"
+                     style={{ borderRadius: '24px', backdropFilter: 'blur(20px)' }}
+                 >
+                     {/* Logo */}
+                     <div className="text-center mb-8">
+                         <div className="inline-flex items-center justify-center mb-4 w-16 h-16 rounded-2xl" style={{background: 'rgba(255, 94, 0, 0.1)'}}>
+                             <ChefHat size={32} color="#ff5e00" />
+                         </div>
+                         <h1 className="hero-title" style={{fontSize: '2.5rem', marginBottom: '8px', lineHeight: 1}}>Nona Hub</h1>
+                         <p className="text-white/40 font-medium">Acesso restrito à cozinha</p>
+                     </div>
+ 
+                     <form onSubmit={handleLogin}>
+                         <AnimatePresence>
+                             {loginError && (
+                                 <motion.div
+                                     initial={{ opacity: 0, height: 0 }}
+                                     animate={{ opacity: 1, height: 'auto' }}
+                                     exit={{ opacity: 0, height: 0 }}
+                                     className="mb-6 overflow-hidden rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-500 text-center"
+                                 >
+                                     {loginError}
+                                 </motion.div>
+                             )}
+                         </AnimatePresence>
+                         <div className="space-y-4">
+                             <div>
+                                 <label className="block text-xs font-bold uppercase tracking-widest text-[#b0b0b0] mb-2">Email</label>
+                                 <input
+                                     type="email"
+                                     className="w-full bg-[#050505] border border-white/10 rounded-xl px-4 py-4 text-white text-sm outline-none focus:border-[#ff5e00] transition"
+                                     placeholder="admin@nonapizza.com"
+                                     value={email}
+                                     onChange={(e) => setEmail(e.target.value)}
+                                     required
+                                 />
+                             </div>
+                             <div>
+                                 <label className="block text-xs font-bold uppercase tracking-widest text-[#b0b0b0] mb-2">Senha</label>
+                                 <input
+                                     type="password"
+                                     className="w-full bg-[#050505] border border-white/10 rounded-xl px-4 py-4 text-white text-sm outline-none focus:border-[#ff5e00] transition"
+                                     placeholder="••••••••"
+                                     value={password}
+                                     onChange={(e) => setPassword(e.target.value)}
+                                     required
+                                 />
+                             </div>
+                         </div>
+                         <button
+                             type="submit"
+                             disabled={loginLoading}
+                             className="btn btn-primary w-full mt-6 py-4"
+                             style={{borderRadius: '12px', border: 'none'}}
+                         >
+                             {loginLoading ? 'Entrando...' : 'Acessar Painel'}
+                         </button>
+                     </form>
+                     
+                     <div className="text-center mt-8 pt-6 border-t border-white/5">
+                         <a href="/" className="text-sm font-semibold text-[#b0b0b0] hover:text-[#ff5e00] transition">
+                             ← Voltar ao site
+                         </a>
+                     </div>
+                 </motion.div>
+             </div>
         );
     }
 
