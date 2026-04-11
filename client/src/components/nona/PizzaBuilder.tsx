@@ -149,13 +149,14 @@ export default function PizzaBuilder() {
                                     {segments.map((seg: any, i: number) => {
                                         const total = segments.length;
                                         const isSelected = !!seg;
-                                        const textContent = isSelected ? seg.name : '';
+                                        const truncate = (str: string, len: number) => str.length > len ? str.substring(0, len) + '...' : str;
+                                        const textContent = isSelected ? truncate(seg.name, 12) : '';
                                         
                                         if (total === 1) {
                                             return (
                                                 <g key={i} onClick={() => { setDrawerTarget(i); setDrawerOpen(true); }} style={{ cursor: 'pointer' }}>
                                                     <circle cx="50" cy="50" r="45" className={`pizza-slice ${isSelected ? 'has-flavor' : ''}`} />
-                                                    <text x="50" y="50" className="slice-text" dominantBaseline="middle" fontSize="5">{textContent}</text>
+                                                    <text x="50" y="50" className="slice-text" dominantBaseline="middle" fontSize="3.5">{textContent}</text>
                                                 </g>
                                             );
                                         } else {
@@ -174,7 +175,7 @@ export default function PizzaBuilder() {
                                             return (
                                                 <g key={i} onClick={() => { setDrawerTarget(i); setDrawerOpen(true); }} style={{ cursor: 'pointer' }}>
                                                     <path d={pathData} className={`pizza-slice ${isSelected ? 'has-flavor' : ''}`} />
-                                                    <text x={textX} y={textY} className="slice-text" dominantBaseline="middle" fontSize="4">{isSelected ? seg.name : ''}</text>
+                                                    <text x={textX} y={textY} className="slice-text" dominantBaseline="middle" fontSize="2.5">{isSelected ? truncate(seg.name, 10) : ''}</text>
                                                 </g>
                                             );
                                         }

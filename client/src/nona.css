@@ -1453,7 +1453,7 @@ body {
 }
 
 .slice-text {
-    fill: #fff; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px;
+    fill: #fff; font-family: 'Inter', sans-serif; font-weight: 600;
     text-anchor: middle;
     pointer-events: none;
     text-shadow: 0 2px 4px rgba(0,0,0,0.8);
@@ -1797,7 +1797,7 @@ body {
     /* Builder Step 2 - Pizza visual */
     .builder-visual { width: 100% !important; display: flex !important; flex-direction: column !important; align-items: center !important; margin-bottom: 0.5rem !important; }
     .pizza-svg-wrapper { width: 220px !important; height: 220px !important; margin: 0 auto !important; }
-    .slice-text { font-size: 10px !important; font-weight: 900 !important; pointer-events: none !important; }
+    .slice-text { font-weight: 900 !important; pointer-events: none !important; }
     .visual-hint { font-size: 0.8rem !important; margin: 5px 0 !important; }
 
     /* Builder Options */
