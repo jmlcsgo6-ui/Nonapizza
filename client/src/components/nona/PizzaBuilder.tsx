@@ -88,7 +88,14 @@ export default function PizzaBuilder() {
     return (
         <div className={`builder-overlay ${isBuilderOpen ? 'active' : ''}`}>
             <div className="builder-header">
-                <h3>Montar Pizza</h3>
+                <div className="header-left">
+                    {step === 2 && (
+                        <button className="header-back-btn" onClick={() => setStep(1)}>
+                            <i className="fa-solid fa-arrow-left"></i>
+                        </button>
+                    )}
+                    <h3>Montar Pizza</h3>
+                </div>
                 <button id="close-builder" onClick={() => setIsBuilderOpen(false)}><i className="fa-solid fa-xmark"></i></button>
             </div>
             
@@ -142,7 +149,7 @@ export default function PizzaBuilder() {
                                     {segments.map((seg: any, i: number) => {
                                         const total = segments.length;
                                         const isSelected = !!seg;
-                                        const textContent = isSelected ? seg.name : `Toque para escolher`;
+                                        const textContent = isSelected ? seg.name : '';
                                         
                                         if (total === 1) {
                                             return (
@@ -167,7 +174,7 @@ export default function PizzaBuilder() {
                                             return (
                                                 <g key={i} onClick={() => { setDrawerTarget(i); setDrawerOpen(true); }} style={{ cursor: 'pointer' }}>
                                                     <path d={pathData} className={`pizza-slice ${isSelected ? 'has-flavor' : ''}`} />
-                                                    <text x={textX} y={textY} className="slice-text" dominantBaseline="middle" fontSize="4">{isSelected ? seg.name : 'Toque para escolher'}</text>
+                                                    <text x={textX} y={textY} className="slice-text" dominantBaseline="middle" fontSize="4">{isSelected ? seg.name : ''}</text>
                                                 </g>
                                             );
                                         }
@@ -180,9 +187,7 @@ export default function PizzaBuilder() {
                         </p>
                     </div>
 
-                    <button className="btn-text" onClick={() => setStep(1)}>
-                        <i className="fa-solid fa-arrow-left" style={{ marginRight: '6px' }}></i> Voltar tamanhos
-                    </button>
+
 
                     <div className="builder-options">
                         {/* Borda Selector */}
