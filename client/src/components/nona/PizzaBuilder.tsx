@@ -144,7 +144,8 @@ export default function PizzaBuilder() {
 
                 {/* Step 2 */}
                 <div className={`builder-step ${step === 2 ? 'active' : ''}`}>
-                    <div className="builder-visual">
+                    <div className="builder-split">
+                        <div className="builder-visual">
                         <div className="pizza-svg-wrapper">
                             <div className="pizza-base"></div>
                             <div className="pizza-svg-container">
@@ -257,6 +258,7 @@ export default function PizzaBuilder() {
                             </div>
                         </div>
                         <div style={{ height: '100px' }}></div> {/* Spacer for fixed button */}
+                    </div>
                     </div>
 
                     {/* Add to Order Button */}

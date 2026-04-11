@@ -15,8 +15,22 @@ import CartDrawer from '../components/nona/CartDrawer';
 export default function Home() {
     useRevealObserver();
 
+    React.useEffect(() => {
+        const handleScroll = () => {
+            const progressBar = document.querySelector('.scroll-progress') as HTMLElement;
+            if (progressBar) {
+                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = (window.pageYOffset / totalHeight) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     return (
         <>
+            <div className="scroll-progress"></div>
             <Header />
             <main>
                 <Hero />

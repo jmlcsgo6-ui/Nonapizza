@@ -10,10 +10,22 @@
 .bg-deep { background-color: #050505 !important; }
 .bg-card.border-white\/5 { border-color: rgba(255, 255, 255, 0.08) !important; }
 
-.custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: white; }
+.custom-scrollbar {
+    -ms-overflow-style: none !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--primary) transparent !important;
+}
+
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), #ff8c00);
+    z-index: 10001;
+    transition: width 0.1s ease;
+}
 
 .pizza-svg-element {
     width: 100%;
@@ -45,6 +57,20 @@ body {
     line-height: 1.5;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+}
+
+body::-webkit-scrollbar {
+    width: 8px;
+}
+body::-webkit-scrollbar-track {
+    background: #000;
+}
+body::-webkit-scrollbar-thumb {
+    background: #222;
+    border-radius: 10px;
+}
+body::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
 }
 
 .container {
@@ -208,21 +234,28 @@ body {
 
 /* Typography Hierarchy */
 .hero-title {
-    font-size: 4rem;
+    font-size: 4.5rem;
     font-weight: 800;
-    line-height: 1.1;
+    line-height: 1.05;
     margin-bottom: 1.5rem;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.04em;
     animation: fadeInUp 0.8s ease backwards;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 40%, #ff8c00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
 }
 
 .hero-subtitle {
-    font-size: 1.25rem;
-    color: var(--text-muted);
+    font-size: 1.15rem;
+    color: rgba(255,255,255,0.75);
     margin-bottom: 2.5rem;
     max-width: 90%;
     font-weight: 400;
     animation: fadeInUp 0.8s ease 0.2s backwards;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+    line-height: 1.6;
 }
 
 /* Highlights */
@@ -253,11 +286,29 @@ body {
     margin-right: 12px;
 }
 
-/* Buttons */
 .cta-group {
     display: flex;
     gap: 1.5rem;
     animation: fadeInUp 0.8s ease 0.6s backwards;
+}
+
+/* Glowing CTA pulse */
+.btn-primary {
+    position: relative;
+}
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255,140,0,0.5), rgba(255,94,0,0.3));
+    z-index: -1;
+    opacity: 0;
+    animation: ctaPulse 2.5s ease-in-out infinite;
+}
+@keyframes ctaPulse {
+    0%, 100% { opacity: 0; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.04); }
 }
 
 .btn {
@@ -284,12 +335,36 @@ body {
     background-size: 200% auto;
     color: #fff;
     box-shadow: 0 10px 25px rgba(255, 94, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #fff;
+    backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .btn-primary:hover {
     background-position: right center;
     transform: translateY(-5px) scale(1.03);
     box-shadow: 0 15px 40px rgba(255, 94, 0, 0.5);
+}
+
+.btn-primary:hover svg {
+    transform: translateX(5px);
+    transition: transform 0.3s ease;
+}
+
+.btn svg {
+    transition: transform 0.3s ease;
 }
 
 .btn-secondary {
@@ -343,12 +418,36 @@ body {
     font-weight: 700;
     margin-bottom: 1rem;
     letter-spacing: -0.02em;
+    position: relative;
+    display: inline-block;
+}
+
+/* Animated underline accent for section titles */
+.section-header.text-center .section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), #ff8c00);
+    margin: 0.75rem auto 0;
+    border-radius: 2px;
+    transform: scaleX(0);
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+}
+.is-visible .section-title::after,
+.section-title::after {
+    transform: scaleX(1);
 }
 
 .section-subtitle {
     font-size: 1.1rem;
     color: var(--text-muted);
     font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1.6;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* How It Works Space */
@@ -359,10 +458,11 @@ body {
 }
 
 .step-card {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.05);
     padding: 3rem 2rem;
-    border-radius: 16px;
+    border-radius: 20px;
     text-align: center;
     transition: var(--transition);
 }
@@ -534,9 +634,10 @@ body {
 }
 
 .testimonial-card {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(8px);
     padding: 2.5rem;
-    border-radius: 16px;
+    border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.05);
     transition: var(--transition);
 }
@@ -1103,7 +1204,7 @@ body {
 
     .hero-container {
         flex-direction: column;
-        padding-top: 4rem;
+        padding-top: 3rem;
         text-align: center;
     }
     
@@ -1112,20 +1213,38 @@ body {
     }
     
     .hero-title {
-        font-size: 2.8rem;
+        font-size: 2.2rem;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
     }
     
     .hero-subtitle {
         margin-left: auto;
         margin-right: auto;
+        font-size: 0.95rem;
+        max-width: 85%;
+        color: rgba(255,255,255,0.7);
     }
-    
-    .highlights li {
-        justify-content: center;
+
+    .highlights {
+        display: none;
     }
     
     .cta-group {
         justify-content: center;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center;
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+    }
+
+    .cta-group .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.9rem 1.5rem;
+        font-size: 0.85rem;
     }
     
     .hero-right {
@@ -1222,7 +1341,7 @@ body {
     }
 
     .section {
-        padding: 4rem 0;
+        padding: 2rem 0;
     }
     
     .section-title {
@@ -1244,7 +1363,7 @@ body {
     }
 
     .why-visual {
-        min-height: 250px;
+        min-height: 0;
         width: 100%;
     }
 }
@@ -1498,7 +1617,7 @@ body {
 .crust-select-btn {
     width: 100%; display: flex; justify-content: space-between; align-items: center;
     background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
-    padding: 1.25rem; border-radius: 12px; color: #fff; cursor: pointer; transition: var(--transition); margin-bottom: 2rem;
+    padding: 1rem; border-radius: 12px; color: #fff; cursor: pointer; transition: var(--transition); margin-bottom: 1rem;
 }
 .crust-select-btn:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
 .crust-info { display: flex; flex-direction: column; align-items: flex-start; }
@@ -1506,21 +1625,55 @@ body {
 .crust-value { font-weight: 600; font-size: 1.1rem; }
 
 .builder-summary {
-    background: rgba(255, 255, 255, 0.02); border-radius: 16px; padding: 2.5rem !important; margin-top: 2rem; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.03); 
+    border-radius: 20px; 
+    padding: 1.25rem !important; 
+    margin-top: 0.5rem; 
+    margin-bottom: 1rem; 
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
-.builder-summary h4 { margin-bottom: 1rem; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
+.builder-summary h4 { 
+    margin-bottom: 1rem; 
+    font-size: 0.9rem; 
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.05); 
+    padding-bottom: 0.75rem; 
+}
 
 #builder-summary-list { list-style: none; margin-bottom: 1.5rem; }
-#builder-summary-list li { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem; color: #e0e0e0; }
-
-.builder-total {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 1.25rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem !important;
-    margin-top: 1rem;
+#builder-summary-list li { 
+    display: flex; 
+    justify-content: space-between; 
+    margin-bottom: 0.6rem; 
+    font-size: 0.95rem; 
+    color: #fff; 
 }
 
-.builder-total strong { color: var(--primary); font-weight: 800; }
+#builder-summary-list li span:last-child {
+    font-weight: 700;
+    color: #fff;
+}
+
+.builder-total {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.1); 
+    padding-top: 1.25rem !important;
+    margin-top: 0.5rem;
+}
+
+.builder-total span {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.builder-total strong { color: var(--primary); font-weight: 900; font-size: 1.5rem; }
 
 #builder-obs {
     width: 100%; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1);
@@ -1551,14 +1704,82 @@ body {
    MOTION ANIMATIONS & UX ELEMENTS
    ------------------------------------- */
 
+/* ── Base Reveal ── */
 .reveal-on-scroll {
     opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: translateY(40px);
+    transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal-on-scroll.is-visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* ── Direction Variants ── */
+.reveal-on-scroll.reveal-left {
+    transform: translateX(-50px) translateY(0);
+}
+.reveal-on-scroll.reveal-left.is-visible {
+    transform: translateX(0) translateY(0);
+}
+
+.reveal-on-scroll.reveal-right {
+    transform: translateX(50px) translateY(0);
+}
+.reveal-on-scroll.reveal-right.is-visible {
+    transform: translateX(0) translateY(0);
+}
+
+.reveal-on-scroll.reveal-scale {
+    transform: scale(0.92) translateY(0);
+}
+.reveal-on-scroll.reveal-scale.is-visible {
+    transform: scale(1) translateY(0);
+}
+
+/* ── Staggered Children ── */
+.reveal-on-scroll.is-visible .step-card,
+.reveal-on-scroll.is-visible .testimonial-card,
+.reveal-on-scroll.is-visible .action-card,
+.reveal-on-scroll.is-visible .benefit-block {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: revealChild 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.reveal-on-scroll.is-visible .step-card:nth-child(1),
+.reveal-on-scroll.is-visible .testimonial-card:nth-child(1),
+.reveal-on-scroll.is-visible .action-card:nth-child(1),
+.reveal-on-scroll.is-visible .benefit-block:nth-child(1) {
+    animation-delay: 0.1s;
+}
+.reveal-on-scroll.is-visible .step-card:nth-child(2),
+.reveal-on-scroll.is-visible .testimonial-card:nth-child(2),
+.reveal-on-scroll.is-visible .action-card:nth-child(2),
+.reveal-on-scroll.is-visible .benefit-block:nth-child(2) {
+    animation-delay: 0.25s;
+}
+.reveal-on-scroll.is-visible .step-card:nth-child(3),
+.reveal-on-scroll.is-visible .testimonial-card:nth-child(3),
+.reveal-on-scroll.is-visible .action-card:nth-child(3),
+.reveal-on-scroll.is-visible .benefit-block:nth-child(3) {
+    animation-delay: 0.4s;
+}
+.reveal-on-scroll.is-visible .step-card:nth-child(4),
+.reveal-on-scroll.is-visible .testimonial-card:nth-child(4),
+.reveal-on-scroll.is-visible .benefit-block:nth-child(4) {
+    animation-delay: 0.55s;
+}
+
+@keyframes revealChild {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .hover-scale {
@@ -1584,6 +1805,7 @@ body {
     transition: opacity 0.3s ease;
 }
 
+
 /* Dual Action Promo Section */
 .dual-action-grid {
     display: grid;
@@ -1603,6 +1825,12 @@ body {
     overflow: hidden;
     cursor: pointer;
     border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.action-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: rgba(255, 94, 0, 0.3);
 }
 
 .promo-builder {
@@ -1612,10 +1840,65 @@ body {
     background: url('/ezgif-frame-070.png') center/cover no-repeat;
 }
 
+@media (max-width: 768px) {
+    .dual-action-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+    }
+
+    .action-card {
+        padding: 1.5rem 1rem !important;
+        min-height: 280px !important;
+        border-radius: 16px !important;
+        border-width: 0.5px !important;
+    }
+
+    .ac-content h3 {
+        font-size: 1.15rem !important;
+        margin-bottom: 0.75rem !important;
+        gap: 0.4rem !important;
+    }
+
+    .ac-content h3 svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .ac-content p {
+        font-size: 0.7rem !important;
+        line-height: 1.4 !important;
+        margin-bottom: 1.25rem !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        color: #d0d0d0 !important;
+    }
+
+    .ac-content .btn {
+        padding: 0.6rem 0.5rem !important;
+        font-size: 0.65rem !important;
+        width: 100% !important;
+        border-radius: 10px !important;
+    }
+
+    .main-title {
+        font-size: 2.5rem !important;
+        font-weight: 900 !important;
+        line-height: 1 !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .explore-header {
+        margin-bottom: 2rem !important;
+    }
+}
+
 .ac-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%);
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.2) 100%);
     z-index: 1;
 }
 
@@ -1630,6 +1913,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: #fff;
 }
 
 .ac-content p {
@@ -1789,61 +2073,13 @@ body {
 
 
 
-/* Combined Mobile Layout (App Style) & Premium Builder Improvements */
-.builder-overlay {
-    position: fixed;
-    top: 0; 
-    left: 50%;
-    right: auto;
-    bottom: 0;
-    width: 100%;
-    max-width: 450px; /* Strict mobile-like width on desktop */
-    background: #000;
-    z-index: 3000;
-    display: flex;
-    flex-direction: column;
-    transform: translate(-50%, 100%);
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 0 100px rgba(0,0,0,1);
-    overflow: hidden;
-}
-
-/* Background Dimmer for Desktop App Mode */
-.builder-overlay::before {
-    content: '';
-    position: fixed;
-    top: 0; 
-    left: -200%;
-    width: 500%;
-    height: 100%;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
-    z-index: -1;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.6s ease;
-}
-
-.builder-overlay.active::before {
-    opacity: 1;
-}
-
-.builder-overlay.active {
-    transform: translate(-50%, 0);
-}
+/* Removed forced mobile max-width to allow desktop responsive layout */
 
 .builder-options-scroll {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: visible; /* Remover scroll interno */
     padding: 1rem 1.5rem;
     display: flex;
     flex-direction: column;
-    scrollbar-width: none; /* Hide scrollbar Firefox */
-}
-
-.builder-options-scroll::-webkit-scrollbar {
-    display: none; /* Hide scrollbar Chrome/Safari */
 }
 
 .builder-footer-cta {
@@ -1912,17 +2148,40 @@ body {
         transform: translateY(0);
     }
 
+    .builder-step {
+        padding: 0.5rem 0.5rem 0 !important;
+        gap: 0 !important;
+    }
+
+    .builder-split {
+        flex-direction: column !important;
+        gap: 0 !important;
+        width: 100%;
+    }
+
     .builder-visual {
-        padding: 0.5rem 0;
+        padding: 0;
+        margin-top: 0; /* Removed negative margin to prevent cutting */
     }
     
     .pizza-svg-wrapper {
-        width: 250px !important;
-        height: 250px !important;
+        width: 170px !important;
+        height: 170px !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    .visual-hint {
+        font-size: 0.75rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .builder-options-scroll {
+        padding: 0 1rem !important;
+        margin-top: 1rem; /* Push options down to prevent overlap */
     }
 
     .builder-footer-cta {
-        padding: 1rem 1.5rem 1.5rem;
+        padding: 0.75rem 1.5rem 1.5rem;
     }
     
     .builder-step.active .btn-primary.btn-large.w-100 {
@@ -2006,9 +2265,23 @@ body {
     align-items: start;
 }
 
+@media (max-width: 992px) {
+    .track-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
 .orders-sidebar {
     position: sticky;
     top: 120px;
+}
+
+@media (max-width: 992px) {
+    .orders-sidebar {
+        position: static;
+        order: 2;
+    }
 }
 
 .sidebar-title {
@@ -2050,20 +2323,22 @@ body {
 .order-id {
     font-weight: 800;
     font-size: 1.1rem;
+    color: #fff;
 }
 
 .order-status-tag {
-    font-size: 0.7rem;
-    font-weight: 800;
+    font-size: 0.65rem;
+    font-weight: 900;
     text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 50px;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    letter-spacing: 1px;
 }
 
-.order-status-tag.pending { background: rgba(255, 94, 0, 0.15); color: #ff5e00; }
-.order-status-tag.cooking { background: rgba(255, 204, 0, 0.15); color: #ffcc00; }
-.order-status-tag.delivering { background: rgba(0, 122, 255, 0.15); color: #007aff; }
-.order-status-tag.completed { background: rgba(76, 217, 100, 0.15); color: #4cd964; }
+.order-status-tag.pending { background: #ff9500; color: #000; }
+.order-status-tag.cooking { background: #ff3b30; color: #fff; }
+.order-status-tag.delivering { background: #5856d6; color: #fff; }
+.order-status-tag.completed { background: #4cd964; color: #000; }
 
 .order-meta {
     font-size: 0.8rem;
@@ -2220,50 +2495,177 @@ body {
     color: var(--text-muted);
 }
 
+/* Hero Classical Styling */
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 94, 0, 0.1);
+    border: 1px solid rgba(255, 94, 0, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    color: var(--primary);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.hero-features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.feature-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--text-muted);
+}
+
+.feature-item span {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hero-mobile-bg {
+    display: none;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('/ezgif-frame-001.png') center/cover no-repeat;
+    opacity: 0.4;
+    z-index: -1;
+}
+
 @media (max-width: 768px) {
+    .hero-wrapper {
+        height: 250vh !important;
+    }
+    .hero {
+        position: sticky !important;
+        top: 0 !important;
+        min-height: 100vh !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding-top: 0 !important;
+    }
+    .hero-canvas {
+        display: block !important;
+    }
+    .hero-mobile-bg {
+        display: none !important;
+    }
+    .hero-title {
+        font-size: 2.2rem !important;
+        line-height: 1.1 !important;
+        margin-bottom: 1.5rem !important;
+    }
+    .hero-subtitle {
+        font-size: 1rem !important;
+        margin-bottom: 2rem !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    .highlights {
+        display: none;
+    }
+    .hero-left {
+        width: 100% !important;
+        padding: 0 1.5rem !important;
+    }
+    .cta-group {
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 0.6rem !important;
+        width: 100% !important;
+        padding: 0 0.5rem !important;
+    }
+    .cta-group .btn {
+        flex: 1;
+        padding: 0.9rem 0.4rem !important;
+        font-size: 0.72rem !important;
+        min-height: unset !important;
+        white-space: nowrap !important;
+        border-radius: 50px !important;
+        gap: 4px !important; /* Smaller gap for mobile to keep it centered */
+        letter-spacing: 0; /* Tighten for space */
+    }
+}
+
+/* Track Order Mobile UX */
+@media (max-width: 992px) {
     .track-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
     }
 
     .orders-sidebar {
-        position: relative;
-        top: 0;
+        position: static;
+        order: 2;
         display: flex;
-        overflow-x: auto;
-        gap: 1rem;
-        padding-bottom: 1rem;
-        scrollbar-width: none;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 3rem;
     }
 
-    .orders-sidebar::-webkit-scrollbar { display: none; }
+    .sidebar-title {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
 
     .order-card {
-        min-width: 250px;
         margin-bottom: 0;
+        width: 100%;
+        min-width: unset;
     }
 
-    .auth-card, .detail-card {
+    .detail-card {
         padding: 1.5rem;
-        border-radius: 16px;
+        border-radius: 20px;
     }
 
     .status-timeline-container {
         padding: 0;
-        margin-bottom: 2rem;
-    }
-
-    .status-timeline-container::before {
-        top: 18px;
+        margin: 2.5rem 0;
+        gap: 0.5rem;
     }
 
     .step-icon-wrapper {
-        width: 36px;
-        height: 36px;
+        width: 44px;
+        height: 44px;
+    }
+
+    .status-timeline-container::before {
+        top: 22px;
+        left: 30px;
+        right: 30px;
     }
 
     .step-label {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
+        letter-spacing: 0;
+        text-align: center;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .status-timeline-container::before {
+        display: none;
+    }
+    .timeline-step {
+        gap: 0.5rem;
+    }
+    .step-label {
+        font-size: 0.55rem;
     }
 }
 
@@ -2391,4 +2793,1167 @@ body {
         margin-right: -1.5rem;
         margin-bottom: -1.5rem;
     }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   🍔 iFOOD-INSPIRED MENU — COMPLETE REDESIGN
+   ═══════════════════════════════════════════════════════════════ */
+
+.ifood-menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.ifood-menu-container {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    height: 100dvh;
+    background: #121212;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ── Header ── */
+.ifood-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: #1A1A1A;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+}
+
+.ifood-header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ifood-restaurant-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #EA1D2C, #ff6b35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #fff;
+}
+
+.ifood-restaurant-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.ifood-restaurant-sub {
+    font-size: 0.75rem;
+    color: #999;
+    margin: 2px 0 0;
+}
+
+.ifood-close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: none;
+    color: #bbb;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+}
+.ifood-close-btn:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+/* ── Category Chips ── */
+.ifood-categories-bar {
+    padding: 12px 0 12px 20px;
+    background: #121212;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.ifood-categories-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-right: 20px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.ifood-categories-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.ifood-chip {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: transparent;
+    color: #bbb;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+    font-family: inherit;
+    flex-shrink: 0;
+}
+.ifood-chip:hover {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+}
+.ifood-chip.active {
+    background: #EA1D2C;
+    border-color: #EA1D2C;
+    color: #fff;
+    font-weight: 600;
+}
+
+.ifood-chip.ifood-sparkle-chip {
+    background: rgba(234, 29, 44, 0.1);
+    border-color: rgba(234, 29, 44, 0.3);
+    color: #EA1D2C;
+}
+.ifood-chip.ifood-sparkle-chip i {
+    margin-right: 6px;
+}
+
+/* ── Products Scroll Area ── */
+.ifood-products-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.ifood-products-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* ── Category Section ── */
+.ifood-category-section {
+    padding: 20px 20px 8px;
+}
+
+.ifood-category-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── Product Card ── */
+.ifood-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ifood-product-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    cursor: pointer;
+    transition: background 0.15s;
+    border-radius: 8px;
+}
+.ifood-product-card:last-child {
+    border-bottom: none;
+}
+.ifood-product-card:active {
+    background: rgba(255,255,255,0.03);
+}
+
+.ifood-product-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ifood-product-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #f0f0f0;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.ifood-product-desc {
+    font-size: 0.78rem;
+    color: #888;
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ifood-product-price {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 4px;
+}
+
+.ifood-product-action {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.ifood-product-img {
+    width: 88px;
+    height: 88px;
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    background-color: #1E1E1E;
+}
+
+.ifood-product-img-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: #444;
+    background: linear-gradient(145deg, #1a1a1a, #252525);
+}
+
+.ifood-add-btn {
+    position: absolute;
+    bottom: -6px;
+    right: -6px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #EA1D2C;
+    border: 2px solid #121212;
+    color: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 2px 8px rgba(234, 29, 44, 0.4);
+}
+.ifood-add-btn:hover {
+    transform: scale(1.1);
+    background: #d01828;
+}
+.ifood-add-btn:active {
+    transform: scale(0.95);
+}
+
+/* ── Loading Skeleton ── */
+.ifood-loading {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ifood-skeleton-card {
+    height: 88px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #1E1E1E 25%, #2a2a2a 50%, #1E1E1E 75%);
+    background-size: 200% 100%;
+    animation: ifood-shimmer 1.5s infinite;
+}
+
+@keyframes ifood-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ── Empty State ── */
+.ifood-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    color: #666;
+    gap: 12px;
+}
+.ifood-empty i {
+    font-size: 2.5rem;
+    color: #444;
+}
+.ifood-empty p {
+    font-size: 0.9rem;
+}
+
+/* ── Cart Bar (floating footer) ── */
+.ifood-cart-bar {
+    position: absolute;
+    bottom: 20px;
+    left: 16px;
+    right: 16px;
+    background: #EA1D2C;
+    border-radius: 12px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(234, 29, 44, 0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 20;
+}
+.ifood-cart-bar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(234, 29, 44, 0.45);
+}
+.ifood-cart-bar:active {
+    transform: scale(0.98);
+}
+
+.ifood-cart-badge {
+    background: #fff;
+    color: #EA1D2C;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.ifood-cart-label {
+    flex: 1;
+    text-align: center;
+}
+
+.ifood-cart-total {
+    font-weight: 700;
+}
+
+/* ── Toast Notification ── */
+.ifood-added-toast {
+    position: absolute;
+    top: 80px;
+    left: 16px;
+    right: 16px;
+    background: #1E1E1E;
+    border: 1px solid rgba(76, 217, 100, 0.3);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 500;
+    z-index: 30;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.ifood-added-toast i {
+    color: #4cd964;
+    font-size: 1.1rem;
+}
+
+/* ── Product Detail Modal ── */
+.ifood-detail-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 6000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.ifood-detail-modal {
+    width: 100%;
+    max-width: 480px;
+    max-height: 85dvh;
+    background: #1A1A1A;
+    border-radius: 20px 20px 0 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.ifood-detail-hero {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    background: linear-gradient(145deg, #1a1a1a, #252525);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.ifood-detail-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ifood-detail-placeholder {
+    font-size: 3.5rem;
+    color: #333;
+}
+
+.ifood-detail-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.ifood-detail-close:hover {
+    background: rgba(0,0,0,0.8);
+}
+
+.ifood-detail-body {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.ifood-detail-name {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 8px;
+}
+
+.ifood-detail-desc {
+    font-size: 0.88rem;
+    color: #999;
+    line-height: 1.6;
+    margin: 0 0 16px;
+}
+
+.ifood-detail-price-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ifood-detail-price {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.ifood-detail-footer {
+    padding: 16px 20px 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.ifood-detail-add-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    background: #EA1D2C;
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: inherit;
+    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 4px 16px rgba(234, 29, 44, 0.3);
+}
+.ifood-detail-add-btn:hover {
+    background: #d01828;
+}
+.ifood-detail-add-btn:active {
+    transform: scale(0.98);
+}
+
+/* ── Desktop: Center the menu like a phone mockup ── */
+@media (min-width: 769px) {
+    .ifood-menu-overlay {
+        align-items: center;
+    }
+    .ifood-menu-container {
+        height: 90vh;
+        max-height: 900px;
+        border-radius: 24px;
+        box-shadow: 0 25px 80px rgba(0,0,0,0.6);
+    }
+    .ifood-detail-modal,
+    .ifood-builder-modal {
+        border-radius: 20px;
+        max-height: 85vh;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   🍕 MONTE SUA PIZZA — BUILDER INSIDE MENU
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Special Promotional Card ── */
+.ifood-monte-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(234,29,44,0.08), rgba(255,107,53,0.06));
+    border: 1px solid rgba(234,29,44,0.2);
+    border-radius: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+.ifood-monte-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(234,29,44,0.08) 0%, transparent 70%);
+    pointer-events: none;
+}
+.ifood-monte-card:active {
+    transform: scale(0.98);
+    border-color: rgba(234,29,44,0.4);
+}
+
+.ifood-monte-icon-wrap {
+    flex-shrink: 0;
+}
+
+.ifood-monte-pizza-icon {
+    width: 60px;
+    height: 60px;
+}
+
+.ifood-monte-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ifood-monte-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.ifood-monte-title i {
+    color: #EA1D2C;
+    font-size: 0.85rem;
+}
+
+.ifood-monte-sub {
+    font-size: 0.72rem;
+    color: #999;
+    margin: 0 0 6px;
+    line-height: 1.3;
+}
+
+.ifood-monte-price {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ccc;
+}
+
+.ifood-monte-action {
+    flex-shrink: 0;
+}
+
+.ifood-monte-btn {
+    background: #EA1D2C;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* ── Builder Modal ── */
+.ifood-builder-modal {
+    width: 100%;
+    max-width: 480px;
+    height: 95dvh;
+    background: #121212;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ifood-builder-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #1A1A1A;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+}
+
+.ifood-builder-back {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: none;
+    color: #ccc;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.ifood-builder-back:hover {
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+}
+
+.ifood-builder-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+/* ── Step Indicator ── */
+.ifood-steps-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: #161616;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.ifood-steps-line {
+    position: absolute;
+    top: 50%;
+    left: 48px;
+    right: 48px;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-8px);
+    z-index: 0;
+    border-radius: 1px;
+}
+
+.ifood-steps-fill {
+    height: 100%;
+    background: #EA1D2C;
+    border-radius: 1px;
+    transition: width 0.4s ease;
+}
+
+.ifood-step-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 1;
+}
+
+.ifood-step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #2a2a2a;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.ifood-step-dot.active .ifood-step-num {
+    background: #EA1D2C;
+    color: #fff;
+    border-color: rgba(234,29,44,0.3);
+    box-shadow: 0 0 12px rgba(234,29,44,0.3);
+}
+
+.ifood-step-dot span {
+    font-size: 0.65rem;
+    color: #555;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+.ifood-step-dot.active span {
+    color: #bbb;
+}
+
+/* ── Builder Body ── */
+.ifood-builder-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.ifood-builder-body::-webkit-scrollbar { display: none; }
+
+.ifood-builder-section {
+    padding: 20px;
+}
+
+.ifood-builder-group {
+    margin-bottom: 24px;
+}
+
+.ifood-builder-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #f0f0f0;
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.ifood-builder-label i {
+    color: #EA1D2C;
+    font-size: 0.85rem;
+}
+
+/* ── Size Grid ── */
+.ifood-size-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.ifood-size-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 8px;
+    border-radius: 14px;
+    background: #1E1E1E;
+    border: 1.5px solid rgba(255,255,255,0.06);
+    color: #ccc;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: inherit;
+}
+.ifood-size-card:hover {
+    border-color: rgba(255,255,255,0.15);
+    background: #242424;
+}
+.ifood-size-card.active {
+    border-color: #EA1D2C;
+    background: rgba(234,29,44,0.08);
+    box-shadow: 0 0 20px rgba(234,29,44,0.12);
+}
+
+.ifood-size-icon {
+    font-size: 1.3rem;
+    color: #666;
+    transition: color 0.25s;
+}
+.ifood-size-card.active .ifood-size-icon {
+    color: #EA1D2C;
+}
+
+.ifood-size-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #eee;
+}
+
+.ifood-size-slices {
+    font-size: 0.7rem;
+    color: #888;
+}
+
+.ifood-size-price {
+    font-size: 0.7rem;
+    color: #EA1D2C;
+    font-weight: 600;
+}
+
+/* ── Flavor Count ── */
+.ifood-flavor-count-row {
+    display: flex;
+    gap: 8px;
+}
+
+.ifood-count-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    background: #1E1E1E;
+    border: 1.5px solid rgba(255,255,255,0.06);
+    color: #bbb;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-family: inherit;
+}
+.ifood-count-btn:hover {
+    border-color: rgba(255,255,255,0.15);
+}
+.ifood-count-btn.active {
+    border-color: #EA1D2C;
+    background: rgba(234,29,44,0.08);
+    color: #fff;
+}
+
+/* ── Next Button ── */
+.ifood-builder-next {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    background: #EA1D2C;
+    border: none;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    font-family: inherit;
+    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 4px 16px rgba(234,29,44,0.25);
+}
+.ifood-builder-next:disabled {
+    background: #333;
+    color: #666;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+.ifood-builder-next:not(:disabled):active {
+    transform: scale(0.98);
+}
+
+/* ── Flavor Selection ── */
+.ifood-flavor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.ifood-flavor-counter span {
+    background: #1E1E1E;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #888;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+.ifood-flavor-counter span.complete {
+    background: rgba(76,217,100,0.1);
+    color: #4cd964;
+    border-color: rgba(76,217,100,0.2);
+}
+
+.ifood-flavor-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1E1E1E;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+}
+.ifood-flavor-search i {
+    color: #666;
+    font-size: 0.85rem;
+}
+.ifood-flavor-search input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 0.88rem;
+    font-family: inherit;
+}
+.ifood-flavor-search input::placeholder {
+    color: #555;
+}
+
+.ifood-flavor-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 45vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 8px;
+}
+.ifood-flavor-list::-webkit-scrollbar { display: none; }
+
+.ifood-flavor-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 14px;
+    background: #1A1A1A;
+    border: 1.5px solid rgba(255,255,255,0.04);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    text-align: left;
+    width: 100%;
+}
+.ifood-flavor-card:hover:not(.disabled) {
+    background: #1E1E1E;
+    border-color: rgba(255,255,255,0.1);
+}
+.ifood-flavor-card.selected {
+    border-color: #EA1D2C;
+    background: rgba(234,29,44,0.06);
+}
+.ifood-flavor-card.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.ifood-flavor-img-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #252525;
+}
+.ifood-flavor-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.ifood-flavor-img-ph {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #444;
+    font-size: 1.1rem;
+}
+
+.ifood-flavor-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ifood-flavor-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #eee;
+}
+.ifood-flavor-desc {
+    font-size: 0.72rem;
+    color: #777;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ifood-flavor-price {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #EA1D2C;
+}
+
+.ifood-flavor-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    font-size: 0.7rem;
+    color: transparent;
+}
+.ifood-flavor-check.checked {
+    background: #EA1D2C;
+    border-color: #EA1D2C;
+    color: #fff;
+}
+
+/* ── Crust Selection ── */
+.ifood-crust-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ifood-crust-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #1A1A1A;
+    border: 1.5px solid rgba(255,255,255,0.04);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    width: 100%;
+    text-align: left;
+}
+.ifood-crust-card:hover {
+    background: #1E1E1E;
+}
+.ifood-crust-card.selected {
+    border-color: #EA1D2C;
+    background: rgba(234,29,44,0.06);
+}
+
+.ifood-crust-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.ifood-crust-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #eee;
+}
+.ifood-crust-price {
+    font-size: 0.78rem;
+    color: #888;
+}
+
+/* ── Builder Observations ── */
+.ifood-builder-obs {
+    width: 100%;
+    background: #1A1A1A;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 14px;
+    color: #fff;
+    font-size: 0.88rem;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.ifood-builder-obs:focus {
+    border-color: rgba(234,29,44,0.4);
+}
+.ifood-builder-obs::placeholder {
+    color: #555;
+}
+
+/* ── Order Summary ── */
+.ifood-builder-summary {
+    background: #1A1A1A;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.ifood-summary-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.75rem;
+}
+
+.ifood-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 0.82rem;
+    color: #bbb;
+}
+
+.ifood-summary-row.ifood-summary-total {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 1rem;
+    font-weight: 800;
+    color: #fff;
+}
+.ifood-summary-row.ifood-summary-total span:last-child {
+    color: #EA1D2C;
+}
+
+/* ── Builder Footer ── */
+.ifood-builder-footer {
+    padding: 16px 20px 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
 }

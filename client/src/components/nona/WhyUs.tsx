@@ -5,7 +5,7 @@ export default function WhyUs() {
         <section id="why-us" className="section reveal-on-scroll">
             <div className="container">
                 <div className="why-grid">
-                    <div className="why-content">
+                    <div className="why-content reveal-on-scroll reveal-left">
                         <h2 className="section-title">Por que a NONA?</h2>
                         <p className="section-subtitle">Não é apenas pizza, é uma experiência gastronômica superior na sua casa.</p>
 
@@ -31,7 +31,7 @@ export default function WhyUs() {
                             </div>
                         </div>
                     </div>
-                    <div className="why-visual">
+                    <div className="why-visual reveal-on-scroll reveal-right">
                         <div className="smoke-container">
                             <div className="smoke"></div>
                             <div className="smoke"></div>

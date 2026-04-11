@@ -103,15 +103,14 @@ export default function Hero() {
                         </ul>
 
                         <div className="cta-group">
-                            <a href="#explore" className="btn btn-primary" onClick={(e) => { e.preventDefault(); document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' }); }}>
-                                Monte sua Pizza <ChevronRight size={16} style={{ marginLeft: 8 }} />
+                            <a href="#explore" className="btn btn-primary btn-large" onClick={(e) => { e.preventDefault(); document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' }); }}>
+                                <span>Monte sua Pizza</span> <ChevronRight size={18} />
                             </a>
-                            <a href="#how-it-works" className="btn btn-secondary" onClick={(e) => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }}>
-                                Como Funciona
+                            <a href="#how-it-works" className="btn btn-secondary btn-large" onClick={(e) => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }}>
+                                <span>Como Funciona</span>
                             </a>
                         </div>
                     </div>
-                    <div className="hero-right"></div>
                 </div>
             </section>
         </div>

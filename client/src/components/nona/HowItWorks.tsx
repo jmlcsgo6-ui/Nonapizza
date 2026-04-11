@@ -8,7 +8,7 @@ export default function HowItWorks() {
                     <h2 className="section-title">Como Funciona</h2>
                     <p className="section-subtitle">O caminho da perfeição até você em 3 passos simples.</p>
                 </div>
-                <div className="steps-grid">
+                <div className="steps-grid reveal-on-scroll reveal-scale">
                     <div className="step-card hover-scale">
                         <div className="step-icon"><i className="fa-solid fa-pizza-slice"></i></div>
                         <h3>Escolha sua Pizza</h3>

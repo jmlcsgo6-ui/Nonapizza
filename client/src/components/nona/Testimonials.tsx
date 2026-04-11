@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Testimonials() {
     return (
-        <section id="testimonials" className="section bg-alt">
+        <section id="testimonials" className="section bg-alt reveal-on-scroll">
             <div className="container">
                 <div className="section-header text-center">
                     <h2 className="section-title">O que dizem nossos clientes</h2>
