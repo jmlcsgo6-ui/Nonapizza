@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import api from '../../api/api';
 import { useCart } from '../../context/CartContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, Package, ArrowRight, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function CartDrawer() {
     const { cart, removeFromCart, clearCart, cartTotal, isCartOpen, setIsCartOpen } = useCart();
-    const [checkoutStep, setCheckoutStep] = useState<'cart' | 'checkout'>('cart');
+    const [checkoutStep, setCheckoutStep] = useState<'cart' | 'checkout' | 'success'>('cart');
     const [address, setAddress] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('pix');
     const [loading, setLoading] = useState(false);
+    const [lastOrderId, setLastOrderId] = useState<number | null>(null);
+    const navigate = useNavigate();
 
     const handleCheckout = async () => {
         const customerToken = localStorage.getItem('customer_token');
@@ -21,7 +26,7 @@ export default function CartDrawer() {
         }
         setLoading(true);
         try {
-            await api.post('/api/orders', {
+            const res = await api.post('/api/orders', {
                 items: cart,
                 address,
                 paymentMethod,
@@ -29,66 +34,91 @@ export default function CartDrawer() {
             }, {
                 headers: { Authorization: `Bearer ${customerToken}` }
             });
+            setLastOrderId(res.data.id);
             clearCart();
-            setCheckoutStep('cart');
-            setIsCartOpen(false);
-            alert('Pedido realizado com sucesso!');
+            setCheckoutStep('success');
         } catch(e) {
             console.error(e);
-            alert('Erro ao realizar pedido.');
+            alert('Erro ao realizar pedido. Tente novamente.');
         } finally {
             setLoading(false);
         }
     };
 
+    const closeAndReset = () => {
+        setIsCartOpen(false);
+        setTimeout(() => {
+            setCheckoutStep('cart');
+        }, 300);
+    };
+
     return (
         <>
-            {isCartOpen && <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1999 }} onClick={() => setIsCartOpen(false)} />}
+            <AnimatePresence>
+                {isCartOpen && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="drawer-overlay"
+                        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(5px)', zIndex: 1999 }} 
+                        onClick={closeAndReset} 
+                    />
+                )}
+            </AnimatePresence>
+
             <div className={`cart-drawer ${isCartOpen ? 'open' : ''}`}>
                 <div className="cart-header">
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}><i className="fa-solid fa-cart-shopping" style={{ marginRight: '10px' }}></i> Carrinho</h3>
-                    <button id="close-cart" onClick={() => setIsCartOpen(false)}><i className="fa-solid fa-xmark"></i></button>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
+                        {checkoutStep === 'success' ? 'Pedido Confirmado' : 'Carrinho de Compras'}
+                    </h3>
+                    <button id="close-cart" onClick={closeAndReset}><X size={24} /></button>
                 </div>
 
-                {checkoutStep === 'cart' ? (
-                    <>
-                        <div className="cart-items">
-                            {cart.length === 0 ? (
-                                <div className="empty-cart-msg">
-                                    <p>Seu carrinho está vazio.</p>
-                                </div>
-                            ) : (
-                                cart.map((item, i) => (
-                                    <div key={i} className="cart-item">
-                                        <div className="ci-info">
-                                            <h5>{item.productName}</h5>
-                                            {item.segments && <p>{item.segments.join(', ')}</p>}
-                                            <span className="ci-price">R$ {(item.price * item.qty).toFixed(2).replace('.', ',')}</span>
-                                        </div>
-                                        <button className="ci-remove" onClick={() => removeFromCart(i)}>
-                                            <i className="fa-solid fa-trash"></i>
-                                        </button>
+                <div className="drawer-body custom-scrollbar">
+                    {checkoutStep === 'cart' && (
+                        <div className="cart-flow">
+                            <div className="cart-items">
+                                {cart.length === 0 ? (
+                                    <div className="empty-cart-msg">
+                                        <Package size={48} style={{ opacity: 0.1, marginBottom: '1rem' }} />
+                                        <p>Seu carrinho está vazio.</p>
                                     </div>
-                                ))
+                                ) : (
+                                    cart.map((item, i) => (
+                                        <div key={i} className="cart-item">
+                                            <div className="ci-info">
+                                                <h5>{item.productName}</h5>
+                                                {item.segments && <p>{item.segments.join(', ')}</p>}
+                                                <span className="ci-price">R$ {(item.price * item.qty).toFixed(2).replace('.', ',')}</span>
+                                            </div>
+                                            <button className="ci-remove" onClick={() => removeFromCart(i)}>
+                                                <i className="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+
+                            {cart.length > 0 && (
+                                <div className="cart-footer">
+                                    <div className="cart-total">
+                                        <span>Subtotal</span>
+                                        <span style={{ color: '#ff5e00', fontWeight: 900, fontSize: '1.3rem' }}>R$ {cartTotal.toFixed(2).replace('.', ',')}</span>
+                                    </div>
+                                    <button className="btn btn-primary w-100 btn-large" onClick={() => setCheckoutStep('checkout')}>
+                                        Finalizar Compra <ArrowRight size={18} />
+                                    </button>
+                                </div>
                             )}
                         </div>
+                    )}
 
-                        <div className="cart-footer">
-                            <div className="cart-total">
-                                <span>Total</span>
-                                <span style={{ color: '#ff5e00', fontWeight: 800 }}>R$ {cartTotal.toFixed(2).replace('.', ',')}</span>
-                            </div>
-                            <button className="btn btn-primary w-100" disabled={cart.length === 0} onClick={() => setCheckoutStep('checkout')}>
-                                Finalizar Pedido
-                            </button>
-                        </div>
-                    </>
-                ) : (
-                    <div className="checkout-container" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <div style={{ flex: 1, padding: '0 0 1rem' }}>
-                            <h4 style={{ marginBottom: '1.5rem' }}>Dados da Entrega</h4>
+                    {checkoutStep === 'checkout' && (
+                        <div className="checkout-flow">
+                            <h4 className="flow-subtitle">Dados da Entrega</h4>
                             <div className="form-group">
-                                <label style={{ display: 'block', marginBottom: '0.5rem', color: '#b0b0b0' }}>Endereço completo</label>
+                                <label>Endereço completo</label>
                                 <input 
                                     type="text" 
                                     className="form-input" 
@@ -98,36 +128,70 @@ export default function CartDrawer() {
                                 />
                             </div>
                             <div className="form-group">
-                                <label style={{ display: 'block', marginBottom: '0.5rem', color: '#b0b0b0' }}>Pagamento</label>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                <label>Método de Pagamento</label>
+                                <div className="payment-options">
                                     {['pix', 'cartao', 'dinheiro'].map(m => (
                                         <button 
                                             key={m}
                                             className={`tab-btn ${paymentMethod === m ? 'active' : ''}`}
                                             onClick={() => setPaymentMethod(m)}
-                                            style={{ flex: 1, fontSize: '0.85rem' }}
                                         >
                                             {m === 'pix' ? 'PIX' : m === 'cartao' ? 'Cartão' : 'Dinheiro'}
                                         </button>
                                     ))}
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="checkout-footer">
-                            <div className="checkout-total-row" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', marginBottom: '1rem' }}>
-                                <span>Total</span>
-                                <span style={{ color: '#ff5e00', fontWeight: 800 }}>R$ {cartTotal.toFixed(2).replace('.', ',')}</span>
+                            <div className="checkout-footer">
+                                <div className="checkout-total-row">
+                                    <span>Total a Pagar</span>
+                                    <span style={{ color: '#ff5e00', fontWeight: 900, fontSize: '1.5rem' }}>R$ {cartTotal.toFixed(2).replace('.', ',')}</span>
+                                </div>
+                                <div className="cta-row">
+                                    <button className="btn btn-secondary" onClick={() => setCheckoutStep('cart')}>Voltar</button>
+                                    <button className="btn btn-primary" style={{ flex: 1 }} disabled={loading} onClick={handleCheckout}>
+                                        {loading ? 'Confirmando...' : 'Confirmar Pedido'}
+                                    </button>
+                                </div>
                             </div>
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                <button className="btn btn-secondary" onClick={() => setCheckoutStep('cart')}>Voltar</button>
-                                <button className="btn btn-primary" style={{ flex: 1 }} disabled={loading} onClick={handleCheckout}>
-                                    {loading ? 'Enviando...' : 'Confirmar Pedido'}
+                        </div>
+                    )}
+
+                    {checkoutStep === 'success' && (
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="success-flow"
+                            style={{ textAlign: 'center', padding: '3rem 1rem' }}
+                        >
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: 'spring', damping: 12, stiffness: 200 }}
+                                style={{ color: '#4cd964', marginBottom: '2rem' }}
+                            >
+                                <CheckCircle size={80} style={{ margin: '0 auto' }} />
+                            </motion.div>
+                            
+                            <h2 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '1rem' }}>Sua pizza está a caminho!</h2>
+                            <p style={{ color: '#b0b0b0', marginBottom: '2.5rem', lineHeight: 1.6 }}>
+                                O pedido <strong>#{lastOrderId?.toString().padStart(4, '0')}</strong> foi recebido com sucesso e já está sendo preparado.
+                            </p>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                <button className="btn btn-primary w-100" onClick={() => {
+                                    setIsCartOpen(false);
+                                    navigate('/meu-pedido', { state: { focusOrderId: lastOrderId } });
+                                }}>
+                                    Acompanhar Pedido
+                                </button>
+                                <button className="btn btn-secondary w-100" onClick={closeAndReset}>
+                                    Continuar Navegando
                                 </button>
                             </div>
-                        </div>
-                    </div>
-                )}
+                        </motion.div>
+                    )}
+                </div>
             </div>
         </>
     );

@@ -68,35 +68,34 @@ export default function TrackOrder() {
             <Header />
             
             <div className="container track-container">
-                <div className="section-header auth-header" style={{ paddingTop: '100px' }}>
+                <div className="section-header auth-header">
                     <h2 className="section-title">Acompanhar Pedido</h2>
                     <p className="section-subtitle">Veja o status da sua pizza em tempo real.</p>
                 </div>
 
                 {orders.length === 0 ? (
-                    <div className="text-center" style={{ padding: '3rem 0' }}>
-                        <i className="fa-solid fa-box-open" style={{ fontSize: '3rem', opacity: 0.1, marginBottom: '1.5rem', display: 'block' }}></i>
-                        <p style={{ opacity: 0.5 }}>Você ainda não realizou nenhum pedido.</p>
-                        <button className="btn btn-primary" style={{ marginTop: '2rem' }} onClick={() => navigate('/')}>Ir para o Cardápio</button>
+                    <div className="empty-orders text-center">
+                        <i className="fa-solid fa-box-open empty-icon"></i>
+                        <p className="empty-text">Você ainda não realizou nenhum pedido.</p>
+                        <button className="btn btn-primary mt-4" onClick={() => navigate('/')}>Ir para o Cardápio</button>
                     </div>
                 ) : (
-                    <div className="track-grid" style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '2rem' }}>
+                    <div className="track-grid">
                         <div className="orders-sidebar">
-                            <h4 style={{ marginBottom: '1rem', fontSize: '0.85rem', color: '#b0b0b0', letterSpacing: '1px' }}>HISTÓRICO RECENTE</h4>
+                            <h4 className="sidebar-title">HISTÓRICO RECENTE</h4>
                             {orders.map(o => (
                                 <div 
                                     key={o.id} 
                                     className={`order-card ${selectedOrder?.id === o.id ? 'active' : ''}`}
                                     onClick={() => setSelectedOrder(o)}
-                                    style={{ background: selectedOrder?.id === o.id ? 'rgba(255,94,0,0.1)' : 'rgba(255,255,255,0.02)', border: `1px solid ${selectedOrder?.id === o.id ? 'rgba(255,94,0,0.3)' : 'rgba(255,255,255,0.05)'}`, borderRadius: '12px', padding: '1.2rem', marginBottom: '0.75rem', cursor: 'pointer' }}
                                 >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontWeight: 600 }}>#{o.id.toString().padStart(4, '0')}</span>
-                                        <span style={{ fontSize: '0.8rem', color: o.status === 'COMPLETED' ? '#4cd964' : '#ff5e00' }}>
+                                    <div className="order-card-header">
+                                        <span className="order-id">#{o.id.toString().padStart(4, '0')}</span>
+                                        <span className={`order-status-tag ${o.status.toLowerCase()}`}>
                                             {STATUS_STEPS.find(s => s.key === o.status)?.label || o.status}
                                         </span>
                                     </div>
-                                    <div style={{ fontSize: '0.8rem', color: '#b0b0b0', marginTop: '0.5rem' }}>
+                                    <div className="order-meta">
                                         {new Date(o.createdAt).toLocaleDateString()} • {o.items.length} itens
                                     </div>
                                 </div>
@@ -105,33 +104,37 @@ export default function TrackOrder() {
 
                         <div className="order-detail">
                             {selectedOrder && (
-                                <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '16px', padding: '2rem', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                    <h3 style={{ marginBottom: '0.5rem' }}>Pedido #{selectedOrder.id}</h3>
-                                    <p style={{ color: '#b0b0b0', marginBottom: '2rem' }}><i className="fa-solid fa-location-dot" style={{ marginRight: '8px' }}></i> {selectedOrder.address}</p>
+                                <div className="detail-card">
+                                    <div className="detail-header">
+                                        <h3>Pedido #{selectedOrder.id}</h3>
+                                        <p className="order-address"><i className="fa-solid fa-location-dot"></i> {selectedOrder.address}</p>
+                                    </div>
 
-                                    <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '2rem' }}>
+                                    <div className="status-timeline-container">
                                         {STATUS_STEPS.map((step, idx) => (
-                                            <div key={step.key} style={{ textAlign: 'center', opacity: idx <= currentStepIdx ? 1 : 0.3 }}>
-                                                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: idx <= currentStepIdx ? '#ff5e00' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
-                                                    {idx < currentStepIdx ? <i className="fa-solid fa-check" style={{ color: '#fff' }}></i> : null}
-                                                    {idx === currentStepIdx ? <div className="pulse-dot" style={{ position: 'relative' }}></div> : null}
+                                            <div key={step.key} className={`timeline-step ${idx <= currentStepIdx ? 'active' : ''} ${idx < currentStepIdx ? 'completed' : ''}`}>
+                                                <div className="step-icon-wrapper">
+                                                    {idx < currentStepIdx ? <i className="fa-solid fa-check"></i> : null}
+                                                    {idx === currentStepIdx ? <div className="pulse-dot"></div> : null}
                                                 </div>
-                                                <span style={{ fontSize: '0.8rem' }}>{step.label}</span>
+                                                <span className="step-label">{step.label}</span>
                                             </div>
                                         ))}
                                     </div>
 
-                                    <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '1.5rem' }}>
-                                        <h4 style={{ marginBottom: '1rem', fontSize: '0.85rem', color: '#b0b0b0', letterSpacing: '1px' }}>RESUMO DO PEDIDO</h4>
-                                        {selectedOrder.items.map((item: any, i: number) => (
-                                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                                                <span><span style={{ color: '#ff5e00', marginRight: '8px' }}>{item.qty}x</span> {item.productName}</span>
-                                                <span>R$ {(item.price * item.qty).toFixed(2).replace('.', ',')}</span>
-                                            </div>
-                                        ))}
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1rem', marginTop: '0.5rem' }}>
-                                            <span style={{ fontWeight: 700 }}>Total</span>
-                                            <span style={{ fontWeight: 800, color: '#ff5e00' }}>R$ {selectedOrder.total.toFixed(2).replace('.', ',')}</span>
+                                    <div className="order-summary-box">
+                                        <h4 className="summary-title">RESUMO DO PEDIDO</h4>
+                                        <div className="summary-items">
+                                            {selectedOrder.items.map((item: any, i: number) => (
+                                                <div key={i} className="summary-item">
+                                                    <span><span className="item-qty">{item.qty}x</span> {item.productName}</span>
+                                                    <span>R$ {(item.price * item.qty).toFixed(2).replace('.', ',')}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="summary-total-row">
+                                            <span className="total-label">Total</span>
+                                            <span className="total-value">R$ {selectedOrder.total.toFixed(2).replace('.', ',')}</span>
                                         </div>
                                     </div>
                                 </div>

@@ -27,30 +27,30 @@ export default function CustomerAuth() {
     };
 
     return (
-        <div className="auth-page" style={{ minHeight: '100vh', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="container auth-container" style={{ maxWidth: '450px' }}>
+        <div className="auth-page">
+            <div className="container auth-container">
                 <div className="section-header text-center auth-header">
                     <h2 className="section-title">{isLogin ? 'Bem-vindo de Volta' : 'Criar sua Conta'}</h2>
                     <p className="section-subtitle">Acesse a melhor experiência em pizza artesanal.</p>
                 </div>
 
-                <div className="auth-card" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '2rem', marginTop: '2rem' }}>
-                    <div style={{ display: 'flex', marginBottom: '2rem', background: 'rgba(255,255,255,0.05)', borderRadius: '50px', padding: '4px' }}>
+                <div className="auth-card">
+                    <div className="auth-tabs">
                         <button 
                             onClick={() => setIsLogin(true)} 
-                            style={{ flex: 1, padding: '0.75rem', borderRadius: '50px', border: 'none', cursor: 'pointer', fontWeight: 600, fontFamily: 'inherit', background: isLogin ? '#ff5e00' : 'transparent', color: isLogin ? '#fff' : '#b0b0b0' }}
+                            className={`auth-tab-btn ${isLogin ? 'active' : ''}`}
                         >
                             Entrar
                         </button>
                         <button 
                             onClick={() => setIsLogin(false)} 
-                            style={{ flex: 1, padding: '0.75rem', borderRadius: '50px', border: 'none', cursor: 'pointer', fontWeight: 600, fontFamily: 'inherit', background: !isLogin ? '#ff5e00' : 'transparent', color: !isLogin ? '#fff' : '#b0b0b0' }}
+                            className={`auth-tab-btn ${!isLogin ? 'active' : ''}`}
                         >
                             Cadastrar
                         </button>
                     </div>
 
-                    {error && <div style={{ background: 'rgba(255,59,48,0.1)', border: '1px solid rgba(255,59,48,0.3)', borderRadius: '10px', padding: '1rem', marginBottom: '1.5rem', color: '#ff3b30', fontSize: '0.9rem' }}>{error}</div>}
+                    {error && <div className="auth-error">{error}</div>}
 
                     <form onSubmit={handleSubmit}>
                         {!isLogin && (
@@ -96,14 +96,14 @@ export default function CustomerAuth() {
                                 />
                             </div>
                         )}
-                        <button className="btn btn-primary w-100" type="submit" disabled={loading} style={{ width: '100%', marginTop: '0.5rem' }}>
+                        <button className="btn btn-primary w-100 mt-2" type="submit" disabled={loading}>
                             {loading ? 'Aguarde...' : (isLogin ? 'Entrar' : 'Criar Conta')}
                         </button>
                     </form>
                 </div>
 
-                <div className="text-center" style={{ marginTop: '2rem' }}>
-                    <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', color: '#b0b0b0', cursor: 'pointer', fontFamily: 'inherit' }}>
+                <div className="text-center mt-4">
+                    <button onClick={() => navigate('/')} className="btn-text">
                         <i className="fa-solid fa-arrow-left" style={{ marginRight: '8px' }}></i> Voltar ao Início
                     </button>
                 </div>
